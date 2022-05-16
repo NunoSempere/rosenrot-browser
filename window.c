@@ -21,9 +21,7 @@ static float zoom = 1.0;
 
 G_DEFINE_TYPE(RoseWindow, rose_window, GTK_TYPE_APPLICATION_WINDOW)
 
-static void read_clipboard(GObject *object,
-                           GAsyncResult *res,
-                           gpointer webview)
+static void read_clipboard(GObject *object, GAsyncResult *res, gpointer webview)
 {
 	GdkClipboard *clipboard = GDK_CLIPBOARD(object);
 	webkit_web_view_load_uri(
@@ -32,16 +30,13 @@ static void read_clipboard(GObject *object,
 	);
 }
 
-static gboolean key_press_callback(RoseWindow *window,
-                                   guint keyval,
-                                   guint keycode,
-                                   GdkModifierType state)
+static gboolean key_press_callback(RoseWindow *window, guint keyval,
+		guint keycode, GdkModifierType state)
 {
 	(void) keycode;
 
 	for (int i = 0; i < LENGTH(keys); i++) {
-		if (keys[i].modkey == state
-				&& keys[i].keycod == keyval) {
+		if (keys[i].modkey == state && keys[i].keycod == keyval) {
 			switch (keys[i].funcid) {
 				case goback:
 					webkit_web_view_go_back(window->webview);
@@ -191,7 +186,6 @@ static gboolean key_press_callback(RoseWindow *window,
 		}
 	}
 
-
 	return GDK_EVENT_PROPAGATE;
 }
 
@@ -222,13 +216,13 @@ guint rose_window_show(GtkApplication *app, RoseWindow *window, const char *url)
 	window->webview = WEBKIT_WEB_VIEW(webview);
 
 	g_signal_connect(G_OBJECT(w), "destroy",
-	                 G_CALLBACK(destroy), NULL);
+		 G_CALLBACK(destroy), NULL);
 
 	g_signal_connect(G_OBJECT(window->webview), "web-process-terminated",
-			 G_CALLBACK(destroy), NULL);
+		 G_CALLBACK(destroy), NULL);
 
 	g_signal_connect(G_OBJECT(window->webview), "load-changed",
-			 G_CALLBACK(rose_load_changed_callback), window);
+		 G_CALLBACK(rose_load_changed_callback), window);
 
 	if (url) {
 		rose_webview_load_url(WEBKIT_WEB_VIEW(webview), url);
@@ -263,15 +257,14 @@ void rose_window_set_webview(RoseWindow *window, GtkWidget *webview)
 static void rose_window_class_init(RoseWindowClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS(class);
-
 	object_class->constructed = rose_window_constructed;
 }
 
 RoseWindow* rose_window_new(GtkApplication *app)
 {
-		return g_object_new(
-			GTK_TYPE_APPLICATION_WINDOW,
-			"application", GTK_APPLICATION(app),
-			NULL
-		);
+	return g_object_new(
+		GTK_TYPE_APPLICATION_WINDOW,
+		"application", GTK_APPLICATION(app),
+		NULL
+	);
 }

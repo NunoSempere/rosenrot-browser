@@ -2,10 +2,8 @@
 
 struct _RoseWebView {
 	WebKitWebView parent_instance;
-
 	GCancellable *cancellable;
 	RoseWebViewNavigationFlags navigation;
-
 	char *address;
 };
 
@@ -15,9 +13,10 @@ enum {
 	PROP_ADDRESS
 };
 
+G_DEFINE_TYPE(RoseWebView, rose_webview, WEBKIT_TYPE_WEB_VIEW)
+
 static GParamSpec *obj_properties[LAST_PROP];
 
-G_DEFINE_TYPE(RoseWebView, rose_webview, WEBKIT_TYPE_WEB_VIEW)
 
 static void update_navigation_flags(RoseWebView *webview)
 {
@@ -88,11 +87,8 @@ static void rose_webview_class_init(RoseWebViewClass *class)
 	object_class->constructed = rose_webview_constructed;
 
 	obj_properties[PROP_ADDRESS] =
-    g_param_spec_string ("address",
-                         "Address",
-                         "address",
-                         "",
-                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+	g_param_spec_string("address", "Address", "address",
+		"", G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 }
 
 static void rose_webview_init(RoseWebView *webview)
@@ -106,20 +102,24 @@ void rose_webview_load_url(WebKitWebView *webview, const char *url)
 	setatom(AtomUri, url);
 }
 
-void rose_load_changed_callback(WebKitWebView *webview,
-																WebKitLoadEvent event)
+void rose_load_changed_callback(WebKitWebView *webview, WebKitLoadEvent event)
 {
+	char *hist;
+	size_t nhist;
+	FILE *f;
+
 	if (event == WEBKIT_LOAD_FINISHED) {
-			const char *uri = webkit_web_view_get_uri(webview);
-			char *cookiefile = calloc(1, sizeof(char) * (strlen(options[CACHE]) + 32) + 1);
-			sprintf(cookiefile, "%s/history", options[CACHE]);
+		/* Append the current URL to the history file. */
+		nhist = strlen(options[CACHE]) + 12;
+		hist = malloc(sizeof(char) * nhist);
+		snprintf(hist, nhist, "%s/history", options[CACHE]);
 
-			FILE *cookie = fopen(cookiefile, "a");
+		f = fopen(hist, "a");
+		fprintf(f, "%s\n", webkit_web_view_get_uri(webview));
+		fclose(f);
 
-			fprintf(cookie, "%s\n", uri);
-			fclose(cookie);
-			free(cookiefile);
-		}
+		free(hist);
+	}
 }
 
 static void rose_download(const char* uri)
@@ -128,6 +128,8 @@ static void rose_download(const char* uri)
 	char *url = calloc(1, sizeof(char) * strlen(uri) + 1);
 
 	strcpy(url, uri);
+
+	/* TODO: replace this whole cruft with another alternative */
 
 	int id = fork();
 	if (id == 0) {
@@ -142,14 +144,13 @@ static void rose_download(const char* uri)
 static void rose_response_reciver(WebKitDownload *download)
 {
 	const char *uri = webkit_uri_response_get_uri(webkit_download_get_response(download));
-
 	rose_download(uri);
 }
 
 static void rose_download_callback(WebKitDownload *download)
 {
-		g_signal_connect(G_OBJECT(download), "notify::response",
-	                 G_CALLBACK(rose_response_reciver), NULL);
+	g_signal_connect(G_OBJECT(download), "notify::response",
+		G_CALLBACK(rose_response_reciver), NULL);
 }
 
 GtkWidget* rose_webview_new()
@@ -199,11 +200,11 @@ GtkWidget* rose_webview_new()
 	webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 
 	g_signal_connect(G_OBJECT(context), "download-started",
-		                 G_CALLBACK(rose_download_callback), NULL);
+		G_CALLBACK(rose_download_callback), NULL);
 
 	return 	g_object_new(
-			WEBKIT_TYPE_WEB_VIEW,
-			"settings", settings,
-			"user-content-manager", contentmanager,
-			"web-context", context, NULL);
+		WEBKIT_TYPE_WEB_VIEW,
+		"settings", settings,
+		"user-content-manager", contentmanager,
+		"web-context", context, NULL);
 }

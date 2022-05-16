@@ -17,25 +17,25 @@ void setatom(int a, const char *v)
 	XSync(glob_dpy, False);
 }
 
-const char* getatom(int a)
+char* getatom(int a)
 {
-	static char buf[BUFSIZ];
 	Atom adummy;
 	int idummy;
 	unsigned long ldummy;
 	unsigned char *p = NULL;
+	char *ret;
 
 	XSync(glob_dpy, False);
 	XGetWindowProperty(glob_dpy, glob_xid,
-	                   glob_atoms[a], 0L, BUFSIZ, False, glob_atoms[AtomUTF8],
-	                   &adummy, &idummy, &ldummy, &ldummy, &p);
-	if (p)
-		strncpy(buf, (char *)p, LENGTH(buf) - 1);
-	else
-		buf[0] = '\0';
-	XFree(p);
+		glob_atoms[a], 0L, BUFSIZ, False, glob_atoms[AtomUTF8],
+		&adummy, &idummy, &ldummy, &ldummy, &p);
 
-	return buf;
+	/* We need to strdup() the returned string, because the spec says we _have_
+	   to use XFree(). Although it's probably a regular free() call, we can make
+	   sure by just strdup'ing it into our own buffer. */
+	ret = strdup((char *) p);
+	XFree(p);
+	return ret;
 }
 
 static void setup()
@@ -69,6 +69,7 @@ int main(int argc, char **argv)
 		options[HOMEPAGE] = argv[1];
 		argv++; argc--;
 	}
+
 	setup();
 	GtkApplication *app = gtk_application_new("org.gtk.rose", G_APPLICATION_NON_UNIQUE);
 	g_signal_connect(app, "activate", G_CALLBACK(run), NULL);

@@ -23,5 +23,7 @@ enum {
 
 extern Display *glob_dpy;  /* declared in rose.c */
 
-const char* getatom(int a);
-void setatom(int a, const char *v);
+/* Set/get X11 window properties. `getatom` retuns an allocated string
+   which has to be free'd. */
+char *getatom(int aid);
+void setatom(int aid, const char *val);
