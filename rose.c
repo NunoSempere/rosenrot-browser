@@ -8,7 +8,6 @@ Display *glob_dpy;  /* defined in rose.h */
 static guint glob_xid;
 static Atom glob_atoms[AtomLast];
 
-
 void setatom(int a, const char *v)
 {
 	XChangeProperty(glob_dpy, glob_xid,

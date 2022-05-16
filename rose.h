@@ -1,7 +1,6 @@
 #pragma once
 
 #include "window.h"
-#include "webview.h"
 #include "config.h"
 
 #include <gtk/gtk.h>

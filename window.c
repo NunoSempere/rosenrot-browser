@@ -22,7 +22,7 @@ enum {
 };
 
 static float zoom = 1.0;
-static unsigned tabid = 0;
+static int tabid;
 
 G_DEFINE_TYPE(RoseWindow, rose_window, GTK_TYPE_APPLICATION_WINDOW)
 
@@ -39,50 +39,57 @@ static void read_clipboard(GObject *object,
 
 static void new_tab(RoseWindow *window, unsigned id)
 {
-	window->webview[id] = WEBKIT_WEB_VIEW(webkit_web_view_new());
+	/* window->webview[id] = WEBKIT_WEB_VIEW(rose_webview_new()); */
 
-	if (!options[HOMEPAGE])
-		options[HOMEPAGE] = "https://duckduckgo.com";
+	/* if (!options[HOMEPAGE]) */
+		/* options[HOMEPAGE] = "https://duckduckgo.com"; */
+/*  */
+	/* rose_webview_load_url(WEBKIT_WEB_VIEW(window->webview[id]), */
+												/* options[HOMEPAGE]); */
 
-	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(window->webview[id]),
-													 options[HOMEPAGE]);
+	/* gtk_window_set_child( */
+		/* GTK_WINDOW( */
+			/* gtk_widget_get_root( */
+				/* GTK_WIDGET( */
+					/* window->webview[tabid++] */
+					/* ) */
+				/* ) */
+			/* ), */
+		/* GTK_WIDGET(window->webview[id]) */
+	/* ); */
 
-	/* gtk_widget_hide(GTK_WIDGET(window->webview[id])); */
-
-	gtk_window_set_child(
-		GTK_WINDOW(
-			gtk_widget_get_root(
-				GTK_WIDGET(
-					window->webview[tabid++]
-					)
-				)
-			),
-		GTK_WIDGET(window->webview[id])
-	);
-
-	gtk_widget_show(GTK_WIDGET(window->webview[tabid]));
+	/* gtk_widget_show(GTK_WIDGET(window->webview[id])); */
 }
 
 static void goto_tab(RoseWindow *window, unsigned id)
 {
-	if (!window->webview[id]) {
-		new_tab(window, id);
-		return;
-	}
+	/* if (window->webview[id]) { */
+		/* puts("new tab"); */
+		/* new_tab(window, id); */
+		/* return; */
+	/* } */
 
-	gtk_window_set_child(
-		GTK_WINDOW(
-			gtk_widget_get_root(
-				GTK_WIDGET(
-					window->webview[tabid]
-					)
-				)
-			),
-		GTK_WIDGET(window->webview[id])
-	);
+	/* printf("%u -> %u\n", tabid, id); */
 
+	int len = LENGTH(window->webview);
+	while (len--)
+		printf("%i", WEBKIT_IS_WEB_VIEW(window->webview[len]));
+
+	puts("");
+	/* new_tab(window, id); */
+	/* gtk_window_set_child( */
+		/* GTK_WINDOW( */
+			/* gtk_widget_get_root( */
+				/* GTK_WIDGET( */
+					/* window->webview[id] */
+					/* ) */
+				/* ) */
+			/* ), */
+		/* GTK_WIDGET(window->webview[id]) */
+	/* ); */
+/*  */
 	/* gtk_widget_hide(GTK_WIDGET(window->webview[tabid])); */
-	gtk_widget_show(GTK_WIDGET(window->webview[id]));
+	/* gtk_widget_show(GTK_WIDGET(window->webview[id])); */
 }
 
 static gboolean key_press_callback(RoseWindow *window,
@@ -139,7 +146,7 @@ static gboolean key_press_callback(RoseWindow *window,
 						wait(&id);
 						char *uri;
 						if (strcmp((uri = (char*)getatom(AtomGo)), ""))
-							rose_webview_load_url(window->webview[tabid], uri);
+							webkit_web_view_load_uri(window->webview[tabid], uri);
 					}
 				} break;
 
@@ -226,7 +233,7 @@ static gboolean key_press_callback(RoseWindow *window,
 						wait(&id);
 						char *uri;
 						if (strcmp((uri = (char*)getatom(AtomGo)), ""))
-							rose_webview_load_url(window->webview[tabid], uri);
+							webkit_web_view_load_uri(window->webview[tabid], uri);
 					}
 				} break;
 
@@ -241,21 +248,16 @@ static gboolean key_press_callback(RoseWindow *window,
 						NULL, NULL, NULL);
 				} break;
 
-				case tabnext: {
-					if (tabid + 1 > 9)
-						return GDK_EVENT_PROPAGATE;
+				case tabnext:
+					if (tabid != 8)
+						goto_tab(window, ++tabid);
+					break;
 
-					goto_tab(window, tabid + 1);
-					printf("%i\n", tabid);
-				} break;
+				case tabprev:
+					if (tabid != 0)
+						goto_tab(window, --tabid);
 
-				case tabprev: {
-					if (!tabid)
-						return GDK_EVENT_PROPAGATE;
-
-					goto_tab(window, tabid - 1);
-					printf("%i\n", tabid);
-				} break;
+					break;
 			}
 		}
 	}
@@ -281,11 +283,15 @@ static void destroy()
 
 guint rose_window_show(GtkApplication *app, RoseWindow *window, const char *url)
 {
+	tabid = 0;
+	memset(window, 0, sizeof(*window));
+
 	window->app = app;
 	window->window = GTK_WINDOW(gtk_application_window_new(window->app));
 
 	/* gtk_application_set_menubar(window->app, FALSE); */
-	window->webview[tabid] = WEBKIT_WEB_VIEW(rose_webview_new());
+	window->webview[0] = WEBKIT_WEB_VIEW(webkit_web_view_new());
+
 
 	g_signal_connect(G_OBJECT(window->window), "destroy",
 									 G_CALLBACK(destroy), NULL);
@@ -293,18 +299,19 @@ guint rose_window_show(GtkApplication *app, RoseWindow *window, const char *url)
 	g_signal_connect(G_OBJECT(window->webview[tabid]), "web-process-terminated",
 			 G_CALLBACK(destroy), NULL);
 
-	g_signal_connect(G_OBJECT(window->webview[tabid]), "load-changed",
-			 G_CALLBACK(rose_load_changed_callback), window->webview[tabid]);
+	/* g_signal_connect(G_OBJECT(window->webview[tabid]), "load-changed", */
+			 /* G_CALLBACK(rose_load_changed_callback), window->webview[0]); */
 
-	if (url) {
-		rose_webview_load_url(WEBKIT_WEB_VIEW(window->webview[tabid]), url);
-		setatom(AtomUri, url);
-	}
+	if (url)
+		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(window->webview[tabid]), url);
 
 	if (!(appearance[WIDTH] && appearance[HEIGHT])) {
 		appearance[WIDTH]  = 1280;
 		appearance[HEIGHT] = 720;
 	}
+
+
+	puts("");
 
 	gtk_window_set_default_size(GTK_WINDOW(window->window), appearance[WIDTH], appearance[HEIGHT]);
 
@@ -316,14 +323,14 @@ guint rose_window_show(GtkApplication *app, RoseWindow *window, const char *url)
 	gtk_widget_add_controller(GTK_WIDGET(window->window), controller);
 
 	gtk_widget_show(GTK_WIDGET(window->window));
-	gtk_widget_show(GTK_WIDGET(window->webview[tabid]));
+	gtk_widget_show(GTK_WIDGET(window->webview[0]));
 
 	return 12;
 }
 
 void rose_window_set_webview(RoseWindow *window, GtkWidget *webview)
 {
-	window->webview[tabid] = WEBKIT_WEB_VIEW(webview);
+	/* window->webview[tabid] = WEBKIT_WEB_VIEW(webview); */
 }
 
 static void rose_window_class_init(RoseWindowClass *class)
