@@ -26,7 +26,7 @@ rose:
 	strip ./rose
 
 debug:
-	$(CC) -fPIC -o rose *.c $(CFLAGS) $(LIBS) -Wall -Wextra
+	$(CC) -fPIC -o rose *.c $(CFLAGS) $(LIBS) -Wall -Wextra -fsanitize=address -DG_DISABLE_CAST_CHECKS
 
 config.h:
 	[ -f "$@" ] || cp config.def.h $@
