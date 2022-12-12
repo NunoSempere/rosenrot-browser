@@ -9,7 +9,8 @@
   - hackable without any knowledge
   - builtin rose-mklink script for in-shell static links
 
-#
+---
+
 ### 👐 Contribute
 See [contributing.md](https://github.com/mini-rose/rose/.github/contributing.md).
 
