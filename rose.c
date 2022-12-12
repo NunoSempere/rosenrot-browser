@@ -297,7 +297,10 @@ void setup(GtkNotebook *notebook, const char *uri)
 	search_buf = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
 	search = GTK_ENTRY(gtk_entry_new_with_buffer(search_buf));
 
-	gtk_window_fullscreen(window);
+        // gtk_window_fullscreen(window);
+	gtk_window_set_default_size(window, WIDTH, HEIGHT);
+        // gtk_window_set_resizable (window, FALSE);
+
 	window_init(notebook);
 	notebook_init(notebook, uri);
 
