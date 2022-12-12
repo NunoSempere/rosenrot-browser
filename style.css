@@ -10,7 +10,9 @@
 	margin: 0px;
 	outline-color: @Lavender;
 	color: @Text;
-	border-bottom-color: @Base;
+	border-color: white; 
+	/*@Base; */
+	/* border-bottom-color: @Base; */
 }
 
 window, notebook, headerbar {
@@ -34,4 +36,7 @@ entry {
 
 entry:focus {
 	box-shadow: none;
+	background-color: @Surface0;
+	padding-left: 10px;
+
 }

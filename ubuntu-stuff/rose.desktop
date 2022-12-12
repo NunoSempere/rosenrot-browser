@@ -3,7 +3,7 @@
 Version=1.0
 Type=Application
 Terminal=false
-Exec= /usr/bin/rose "https://duckduckgo.com"
+Exec= /usr/bin/rose
 Name=Rose
 Comment=Minimalistic browser
-Icon=/home/loki/Documents/core/software/fresh/linux/rose/ubuntu-stuff/rose.png
+Icon=/home/loki/Documents/core/software/fresh/linux/rose/rose-personal/ubuntu-stuff/rose-desktop-icon.png

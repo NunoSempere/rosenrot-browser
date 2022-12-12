@@ -273,7 +273,7 @@ void window_init(GtkNotebook *notebook)
 
 	gtk_entry_buffer_new("", 0);
 	gtk_entry_set_alignment(search, 0.48);
-	gtk_widget_set_size_request(GTK_WIDGET(search), 300, -1);
+	gtk_widget_set_size_request(GTK_WIDGET(search), 1200, -1);
 	gtk_header_bar_set_custom_title(bar, GTK_WIDGET(search));
 	gtk_window_set_titlebar(window, GTK_WIDGET(bar));
 
