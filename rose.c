@@ -303,12 +303,12 @@ void setup(GtkNotebook *notebook, const char *uri)
 
 	window_init(notebook);
 	notebook_init(notebook, uri);
-
 	g_object_set(gtk_settings_get_default(), GTK, NULL);
 
 	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
 	gtk_widget_show_all(GTK_WIDGET(window));
 	gtk_widget_hide(GTK_WIDGET(bar));
+	webkit_web_view_set_zoom_level(notebook_get_webview(notebook), ZOOM);
 }
 
 int main(int argc, char **argv)
