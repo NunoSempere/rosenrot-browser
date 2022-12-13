@@ -6,4 +6,4 @@ Terminal=false
 Exec= /usr/bin/rose
 Name=Rose
 Comment=Minimalistic browser
-Icon=/home/loki/Documents/core/software/fresh/C/rose/rose-bud-personal/user-scripts/ubuntu-20.04/rose-images/rose-desktop-icon.png
+Icon=/home/loki/Documents/core/software/fresh/C/rose-browser/rose-bud-personal/user-scripts/ubuntu-20.04/rose-images/rose-desktop-icon.png
