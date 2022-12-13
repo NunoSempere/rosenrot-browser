@@ -6,6 +6,13 @@
 
 // int str_replace_start(const char* string, const char* target, const char* replacement, char* output){
 
+void str_init(char* str, int n){
+  for(int i=0; i<n; i++){
+    str[i] = ' ';
+  }
+  str[n] = '\0';
+} // could also use <https://manpages.ubuntu.com/manpages/impish/man3/strinit.3pub.html>
+
 int libre_redirect(const char* uri, char* output){
   /* inv.riverside.rocks */
   // max length
@@ -16,7 +23,7 @@ int libre_redirect(const char* uri, char* output){
     return 1; // not enough memory. 
   }else{
     char tmp_uri[l2++];
-    strcpy(tmp_uri, uri);
+    strcpy(tmp_uri, uri); // includes terminating '\0'
 
     char* sites[] = { 
       "https://youtube.com", 
@@ -39,7 +46,6 @@ int libre_redirect(const char* uri, char* output){
       strcpy(tmp_uri, output);
     }
     strcpy(output, tmp_uri);
-
   }
 
   return 0;
