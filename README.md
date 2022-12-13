@@ -1,4 +1,4 @@
-<h3 align=center> Rose Browser</h1>
+<h3 align=center> Rose Browser</h3>
 <h4 align=center>Minimal browser based on webkit2gtk</h4>
 
 #### Features
@@ -20,3 +20,11 @@ Rose is released under own license, which grants the following permissions:
 -   Distribution
 -   Modification
 -   Private use
+
+### To do
+
+- [ ] String substitution on uri in order to redirect to better frontends.
+- [ ] Present "standard" browser keybindings as an alternative.
+- [ ] Fix zoom in new tab
+- [ ] Make tab bar slightly prettier.
+
