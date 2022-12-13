@@ -77,3 +77,11 @@ static struct {
     { CTRL | SFT,  KEY(N),     finder_prev	 }
 };
 
+/* 
+Default browser controls:
+- Ctrl+L: Go to searchbar
+- Ctrl+T: New Tab
+- Ctrl+Page up: Go to next tab
+- Ctrl+Page down: Go to previous tab
+
+*/
