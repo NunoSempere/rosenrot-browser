@@ -9,9 +9,8 @@ int main(){
   char uri_filtered[l];
   str_init(uri_filtered, l);
 
-  int libre_check = libre_redirect(uri, uri_filtered);
-  if(!libre_check){
-    printf("Filtered url: %s\n", uri_filtered);
+  if(!libre_redirect(uri, uri_filtered)){
+    printf("Filtered uri: %s\n", uri_filtered);
   }else{
     printf("Uri: %s\n", uri);
     // failure; do something with the original uri.
