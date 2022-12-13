@@ -19,8 +19,8 @@
 
 #define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 
-#define HOME "file:///home/loki/Documents/core/software/fresh/linux/rose/rose-bud-personal/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" /* "https://duckduckgo.com" */
-#define SEARCH "https://duckduckgo.com/?q=%s"
+#define HOME "file:///home/loki/Documents/core/software/fresh/C/rose/rose-bud-personal/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" /* "https://duckduckgo.com" */
+#define SEARCH "https://lite.duckduckgo.com/html/?q=%s"
 #define CACHE_DIR "/home/loki/.cache/rose"
 
 #define WIDTH 1920
