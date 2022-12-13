@@ -186,6 +186,7 @@ int handle_key(func id, GtkNotebook *notebook)
 		    gtk_notebook_get_n_pages(notebook) - 1) {
 			notebook_append(notebook, NULL);
 			gtk_notebook_set_show_tabs(notebook, true);
+	                webkit_web_view_set_zoom_level(notebook_get_webview(notebook), zoom);
 		} else {
 			gtk_notebook_next_page(notebook);
 		}
