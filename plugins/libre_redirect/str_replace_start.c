@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#define DEBUG false
+#define DEBUG true
 
 /*
 See also: 
@@ -28,7 +28,7 @@ int str_replace_start(const char* string, const char* target, const char* replac
     strcpy(output, string);
   } 
   else {
-    if(DEBUG) printf("Looking for a match.\n");
+    if(DEBUG) printf("Looking for a match for %s in %s.\n", target, string);
     int match = true;
     for(int i=0; i<l2; i++){
       if(string[i] != target[i]){
@@ -47,6 +47,7 @@ int str_replace_start(const char* string, const char* target, const char* replac
         counter++;
       }
       output[counter] = '\0';
+      return 2; // success
     }
     else {
       if(DEBUG) printf("Did not find match.\n");

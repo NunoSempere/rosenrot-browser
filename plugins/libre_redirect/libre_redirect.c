@@ -1,6 +1,9 @@
 #include "str_replace_start.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
 #define LIBRE_N 12
+#define DEBUG true
 
 /* Inspired by https://libredirect.github.io/, but in C. */
 
@@ -16,19 +19,24 @@ int libre_redirect(const char* uri, char* output){
   int l2 = strlen(output);
   
   if((l2 - l1) < LIBRE_N){ 
+    if(DEBUG) printf("Not enough memory\n");
     return 1; // not enough memory. 
   }else{
     char tmp_uri[l2++];
+    char tmp_output[l2++];
     strcpy(tmp_uri, uri); // strcpy also copies the terminating '\0'
+    strcpy(tmp_output, output);
 
     char* sites[] = { 
       "https://youtube.com", 
       "https://reddit.com", 
+      "https://www.reddit.com", 
       "https://medium.com", 
       "https://translate.google.com" 
     };
     char* alternatives[] = { 
       "https://yt.artemislena.eu", 
+      "https://teddit.nunosempere.com", 
       "https://teddit.nunosempere.com", 
       "https://scribe.rip", 
       "https://simplytranslate.org/" 
@@ -36,10 +44,18 @@ int libre_redirect(const char* uri, char* output){
 
     for(int i=1; i<4; i++){
       int replace_check = str_replace_start(tmp_uri, sites[i], alternatives[i], output);
-      if(replace_check){
+      if(replace_check == 2){
+	if(DEBUG) printf("tmp_uri: %s\n", tmp_uri);
+	if(DEBUG) printf("output: %s\n", output);
+        // strcpy(output, tmp_uri);
+        // break;
+	return 0;
+      }else if(replace_check == 1){
+        if(DEBUG) printf("replace_check failed\n");
         return 1;
       }
       strcpy(tmp_uri, output);
+      str_init(output, l2);
     }
     strcpy(output, tmp_uri);
   }
