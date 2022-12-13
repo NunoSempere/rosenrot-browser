@@ -49,7 +49,7 @@ int libre_redirect(const char* uri, char* output){
 	if(DEBUG) printf("output: %s\n", output);
         // strcpy(output, tmp_uri);
         // break;
-	return 0;
+	return 2;
       }else if(replace_check == 1){
         if(DEBUG) printf("replace_check failed\n");
         return 1;

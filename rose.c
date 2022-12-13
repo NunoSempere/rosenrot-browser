@@ -26,6 +26,7 @@
 	"local-storage-directory", CACHE_DIR,                   \
 	"offline-application-cache-directory", CACHE_DIR, 	\
 	"service-worker-registrations-directory", CACHE_DIR
+#define DEBUG false
 
 enum { _SEARCH, _FIND };
 
@@ -71,50 +72,64 @@ void load_uri(WebKitWebView *view, const char *uri)
 {
 	if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") ||
 	    g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
-		int l = LIBRE_N + strlen(uri) + 1;
-		char uri_filtered[l];
-		str_init(uri_filtered, l);
-		printf("Uri: %s\n", uri);
-                int check = libre_redirect(uri, uri_filtered);
-		if(!check){
-		  webkit_web_view_load_uri(view, uri_filtered);
-		}else{
-		  webkit_web_view_load_uri(view, uri);
-		}
-		printf("uri_filtered: %s\n", uri_filtered);
-		printf("check: %d\n", check);
+		webkit_web_view_load_uri(view, uri);
 	} else {
+		// webkit_web_view_load_uri(view, uri);
 		char tmp[strlen(uri) + strlen(SEARCH)];
 		snprintf(tmp, sizeof(tmp), SEARCH, uri);
 		webkit_web_view_load_uri(view, tmp);
 	}
 }
 
+void redirect_if_annoying(WebKitWebView *view, const char *uri){
+	int l = LIBRE_N + strlen(uri) + 1;
+	char uri_filtered[l];
+	str_init(uri_filtered, l);
+	
+	printf("Uri: %s\n", uri);
+	int check = libre_redirect(uri, uri_filtered);
+	if(check == 2){
+		webkit_web_view_load_uri(view, uri_filtered);
+	}
+	
+	printf("uri_filtered: %s\n", uri_filtered);
+	printf("check: %d\n", check);
+  
+}
+
 void load_changed(WebKitWebView *self, WebKitLoadEvent load_event, GtkNotebook *notebook)
 {
 	switch (load_event) {
+	/* see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html> */
 		case WEBKIT_LOAD_STARTED:
 				/* New load, we have now a provisional URI */
-				provisional_uri = webkit_web_view_get_uri (web_view);
+				//const char* provisional_uri = webkit_web_view_get_uri(self);
+				// printf("%s", provisional_uri);
+				redirect_if_annoying(self, webkit_web_view_get_uri(self));
+				printf("Load started with uri: %s\n", webkit_web_view_get_uri (self));
+				    //provisional_uri);
 				/* Here we could start a spinner or update the
 				 * location bar with the provisional URI */
 				break;
 		case WEBKIT_LOAD_REDIRECTED:
-				redirected_uri = webkit_web_view_get_uri (web_view);
+				redirect_if_annoying(self, webkit_web_view_get_uri(self));
+				printf("Load redirected to uri: %s\n", webkit_web_view_get_uri (self));
 				break;
 		case WEBKIT_LOAD_COMMITTED:
 				/* The load is being performed. Current URI is
 				 * the final one and it won't change unless a new
 				 * load is requested or a navigation within the
 				 * same page is performed */
-				uri = webkit_web_view_get_uri (web_view);
+				redirect_if_annoying(self, webkit_web_view_get_uri(self));
+				printf("Load committed with: %s\n", webkit_web_view_get_uri (self));
+				//printf("%s", uri);
 				break;
 		case WEBKIT_LOAD_FINISHED:
 	    			gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
 						webkit_web_view_get_title(self));
 				gtk_widget_hide(GTK_WIDGET(bar));
 				break;
-		}
+	}
 }
 
 void notebook_append(GtkNotebook *notebook, const char *uri)
