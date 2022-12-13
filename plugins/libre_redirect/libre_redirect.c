@@ -31,13 +31,15 @@ int libre_redirect(const char* uri, char* output){
       "https://www.youtube.com", 
       "https://www.reddit.com", 
       "https://medium.com", 
-      "https://translate.google.com" 
+      "https://translate.google.com",
+      "https://forum.effectivealtruism.org"
     };
     char* alternatives[] = { 
       "https://yt.artemislena.eu", 
       "https://teddit.nunosempere.com", 
       "https://scribe.rip", 
-      "https://simplytranslate.org/" 
+      "https://simplytranslate.org/",
+      "https://ea.greaterwrong.com"
     };
 
     for(int i=0; i<4; i++){
