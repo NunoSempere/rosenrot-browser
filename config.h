@@ -68,6 +68,7 @@ static struct {
     { CTRL,        KEY(0),          zoom_reset         },
     { CTRL,        KEY(Page_Down),  prev_tab           },
     { CTRL,        KEY(Page_Up),    next_tab           },
+    { CTRL,        KEY(t),          next_tab           },
     { CTRL,        KEY(w),          close_tab          },
     { 0x0,         KEY(F11),        toggle_fullscreen  },
     { CTRL,        KEY(l),          show_searchbar     },
