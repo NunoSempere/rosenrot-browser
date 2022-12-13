@@ -4,8 +4,6 @@
 
 /* Inspired by https://libredirect.github.io/, but in C. */
 
-// int str_replace_start(const char* string, const char* target, const char* replacement, char* output){
-
 void str_init(char* str, int n){
   for(int i=0; i<n; i++){
     str[i] = ' ';
@@ -14,8 +12,6 @@ void str_init(char* str, int n){
 } // could also use <https://manpages.ubuntu.com/manpages/impish/man3/strinit.3pub.html>
 
 int libre_redirect(const char* uri, char* output){
-  /* inv.riverside.rocks */
-  // max length
   int l1 = strlen(uri);
   int l2 = strlen(output);
   
@@ -23,7 +19,7 @@ int libre_redirect(const char* uri, char* output){
     return 1; // not enough memory. 
   }else{
     char tmp_uri[l2++];
-    strcpy(tmp_uri, uri); // includes terminating '\0'
+    strcpy(tmp_uri, uri); // strcpy also copies the terminating '\0'
 
     char* sites[] = { 
       "https://youtube.com", 

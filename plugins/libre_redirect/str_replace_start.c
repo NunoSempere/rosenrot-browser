@@ -10,7 +10,7 @@ See also:
 */
 
 int str_replace_start(const char* string, const char* target, const char* replacement, char* output){
-  /* Checks */
+  
   int l1 = strlen(string);
   int l2 = strlen(target);
   int l3 = strlen(replacement);
@@ -19,16 +19,16 @@ int str_replace_start(const char* string, const char* target, const char* replac
   
   if((l4 < (l1 - l2 + l3)) || l4 < l1 ){
     // Not enough memory in output string.
-    if(DEBUG) printf("Case 1.\n");
+    if(DEBUG) printf("String not long enough.\n");
     return 1; 
   } 
   else if(l1 < l2){
     // Not even possible that there is a match.
-    if(DEBUG) printf("Case 2.\n");
+    if(DEBUG) printf("Target larger than string.\n");
     strcpy(output, string);
   } 
   else {
-    if(DEBUG) printf("Case 3.\n");
+    if(DEBUG) printf("Looking for a match.\n");
     int match = true;
     for(int i=0; i<l2; i++){
       if(string[i] != target[i]){
@@ -37,7 +37,7 @@ int str_replace_start(const char* string, const char* target, const char* replac
       }
     }
     if(match){
-      if(DEBUG) printf("Case 3.a.\n");
+      if(DEBUG) printf("Found match.\n");
       for(int i=0; i<l3; i++){
 	output[i] = replacement[i];
       }
@@ -49,7 +49,7 @@ int str_replace_start(const char* string, const char* target, const char* replac
       output[counter] = '\0';
     }
     else {
-      if(DEBUG) printf("Case 3.b.\n");
+      if(DEBUG) printf("Did not find match.\n");
       strcpy(output, string);
     }
   }
