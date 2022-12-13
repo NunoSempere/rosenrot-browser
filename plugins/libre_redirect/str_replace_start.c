@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#define DEBUG false
+#define DEBUG true
 
 /*
 See also: 
@@ -16,17 +16,18 @@ int str_replace_start(const char* string, const char* target, const char* replac
   int l3 = strlen(replacement);
   int l4 = strlen(output);
   if(DEBUG) printf("%d,%d,%d,%d\n", l1, l2, l3, l4);
+  // if(DEBUG) printf("%s,%s,%s,%s\n", string, target, replacement, output);
   
   if((l4 < (l1 - l2 + l3)) || l4 < l1 ){
     // Not enough memory in output string.
     if(DEBUG) printf("String not long enough.\n");
     return 1; 
   } 
-  else if(l1 < l2){
+  /* else if(l1 < l2){
     // Not even possible that there is a match.
     if(DEBUG) printf("Target larger than string.\n");
     strcpy(output, string);
-  } 
+  } */
   else {
     if(DEBUG) printf("Looking for a match for %s in %s.\n", target, string);
     int match = true;

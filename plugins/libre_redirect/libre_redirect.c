@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #define LIBRE_N 12
-#define DEBUG false
+#define DEBUG true
 
 /* Inspired by https://libredirect.github.io/, but in C. */
 
@@ -40,7 +40,7 @@ int libre_redirect(const char* uri, char* output){
       "https://simplytranslate.org/" 
     };
 
-    for(int i=1; i<4; i++){
+    for(int i=0; i<4; i++){
       int replace_check = str_replace_start(tmp_uri, sites[i], alternatives[i], output);
       if(replace_check == 2){
 	if(DEBUG) printf("tmp_uri: %s\n", tmp_uri);
@@ -57,7 +57,7 @@ int libre_redirect(const char* uri, char* output){
     }
     strcpy(output, tmp_uri);
   }
-
+  if(DEBUG) printf("No match found\n\n");
   return 0;
   
 }
