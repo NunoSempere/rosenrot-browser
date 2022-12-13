@@ -29,6 +29,7 @@
 #define BG_COLOR "#1E1E2E"  /* or "#FEFEFE" if you are not using the dark theme. */
 #define WIDTH 500
 #define HEIGHT 400
+#define DEBUG false
 
 typedef enum {
      goback,

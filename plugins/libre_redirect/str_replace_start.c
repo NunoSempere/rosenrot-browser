@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#define DEBUG true
+#define DEBUG false
 
 /*
 See also: 
