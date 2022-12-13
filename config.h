@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 mini-rose
+ * Copyright (c) 2022 Nuño Sempere.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and any associated documentation
@@ -7,7 +7,6 @@
  * sublicense copies of this sotware for their own use.
  * This code does not come with any warranty.
  *
- * Author: fenze <contact@fenze.dev>
  */
 
 #include <gdk/gdkkeysyms.h>
