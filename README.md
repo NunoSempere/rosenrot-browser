@@ -24,7 +24,7 @@ Rose is released under own license, which grants the following permissions:
 ### To do
 
 - [ ] String substitution on uri in order to redirect to better frontends.
-- [ ] Present "standard" browser keybindings as an alternative.
-- [ ] Fix zoom in new tab
+- [x] Present "standard" browser keybindings as an alternative.
+- [x] Fix zoom in new tab
 - [ ] Make tab bar slightly prettier.
 
