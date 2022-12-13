@@ -27,7 +27,7 @@
 #define KEY(x) GDK_KEY_##x
 #define ZOOM 1	    /* Starting zoom level */
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
-#define BG_COLOR "#1E1E2E"
+#define BG_COLOR "#1E1E2E"  /* or "#FEFEFE" if you are not using the dark theme. */
 #define WIDTH 500
 #define HEIGHT 400
 
