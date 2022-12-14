@@ -16,8 +16,10 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 
 ### To do
 
-- [ ] String substitution on uri in order to redirect to better frontends.
+- [x] String substitution on uri in order to redirect to better frontends.
 - [x] Present "standard" browser keybindings as an alternative.
 - [x] Fix zoom in new tab
-- [ ] Make tab bar slightly prettier.
+- [x] Reader mode
+- [ ] Add reader mode to config.def.
+- [x] Make tab bar slightly prettier.
 - [ ] Find out what each of the css elements refers to.

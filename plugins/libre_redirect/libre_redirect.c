@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #define LIBRE_N 19
-#define DEBUG true
+#define DEBUG false
 
 /* Inspired by https://libredirect.github.io/, but in C. */
 
