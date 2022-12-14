@@ -15,6 +15,7 @@
 
 #include "config.h"
 #include "plugins/libre_redirect/libre_redirect.h"
+#include "plugins/tranquility/tranquility.h"
 
 #define CACHE                               			\
 	"base-cache-directory", CACHE_DIR,                   	\
@@ -273,6 +274,20 @@ int handle_key(func id, GtkNotebook *notebook)
 		webkit_find_controller_search_previous(
 		    webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 		break;
+	case prettify:{
+		printf("prettify\n");
+		webkit_web_view_run_javascript(notebook_get_webview(notebook), 
+					       "alert('Tranquilizing!')", 
+					       NULL, NULL, NULL);
+		char* tranquility_js = malloc(TRANQUILITY_N+1);
+		read_tranquility_js(tranquility_js);
+		webkit_web_view_run_javascript(notebook_get_webview(notebook), 
+					       tranquility_js, 
+					       NULL, NULL, NULL);
+		free(tranquility_js);
+					       
+		break;
+		      }
 	}
 
 	return 1;
