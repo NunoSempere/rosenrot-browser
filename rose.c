@@ -143,6 +143,7 @@ void notebook_append(GtkNotebook *notebook, const char *uri)
 	webkit_web_view_set_background_color(view, &rgba);
 	load_uri(view, (uri) ? uri : HOME);
 	gtk_notebook_set_current_page(notebook, n);
+        gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-" );
 }
 
 WebKitWebView *notebook_get_webview(GtkNotebook *notebook)
