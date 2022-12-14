@@ -26,8 +26,8 @@ int libre_redirect(const char* uri, char* output){
     char tmp_output[l2++];
     strcpy(tmp_uri, uri); // strcpy also copies the terminating '\0'
     strcpy(tmp_output, output);
-
-    char* sites[] = { 
+  
+    char* annoying_sites[] = { 
       "https://www.youtube.com", 
       "https://www.reddit.com", 
       "https://medium.com", 
@@ -43,9 +43,9 @@ int libre_redirect(const char* uri, char* output){
       "https://ea.greaterwrong.com",
       "https://archive.is/https://www.bloomberg.com"
     };
-    int n = sizeof(sites)/sizeof(sites[0]);
+    int n = sizeof(annoying_sites)/sizeof(annoying_sites[0]);
     for(int i=0; i<n ; i++){
-      int replace_check = str_replace_start(tmp_uri, sites[i], alternatives[i], output);
+      int replace_check = str_replace_start(tmp_uri, annoying_sites[i], alternatives[i], output);
       if(replace_check == 2){
 	if(DEBUG) printf("tmp_uri: %s\n", tmp_uri);
 	if(DEBUG) printf("output: %s\n", output);
