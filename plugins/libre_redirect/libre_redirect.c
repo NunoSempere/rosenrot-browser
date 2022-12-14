@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #define LIBRE_N 19
-#define DEBUG false
+#define DEBUG true
 
 /* Inspired by https://libredirect.github.io/, but in C. */
 
@@ -33,7 +33,7 @@ int libre_redirect(const char* uri, char* output){
       "https://medium.com", 
       "https://translate.google.com",
       "https://forum.effectivealtruism.org",
-      // "https://www.bloomberg.com"
+      "https://www.bloomberg.com"
     };
     char* alternatives[] = { 
       "https://yt.artemislena.eu", 
@@ -41,7 +41,7 @@ int libre_redirect(const char* uri, char* output){
       "https://scribe.rip", 
       "https://simplytranslate.org/",
       "https://ea.greaterwrong.com",
-      // "https://archive.is/https://www.bloomberg.com"
+      "https://archive.is/https://www.bloomberg.com"
     };
     int n = sizeof(sites)/sizeof(sites[0]);
     for(int i=0; i<n ; i++){
