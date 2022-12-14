@@ -113,10 +113,13 @@ void load_changed(WebKitWebView *self, WebKitLoadEvent load_event, GtkNotebook *
 				if(DEBUG) printf("Load committed with: %s\n", webkit_web_view_get_uri (self));
 				break;
 		case WEBKIT_LOAD_FINISHED:
+	        {
+				const char* title = webkit_web_view_get_title(self);
 	    			gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
-						webkit_web_view_get_title(self));
-				gtk_widget_hide(GTK_WIDGET(bar));
+						title == NULL ? "—" : title );
+				// gtk_widget_hide(GTK_WIDGET(bar));
 				break;
+		}
 	}
 }
 
@@ -223,6 +226,8 @@ int handle_key(func id, GtkNotebook *notebook)
 		} else {
 			gtk_notebook_next_page(notebook);
 		}
+		entry_mode = _SEARCH;
+		show_bar(notebook);
 		break;
 
 	case close_tab:
