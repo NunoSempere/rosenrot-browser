@@ -23,3 +23,7 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 - [ ] Add reader mode to config.def.
 - [x] Make tab bar slightly prettier.
 - [ ] Find out what each of the css elements refers to.
+
+### Known bugs
+
+- [ ] Doesn't work with a Spanish keyboard layout, for some reason. 
