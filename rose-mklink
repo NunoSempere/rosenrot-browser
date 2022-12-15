@@ -12,6 +12,6 @@ test -z "$2" || {
 		exit 1
 	}
 
-	echo -e "#!/bin/sh\n\nrose $2" > /usr/bin/$1
+	echo -e "#!/bin/sh\n\nrose $2 > /dev/null &1>2 &" > /usr/bin/$1
 	chmod +x /usr/bin/$1
 }
