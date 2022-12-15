@@ -2303,8 +2303,9 @@ var style_sheet_simple = `
 <style type="text/css">
 
 body {
-	padding: 20px 150px 20px 150px;
+	padding: 40px 200px 40px 200px;
 	background-color: "#FDFDFD";
+	font-size: 18px;
 }
 
 #readOverlay {
