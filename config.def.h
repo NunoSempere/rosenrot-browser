@@ -45,9 +45,11 @@ typedef enum {
      prev_tab,
      close_tab,
      show_searchbar,
+     hide_searchbar,
      show_finder,
      finder_next,
      finder_prev
+     prettify
 } func;
 
 #define SFT  1 << 0
@@ -59,22 +61,24 @@ static struct {
      unsigned key;
      func id;
 } keys[] = {
-    { CTRL,        KEY(h),     goback            },
-    { CTRL,        KEY(l),     goforward         },
-    { CTRL,        KEY(r),     refresh              },
-    { CTRL | SFT,  KEY(R),     refresh_force     },
-    { CTRL | SFT,  KEY(H),     back_to_home      },
-    { CTRL,        KEY(equal), zoomin              },
-    { CTRL,        KEY(minus), zoomout              },
-    { CTRL,        KEY(0),     zoom_reset      },
-    { ALT,        KEY(h),     prev_tab              },
-    { ALT,        KEY(l),     next_tab              },
-    { CTRL,        KEY(w),     close_tab      },
-    { 0x0,        KEY(F11),   toggle_fullscreen },
-    { CTRL,        KEY(e),     show_searchbar      },
-    { CTRL,        KEY(f),     show_finder       },
-    { CTRL,        KEY(n),     finder_next       },
-    { CTRL | SFT,  KEY(N),     finder_prev      }
+    { CTRL,        KEY(h),     goback             },
+    { CTRL,        KEY(l),     goforward          },
+    { CTRL,        KEY(r),     refresh            },
+    { CTRL | SFT,  KEY(R),     refresh_force      },
+    { CTRL | SFT,  KEY(H),     back_to_home       },
+    { CTRL,        KEY(equal), zoomin             },
+    { CTRL,        KEY(minus), zoomout            },
+    { CTRL,        KEY(0),     zoom_reset         },
+    { ALT,         KEY(h),     prev_tab           },
+    { ALT,         KEY(l),     next_tab           },
+    { CTRL,        KEY(w),     close_tab          },
+    { 0x0,         KEY(F11),   toggle_fullscreen  },
+    { CTRL,        KEY(e),     show_searchbar     },
+    { CTRL,        KEY(k),     hide_searchbar     },
+    { CTRL,        KEY(f),     show_finder        },
+    { CTRL,        KEY(n),     finder_next        },
+    { CTRL | SFT,  KEY(N),     finder_prev        },
+    { CTRL,        KEY(p),     prettify           }
 };
 
 /* For controls more akin to normal browsers, use:
@@ -94,7 +98,8 @@ static struct {
     { CTRL,        KEY(l),          show_searchbar     },
     { CTRL,        KEY(f),          show_finder        },
     { CTRL,        KEY(n),          finder_next        },
-    { CTRL | SFT,  KEY(N),          finder_prev        }
+    { CTRL | SFT,  KEY(N),          finder_prev        },
+    { CTRL,        KEY(p),          prettify           }
 };
 */
 /* Reference for the key shorthand:

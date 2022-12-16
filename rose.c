@@ -259,6 +259,10 @@ int handle_key(func id, GtkNotebook *notebook)
 		entry_mode = _SEARCH;
 		show_bar(notebook);
 		break;
+	
+	case hide_searchbar:
+	        gtk_widget_hide(GTK_WIDGET(bar));
+		break;
 
 	case show_finder:
 		entry_mode = _FIND;
