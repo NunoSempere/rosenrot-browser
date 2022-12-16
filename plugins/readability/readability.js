@@ -2303,20 +2303,33 @@ var style_sheet_simple = `
 <style type="text/css">
 
 body {
-	padding: 40px 200px 40px 200px;
-	background-color: "#FDFDFD";
-	font-size: 18px;
+      padding: 40px 200px 40px 200px;
+      font-size: 18px;
+      font: 18px/1.5 Roboto;
+      line-height: 1.6;
+      background-color: #FFFFFF !important;
+      color: #000000 !important;
 }
 
 #readOverlay {
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
+       display: block;
+       position: absolute;
+       background-color: white;
+       top: 0;
+       left: 0;
+       width: 100%;
 }
-
 </style>` 
+
+/*
+body {
+       max-width: 650px;
+       margin: 40px auto;
+       padding: 0 10px;
+       font: 18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+       color: #444
+}
+*/
 /* See also 
  * <https://gist.github.com/aanand/399131>
  * and the one included in firefox @ <chrome://global/skin/aboutReader.css>
