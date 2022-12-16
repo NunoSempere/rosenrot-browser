@@ -2307,8 +2307,8 @@ body {
       font-size: 18px;
       font: 18px/1.5 Roboto;
       line-height: 1.6;
-      background-color: #FFFFFF !important;
-      color: #000000 !important;
+      background-color: #FEFEFE !important;
+      color: #444 !important;
 }
 
 #readOverlay {
