@@ -1,11 +1,12 @@
-<h3 align=center> Rose Browser</h3>
-<h4 align=center>Minimal browser based on webkit2gtk</h4>
+## Rosebud
+
+Personal tweaks for [rose](https://github.com/mini-rose/rose), a minimal browser based on webkit2gtk
 
 #### Features
 
 - tabs, cookies, caching
 - minimal ui, autohiding elements
-- ~400L code base
+- ~400L code base (edit: no longer)
 - custom gtk and websites css
 - hackable without any knowledge
 - builtin rose-mklink script for in-shell static links
@@ -20,7 +21,7 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 - [x] Present "standard" browser keybindings as an alternative.
 - [x] Fix zoom in new tab
 - [x] Reader mode
-- [ ] Add reader mode to config.def.
+- [x] Add reader mode to config.def.
 - [x] Make tab bar slightly prettier.
 - [ ] Find out what each of the css elements refers to.
 
