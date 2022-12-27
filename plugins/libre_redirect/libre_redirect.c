@@ -34,7 +34,8 @@ int libre_redirect(const char* uri, char* output){
       "https://translate.google.com",
       "https://forum.effectivealtruism.org",
       "https://www.bloomberg.com",
-      "https://twitter.com"
+      "https://twitter.com",
+      "https://wikipedia.org"
     };
     char* alternatives[] = { 
       "https://yt.artemislena.eu", 
@@ -43,7 +44,8 @@ int libre_redirect(const char* uri, char* output){
       "https://simplytranslate.org/",
       "https://ea.greaterwrong.com",
       "https://archive.is/https://www.bloomberg.com",
-      "https://nitter.net"
+      "https://nitter.net",
+      "https://wikiless.org"
     };
     int n = sizeof(annoying_sites)/sizeof(annoying_sites[0]);
     for(int i=0; i<n ; i++){

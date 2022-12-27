@@ -115,9 +115,21 @@ void load_changed(WebKitWebView *self, WebKitLoadEvent load_event, GtkNotebook *
 				break;
 		case WEBKIT_LOAD_FINISHED:
 	        {
-				const char* title = webkit_web_view_get_title(self);
+				const char* webpage_title = webkit_web_view_get_title(self);
+				const int max_length = 25;
+				char tab_title[max_length + 1];
+				if(webpage_title != NULL){
+					for(int i = 0; i<(max_length); i++){
+						tab_title[i] = webpage_title[i];
+						if(webpage_title[i] == '\0'){
+							break;
+						}
+					}
+					tab_title[max_length] = '\0';
+				}
+
 	    			gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
-						title == NULL ? "—" : title );
+						webpage_title == NULL ? "—" : tab_title );
 				// gtk_widget_hide(GTK_WIDGET(bar));
 				break;
 		}
