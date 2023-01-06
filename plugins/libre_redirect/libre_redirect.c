@@ -38,7 +38,7 @@ int libre_redirect(const char* uri, char* output){
       "https://wikipedia.org"
     };
     char* alternatives[] = { 
-      "https://yt.artemislena.eu", 
+      "https://invidious.flokinet.to", /* "https://yt.artemislena.eu",  */
       "https://teddit.nunosempere.com", 
       "https://scribe.rip", 
       "https://simplytranslate.org/",

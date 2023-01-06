@@ -17,13 +17,19 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 
 ### To do
 
+
+- [ ] Add "open in new window" functionality. <https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>
+  - Useful for opening links in new tab when clicking on them and selecting that option
+  - And for actually opening links with the href newtab option.
+- [ ] Find out what each of the css elements refers to.
+
+Done: 
 - [x] String substitution on uri in order to redirect to better frontends.
 - [x] Present "standard" browser keybindings as an alternative.
 - [x] Fix zoom in new tab
 - [x] Reader mode
 - [x] Add reader mode to config.def.
 - [x] Make tab bar slightly prettier.
-- [ ] Find out what each of the css elements refers to.
 
 ### Known bugs
 
