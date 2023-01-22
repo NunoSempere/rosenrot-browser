@@ -17,10 +17,6 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 
 ### To do
 
-- [ ] Add "open in new window" functionality. <https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>
-  - Useful for opening links in new tab when clicking on them and selecting that option
-  - And for actually opening links with the href newtab option.
-  - Links: <https://docs.gtk.org/gobject/func.signal_connect.html>, <https://webkitgtk.org/reference/webkit2gtk/2.37.90/signal.AutomationSession.create-web-view.html>, <https://webkitgtk.org/reference/webkit2gtk/2.26.0/WebKitWebView.html#WebKitWebView-create>
 - [ ] Find out what each of the css elements refers to.
 - [ ] Use something other than Whatsapp as an example syslink.
 
@@ -31,7 +27,11 @@ Done:
 - [x] Reader mode
 - [x] Add reader mode to config.def.
 - [x] Make tab bar slightly prettier.
+- [x] Add "open in new window" functionality. 
+  - Useful for opening links in new tab when clicking on them and selecting that option
+  - And for actually opening links with the href newtab option.
+  - Links: <https://docs.gtk.org/gobject/func.signal_connect.html>, <https://webkitgtk.org/reference/webkit2gtk/2.37.90/signal.AutomationSession.create-web-view.html>, <https://webkitgtk.org/reference/webkit2gtk/2.26.0/WebKitWebView.html#WebKitWebView-create> <https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>
 
 ### Known bugs
 
-- [ ] Doesn't work with a Spanish keyboard layout, for some reason. 
+- [ ] Doesn't work with when Spanish is selected as the language, for some reason. 
