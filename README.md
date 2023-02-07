@@ -18,6 +18,7 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 
 ### To do
 
+- [ ] Figure out if downloading files is doable.
 - [ ] Figure out better way to have plugins
 - [ ] Launch with more than one tab from command line
 - [ ] Double check newtab/next-tab behavior
