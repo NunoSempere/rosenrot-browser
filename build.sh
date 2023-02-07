@@ -2,8 +2,8 @@
 
 CC=clang
 SRC=rose.c
-# REQS=./plugins/*/*.c
-REQS=./plugins/stand_in/stand_in.c
+REQS=./plugins/*/*.c
+# REQS=./plugins/stand_in/stand_in.c
 DEPS='webkit2gtk-4.0'
 
 INCS=`pkg-config --cflags ${DEPS}`

@@ -15,11 +15,11 @@
 
 #include "config.h"
 
-// #include "plugins/libre_redirect/libre_redirect.h"
-// #include "plugins/readability/readability.h"
-// #include "plugins/style/style.h"
+#include "plugins/libre_redirect/libre_redirect.h"
+#include "plugins/readability/readability.h"
+#include "plugins/style/style.h"
 
-#include "plugins/stand_in/stand_in.h"
+// #include "plugins/stand_in/stand_in.h"
 
 int LIBRE_REDIRECT_ENABLED = false;
 int READABILITY_ENABLED = false;
