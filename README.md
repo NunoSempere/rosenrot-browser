@@ -17,16 +17,17 @@ Personal tweaks for [rose](https://github.com/mini-rose/rose), a minimal browser
 This is my personal version. Contribute upstream to [github.com/mini-rose/rose](https://github.com/mini-rose/) instead.
 
 ### To do
-
+- [ ] Document stand_in.c better
+- [ ] Look at using relative rather than absolute paths
 - [ ] Figure out if downloading files is doable.
 - [ ] Figure out better way to have plugins
-- [ ] Launch with more than one tab from command line
 - [ ] Double check newtab/next-tab behavior
 - [ ] Find out what each of the css elements refers to.
 - [ ] Use something other than Whatsapp as an example syslink.
 
 Done:
 
+- [x] Launch with more than one tab from command line
 - [x] Figure out merge with upstream
 - [x] String substitution on uri in order to redirect to better frontends.
 - [x] Present "standard" browser keybindings as an alternative.
