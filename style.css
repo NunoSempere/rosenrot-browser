@@ -10,7 +10,10 @@
 	margin: 0px;
 	outline-color: @Lavender;
 	color: @Text;
-	border-bottom-color: @Base;
+	border-color: white;
+	font-size: 16px;
+	/*@Base; */
+	/* border-bottom-color: @Base; */
 }
 
 window, notebook, headerbar {
@@ -20,11 +23,21 @@ window, notebook, headerbar {
 tabs {
 	background-color: @Base;
 	padding: 3px;
+	outline-color: white;
+	border-color: @Base; 
 }
 
 tab {
 	background-color: @Base;
+	margin: 2px 5px 2px 0px;
+	padding: 5px;
+	border-style: solid;
+	/*border-color: white;
+	border-bottom-color: white;
+	outline-color: white;
 	margin: 5px;
+	padding-left: 10px;
+	padding-right: 10px; */
 }
 
 entry {
@@ -33,5 +46,7 @@ entry {
 }
 
 entry:focus {
-	box-shadow: none;
+	background-color: @Surface0;
+	padding-left: 10px;
+
 }

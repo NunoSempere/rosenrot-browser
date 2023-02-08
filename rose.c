@@ -21,9 +21,9 @@
 
 // #include "plugins/stand_in/stand_in.h"
 
-int LIBRE_REDIRECT_ENABLED = false;
-int READABILITY_ENABLED = false;
-int CUSTOM_STYLE_ENABLED = false;
+int LIBRE_REDIRECT_ENABLED = true;
+int READABILITY_ENABLED = true;
+int CUSTOM_STYLE_ENABLED = true;
 
 // to enable plugins, 
 // 1. Enable them:
@@ -210,6 +210,7 @@ void notebook_append(GtkNotebook *notebook, const char *uri)
 	load_uri(view, (uri) ? uri : HOME);
 	gtk_notebook_set_current_page(notebook, n);
 	gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-" );
+  webkit_web_view_set_zoom_level(view, ZOOM);
 }
 
 void show_bar(GtkNotebook *notebook)
@@ -413,8 +414,9 @@ void notebook_init(GtkNotebook *notebook, const char *uri)
 	notebook_append(notebook, uri);
 }
 
-void setup(GtkNotebook *notebook, const char *uri)
+void setup(GtkNotebook *notebook, int argc, char **argv)
 {
+	// Define GTK entities
 	window = GTK_WINDOW(gtk_window_new(0));
 	notebook = GTK_NOTEBOOK(gtk_notebook_new());
 	bar = GTK_HEADER_BAR(gtk_header_bar_new());
@@ -422,19 +424,31 @@ void setup(GtkNotebook *notebook, const char *uri)
 	search = GTK_ENTRY(gtk_entry_new_with_buffer(search_buf));
   gtk_window_set_default_size(window, WIDTH, HEIGHT);
 	window_init(notebook);
-	notebook_init(notebook, uri);
+	
+	// Initialize with first uri
+	char *first_uri = argc > 1 ? argv[1] : NULL;
+	notebook_init(notebook, first_uri);
 	g_object_set(gtk_settings_get_default(), GTK, NULL);
 
+	// More GTK stuff
 	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
 	gtk_widget_show_all(GTK_WIDGET(window));
 	gtk_widget_hide(GTK_WIDGET(bar));
-  webkit_web_view_set_zoom_level(notebook_get_webview(notebook), ZOOM);
+  
+	// Deal with more uris, if this is necessary.
+	if(argc > 2){
+    gtk_notebook_set_show_tabs(notebook, true);
+    for(int i = 2; i<argc; i++){
+		  notebook_append(notebook, argv[i]);
+		}
+	}
 }
 
 int main(int argc, char **argv)
 {
 	GtkNotebook *notebook;
 	gtk_init(NULL, NULL);
-	setup(notebook, argc > 1 ? argv[1] : NULL);
+	setup(notebook, argc, argv);
 	gtk_main();
+	// this point is never reached, since gtk_main(); never exits.
 }

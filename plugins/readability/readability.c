@@ -4,7 +4,7 @@
 #define READABILITY_N 84251 + 1
 
 void read_readability_js(char* string){
-  FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rose-bud-personal/plugins/readability/readability.js", "r");
+  FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rose-browser/plugins/readability/readability.js", "r");
   if (!fp) { // fp is NULL, fopen failed
     fprintf(stderr, "Failed to open file\n");
     string=NULL;
