@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define STYLE_N 794 + 1
+#define STYLE_N 1358 + 1
 
 void read_style_js(char* string){
   FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rose-browser/plugins/style/style.js", "r");
