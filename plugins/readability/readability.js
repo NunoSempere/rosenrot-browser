@@ -2319,6 +2319,21 @@ body {
        left: 0;
        width: 100%;
 }
+
+/* Block quotes */
+
+blockquote{
+  width:60%;
+  margin: 5px auto;
+  font-style:italic;
+  color: #555555;
+  padding: 1.2em 30px 1.2em 75px;
+  border-left:8px solid #005386 ;
+  line-height:1.3;
+  position: relative;
+  background: #F0F0F0;
+}
+
 </style>` 
 
 /*
@@ -2338,3 +2353,24 @@ var documentClone = document.cloneNode(true);
 var article = new Readability(documentClone).parse();
 document.head.innerHTML = `<title>${article.title}</title>\n${style_sheet_simple}`
 document.body.innerHTML = `<h1>${article.title}</h1>\n${article.content}`
+
+
+/* Hack for archive.is */ 
+var styles
+
+if (document.domain == "archive.is" ){
+  styles = `
+
+  li > span {
+			display: none; !important
+  }
+
+  `
+}
+
+if(styles != null){
+    var styleSheet = document.createElement('style')
+    styleSheet.innerText = styles
+    document.head.appendChild(styleSheet)
+    console.log('Style changed')
+}
