@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define READABILITY_N 84976 + 1
+#define READABILITY_N 85156 + 100
 
 void read_readability_js(char* string){
   FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rose-browser/plugins/readability/readability.js", "r");

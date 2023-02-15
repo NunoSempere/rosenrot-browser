@@ -2345,6 +2345,16 @@ blockquote::before{
 
 }
 
+a[href^="#footnote-"] {
+    text-decoration: none;
+}
+a[href^="#footnote-"]::before {
+    content:" [";
+}
+a[href^="#footnote-"]::after {
+    content:"] ";
+}
+
 </style>` 
 
 /*
