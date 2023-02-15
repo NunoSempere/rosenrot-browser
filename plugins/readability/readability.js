@@ -2334,6 +2334,17 @@ blockquote{
   background: #F0F0F0;
 }
 
+blockquote::before{
+  font-family: Arial;
+  content: "\\201C";
+  color: #005386;
+  font-size: 6em;
+  position: absolute;
+  left: 10px;
+  top:-10px;
+
+}
+
 </style>` 
 
 /*
