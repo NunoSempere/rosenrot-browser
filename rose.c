@@ -123,6 +123,14 @@ void load_changed(WebKitWebView *self, WebKitLoadEvent load_event, GtkNotebook *
         switch (load_event) {
         /* see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html> */
                 case WEBKIT_LOAD_STARTED:
+                                if(CUSTOM_STYLE_ENABLED){
+                                    char* style_js = malloc(STYLE_N+1);
+                                    read_style_js(style_js);
+                                    webkit_web_view_run_javascript(notebook_get_webview(notebook), 
+                                                style_js, 
+                                                NULL, NULL, NULL);
+                                    free(style_js);
+                                }  
                                 if(LIBRE_REDIRECT_ENABLED){
                                     redirect_if_annoying(self, webkit_web_view_get_uri(self));
                                 }

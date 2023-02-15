@@ -9,7 +9,7 @@
 
 #define LIBRE_N 0
 #define STYLE_N 0
-#define READABILITY_N 0
+#define READABILITY_N 84638 + 1
 
 int libre_redirect(const char* uri, char* uri_filtered);
 void str_init(char* str, int n);

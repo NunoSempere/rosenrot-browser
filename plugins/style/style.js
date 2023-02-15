@@ -1,7 +1,9 @@
 // Replicates the Stylus app: <https://addons.mozilla.org/en-GB/firefox/addon/styl-us/>
 
+var styles = null;
+
 if (document.domain == "forum.effectivealtruism.org"){
-	var styles = `
+	styles = `
 	    .Layout-main {
                 margin-left: 100px;
 	    }
@@ -24,7 +26,7 @@ if (document.domain == "forum.effectivealtruism.org"){
 }
 
 if (document.domain == "mail.proton.me" ){
-	var styles = `
+	styles = `
 			.item-container-row.read, .item-container.read {
 					background-color: white;
 			}
@@ -35,6 +37,9 @@ if (document.domain == "mail.proton.me" ){
 					background-color: var(--selection-background-color) !important;
 			}
 	`
+}
+
+if(styles != null){
 	  var styleSheet = document.createElement('style')
 	  styleSheet.innerText = styles
 	  document.head.appendChild(styleSheet)
