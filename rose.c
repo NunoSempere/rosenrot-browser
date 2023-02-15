@@ -24,6 +24,7 @@
 int LIBRE_REDIRECT_ENABLED = true;
 int READABILITY_ENABLED = true;
 int CUSTOM_STYLE_ENABLED = true;
+int CUSTOM_USER_AGENT = true;
 
 // to enable plugins, 
 // 1. Enable them:
@@ -63,6 +64,10 @@ WebKitWebView *webview_new()
 	WebKitUserContentManager *contentmanager;
 
 	settings = webkit_settings_new_with_settings(WEBKIT, NULL);
+	if(CUSTOM_USER_AGENT){
+		webkit_settings_set_user_agent (settings, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36");
+		// See: <https://www.useragents.me/> for some common user agents
+	}
 	web_context = webkit_web_context_new_with_website_data_manager(
 	    webkit_website_data_manager_new(CACHE, NULL));
 	contentmanager = webkit_user_content_manager_new();
