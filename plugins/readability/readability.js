@@ -2383,9 +2383,13 @@ if (document.domain == "archive.is" ){
   styles = `
 
   li > span {
-			display: none; !important
+			display: none !important;
   }
 
+	p > span > em {
+			display: none !important;
+	}
+	/* ^ deletes the subscribe prompt in Matt Levine's Money Stuff. */
   `
 }
 
