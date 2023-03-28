@@ -23,6 +23,17 @@ You can see some screenshots in the [screenshots](./screenshots) folder.
     - Custom style: Override the css of predetermined websites
     - Stand in plugin: Mimick function definitions which do nothing for the above plugins so that they can be quickly removed
 
+### Installation
+
+Install dependencies, then:
+
+```
+make build
+make install # or sudo make install
+```
+
+You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh), for Ubuntu 20.04 in particular—though they should generalize trivially.
+
 ### 👐 Contribute
 
 - Contribute upstream to [github.com/mini-rose/rose](https://github.com/mini-rose/) for core functionality changes.
