@@ -20,7 +20,7 @@
 
 #define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 #define ROSE_HOMEPAGE true
-#define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rose-browser/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://lite.duckduckgo.com/html"
+#define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://lite.duckduckgo.com/html"
 #define SEARCH "https://lite.duckduckgo.com/html/?q=%s"
 #define CACHE_DIR "/home/loki/.cache/rose"
 

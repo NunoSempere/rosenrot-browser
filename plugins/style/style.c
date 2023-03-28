@@ -4,7 +4,7 @@
 #define STYLE_N 1393 + 1
 
 void read_style_js(char* string){
-  FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rose-browser/plugins/style/style.js", "r");
+  FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/plugins/style/style.js", "r");
   if (!fp) { // fp is NULL, fopen failed
     fprintf(stderr, "Failed to open file\n");
     string=NULL;
