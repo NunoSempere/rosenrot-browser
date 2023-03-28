@@ -24,7 +24,7 @@ You can see some screenshots in the [screenshots](./screenshots) folder.
 
 ### To do
 
-- [x] Look into using a makefile.
+- [ ] Look into using a makefile.
 - [ ] Look at using relative rather than absolute paths
 - [ ] Figure out if downloading files is doable.
 - [ ] Figure out better way to have plugins
