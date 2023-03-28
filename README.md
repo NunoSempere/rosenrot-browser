@@ -25,7 +25,9 @@ This is my personal version. Contribute upstream to [github.com/mini-rose/rose](
 - [ ] Double check newtab/next-tab behavior
 - [ ] Find out what each of the css elements refers to.
 - [ ] Use something other than Whatsapp as an example syslink.
-- [ ] Mask user agent
+- [ ] Set `webkit_web_context_set_sandbox_enabled` (<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended here: <https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>.
+- [ ] Fix bug about distorted audio. Maybe related to <https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>
+- [x] Mask user agent
 
 Done:
 
