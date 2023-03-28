@@ -16,8 +16,12 @@ mkdir -p /home/$user/.cache/rose
 cp ../../config.def.h ../../config.h # you should also probably customize this yourself.
 sed "s/fenze/$user/g" ../../config.h
 
-sudo bash ../../install.sh
+# sudo bash ../../install.sh
+cd ../..
+make build # or just make
+sudo make install 
 
+cd  - 
 # Ubuntu desktop icon
 chmod +x rose.desktop
 sudo cp rose.desktop /usr/share/applications
