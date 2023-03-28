@@ -1,28 +1,32 @@
-## Rosebud
+## Rosenrot
 
-Personal tweaks for [rose](https://github.com/mini-rose/rose), a minimal browser based on webkit2gtk
+A small browser forked from [rose](https://github.com/mini-rose/rose). 
+
+- Rose is a minimal browser based on webkit2gtk which aims to be a "basement for creating your own browser using [the] gtk and webkit libraries". 
+- Rosenrot is my fork from rose. It has accumulated cruft that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock).
+- Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
 
 ### Features
 
 - tabs, cookies, caching
 - minimal ui, autohiding elements
-- ~400L code base (edit: no longer)
+- ~467L core code (the rose.c file), plus plugins
 - custom gtk and websites css
-- hackable without any knowledge
 - builtin rose-mklink script for in-shell static links
 - A few quality of life improvements.
 
 ### 👐 Contribute
 
-This is my personal version. Contribute upstream to [github.com/mini-rose/rose](https://github.com/mini-rose/) instead.
+- Contribute upstream to [github.com/mini-rose/rose](https://github.com/mini-rose/) for core functionality changes.
+- Contribute here by sending a pull request on Github.
 
 ### To do
 
-- [ ] Document stand_in.c better
 - [ ] Look at using relative rather than absolute paths
 - [ ] Figure out if downloading files is doable.
 - [ ] Figure out better way to have plugins
 - [ ] Double check newtab/next-tab behavior
+  - [ ] Document stand_in.c better
 - [ ] Find out what each of the css elements refers to.
 - [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Set `webkit_web_context_set_sandbox_enabled` (<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended here: <https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>.
