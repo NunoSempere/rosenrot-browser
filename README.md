@@ -49,12 +49,12 @@ You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/i
 - [ ] Double check newtab/next-tab behavior
 - [ ] Find out what each of the css elements refers to.
 - [ ] Use something other than Whatsapp as an example syslink.
-- [ ] Set `webkit_web_context_set_sandbox_enabled` (<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended here: <https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>.
-- [ ] Fix bug about distorted audio. Maybe related to <https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>
+- [ ] Set [`webkit_web_context_set_sandbox_enabled`](<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended [here](<https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>)
+- [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
 
 Done:
 
-- [x] Document stand_in.c better
+- [x] Document `stand_in.c` better
 - [x] Use a makefile.
   - [x] Add clean, uninstall to makefile
 - [x] Mask user agent
@@ -69,7 +69,7 @@ Done:
 - [x] Add "open in new window" functionality. 
   - Useful for opening links in new tab when clicking on them and selecting that option
   - And for actually opening links with the href new_tab option.
-  - Links: <https://docs.gtk.org/gobject/func.signal_connect.html>, <https://webkitgtk.org/reference/webkit2gtk/2.37.90/signal.AutomationSession.create-web-view.html>, <https://webkitgtk.org/reference/webkit2gtk/2.26.0/WebKitWebView.html#WebKitWebView-create> <https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>
+  - Links: [1](<https://docs.gtk.org/gobject/func.signal_connect.html>), [2](<https://webkitgtk.org/reference/webkit2gtk/2.37.90/signal.AutomationSession.create-web-view.html>), [3](<https://webkitgtk.org/reference/webkit2gtk/2.26.0/WebKitWebView.html#WebKitWebView-create>), [4](<https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>)
 
 ### Known bugs
 

@@ -22,9 +22,10 @@ int CUSTOM_USER_AGENT = true;
 //   - set their variable to true
 //   - in build.sh, uncomment: REQS= #./plugins/*/*.c
 // 2. Remove stand_in code;
-//   - Comment out #include "plugins/stand_in/stand_in.h" line, or edit it
-//   together with stand_in.c so as to not include the plugin functions.
-//   - In build.sh, comment out REQS=./plugins/stand_in/stand_in.c
+//   - Add an #include "plugins/stand_in/stand_in.h" line, and modify
+//   stand_in.c so as to include stand-in functions for the excluded plugin
+//   - In the make file, include the stand_in.c file and exclude the
+//   relevant plugin
 
 #define CACHE                                                                \
     "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,     \
