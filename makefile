@@ -52,6 +52,14 @@ install: rose
 	cp style.css /usr/share/themes/rose/
 	cp rose-mklink /usr/bin
 
+uninstall: 
+	rm -r /usr/share/themes/rose
+	rm /usr/bin/rose
+	rm /usr/bin/rose-mklink
+
+clean:
+	rm rose
+
 format: $(SRC) $(PLUGS)
 	$(FORMATTER) $(SRC) $(PLUGS)
 
