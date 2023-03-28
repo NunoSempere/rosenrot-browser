@@ -1,22 +1,23 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #define READABILITY_N 85133 + 1000
 
-void read_readability_js(char* string){
-  FILE *fp=fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/plugins/readability/readability.js", "r");
-  if (!fp) { // fp is NULL, fopen failed
-    fprintf(stderr, "Failed to open file\n");
-    string=NULL;
-    return;
-  }
-  int i=0;
-  int c;
-  while ((c = fgetc(fp)) != EOF){
-     string[i++] = c;
-  }
-  string[i]='\0';
-  fclose(fp);
+void read_readability_js(char* string)
+{
+    FILE* fp = fopen("/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/plugins/readability/readability.js", "r");
+    if (!fp) { // fp is NULL, fopen failed
+        fprintf(stderr, "Failed to open file\n");
+        string = NULL;
+        return;
+    }
+    int i = 0;
+    int c;
+    while ((c = fgetc(fp)) != EOF) {
+        string[i++] = c;
+    }
+    string[i] = '\0';
+    fclose(fp);
 }
 
 /*
