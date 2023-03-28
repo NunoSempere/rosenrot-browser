@@ -6,6 +6,8 @@ A small browser forked from [rose](https://github.com/mini-rose/rose).
 - Rosenrot is my fork from rose. It has accumulated cruft that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock).
 - Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
 
+You can see some screenshots in the [screenshots](./screenshots) folder.
+
 ### Features
 
 - tabs, cookies, caching
