@@ -6,7 +6,7 @@
 # make uninstall
 
 ## C compiler
-CC=clang
+CC=gcc
 
 ## Main file
 SRC=rose.c

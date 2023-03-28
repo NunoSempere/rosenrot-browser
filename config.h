@@ -15,6 +15,7 @@
 
 #define WIDTH 1920
 #define HEIGHT 1080
+#define SEARCH_BAR_SIZE 1200
 #define KEY(x) GDK_KEY_##x
 #define ZOOM 1.4  /* Starting zoom level.*/
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
