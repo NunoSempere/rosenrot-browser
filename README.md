@@ -12,10 +12,16 @@ You can see some screenshots in the [screenshots](./screenshots) folder.
 
 - tabs, cookies, caching
 - minimal ui, autohiding elements
-- ~467L core code (the rose.c file), plus plugins
+- ~467L core code (the rose.c file)
 - custom gtk and websites css
 - builtin rose-mklink script for in-shell static links
 - A few quality of life improvements.
+  - Optional adblocking through [wyebadblock](https://github.com/jun7/wyebadblock)
+  - Plugin system:
+    - Libre redirect: Redirect annoying websites to open source frontends
+    - Readability: Strip webpages of unnecessary elements for ease of reading with a custom shortcut
+    - Custom style: Override the css of predetermined websites
+    - Stand in plugin: Mimick function definitions which do nothing for the above plugins so that they can be quickly removed
 
 ### 👐 Contribute
 
@@ -24,7 +30,6 @@ You can see some screenshots in the [screenshots](./screenshots) folder.
 
 ### To do
 
-- [ ] Look into using a makefile.
 - [ ] Look at using relative rather than absolute paths
 - [ ] Figure out if downloading files is doable.
 - [ ] Figure out better way to have plugins
@@ -34,10 +39,11 @@ You can see some screenshots in the [screenshots](./screenshots) folder.
 - [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Set `webkit_web_context_set_sandbox_enabled` (<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended here: <https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>.
 - [ ] Fix bug about distorted audio. Maybe related to <https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>
-- [x] Mask user agent
 
 Done:
 
+- [x] Mask user agent
+- [x] Use a makefile.
 - [x] Launch with more than one tab from command line
 - [x] Figure out merge with upstream
 - [x] String substitution on uri in order to redirect to better frontends.

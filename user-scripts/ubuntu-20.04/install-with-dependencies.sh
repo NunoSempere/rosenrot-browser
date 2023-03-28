@@ -9,6 +9,10 @@ cd wyebadblock
 make
 sudo make install 
 cd ..
+mkdir -p ~/.config/wyebadblock
+cd ~/.config/wyebadblock
+wget https://easylist.to/easylist/easylist.txt
+cd -
 
 # Rose config
 user=$(whoami)

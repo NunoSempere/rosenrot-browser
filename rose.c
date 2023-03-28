@@ -1,13 +1,3 @@
-/*
- * Copyright (c) 2022 mini-rose
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and any associated documentation
- * files to modify, copy, merge, publish, distribute and/or
- * sublicense copies of this sotware for their own use.
- * This code does not come with any warranty.
- *
- */
 #include <stdbool.h>
 #include <stdlib.h> // necessary for free, malloc.
 #include <string.h>
