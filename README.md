@@ -37,15 +37,16 @@ You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/i
 ### 👐 Contribute
 
 - Contribute upstream to [github.com/mini-rose/rose](https://github.com/mini-rose/) for core functionality changes.
-- Contribute here by sending a pull request on Github.
+- Contribute here for quality of life improvements, by sending a pull request on Github.
 
 ### To do
 
+- [ ] Add an installation tutorial
 - [ ] Look at using relative rather than absolute paths
+- [ ] Add css for js alerts
 - [ ] Figure out if downloading files is doable.
 - [ ] Figure out better way to have plugins
 - [ ] Double check newtab/next-tab behavior
-  - [ ] Document stand_in.c better
 - [ ] Find out what each of the css elements refers to.
 - [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Set `webkit_web_context_set_sandbox_enabled` (<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended here: <https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>.
@@ -53,8 +54,10 @@ You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/i
 
 Done:
 
-- [x] Mask user agent
+- [x] Document stand_in.c better
 - [x] Use a makefile.
+  - [x] Add clean, uninstall to makefile
+- [x] Mask user agent
 - [x] Launch with more than one tab from command line
 - [x] Figure out merge with upstream
 - [x] String substitution on uri in order to redirect to better frontends.
