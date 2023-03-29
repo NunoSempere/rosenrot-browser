@@ -41,6 +41,9 @@ You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/i
 
 ### To do
 
+- [ ] Streamline installation a bit
+  - Substitute paths in makefile
+  - Create cache directory automatically
 - [ ] Add an installation tutorial
 - [ ] Look at using relative rather than absolute paths
 - [ ] Add css for js alerts
