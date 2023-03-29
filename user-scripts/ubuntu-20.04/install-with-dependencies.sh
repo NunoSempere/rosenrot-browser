@@ -1,6 +1,6 @@
 # Dependencies
+sudo apt install git vim gcc make
 sudo apt install libwebkit2gtk-4.0-dev
-sudo apt install clang
 # sudo apt instal sudo apt install gstreamer1.0-plugins-good gstreamer1.0-libav
 
 # Adblock
@@ -20,7 +20,6 @@ mkdir -p /home/$user/.cache/rose
 cp ../../config.def.h ../../config.h # you should also probably customize this yourself.
 sed "s/fenze/$user/g" ../../config.h
 
-# sudo bash ../../install.sh
 cd ../..
 make build # or just make
 sudo make install 
