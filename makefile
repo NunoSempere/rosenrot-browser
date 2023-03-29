@@ -49,7 +49,7 @@ USER=`whoami`
 DEFAULT_CACHE_DIR=/home/loki/.cache/rose
 CURRENT_CACHE_DIR=/home/$(USER)/.cache/rose
 ## dir
-DEFAULT_DIR='/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot'
+DEFAULT_DIR=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot
 CURRENT_DIR=`pwd`
 
 build: $(SRC) $(PLUGS) $(CONFIG)
