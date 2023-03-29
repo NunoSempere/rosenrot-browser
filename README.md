@@ -32,7 +32,7 @@ make build
 make install # or sudo make install
 ```
 
-You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh), for Ubuntu 20.04 in particular—though they should generalize trivially.
+You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh), for Ubuntu 20.04 in particular—though they should generalize trivially. Or a video installing rosenrot in a fresh Ubuntu 20.04 virtual machine [here](https://video.nunosempere.com/w/t3oAvJLPHTSAMViQ6zbwTV).
 
 ### 👐 Contribute
 
@@ -41,10 +41,6 @@ You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/i
 
 ### To do
 
-- [ ] Streamline installation a bit
-  - Substitute paths in makefile
-  - Create cache directory automatically
-- [ ] Add an installation tutorial
 - [ ] Look at using relative rather than absolute paths
 - [ ] Add css for js alerts
 - [ ] Figure out if downloading files is doable.
@@ -57,6 +53,10 @@ You can also see more detailed instructions [here](./user-scripts/ubuntu-20.04/i
 
 Done:
 
+- [x] Streamline installation a bit
+  - [x] Substitute paths in makefile
+  - [x] Create cache directory automatically
+- [x] Add an installation video walkthrough. Done, [here](https://video.nunosempere.com/w/t3oAvJLPHTSAMViQ6zbwTV)
 - [x] Document `stand_in.c` better
 - [x] Use a makefile.
   - [x] Add clean, uninstall to makefile
