@@ -40,7 +40,7 @@ int libre_redirect(const char* uri, char* output)
             "https://www.reddit.com",
             "https://medium.com",
             "https://translate.google.com",
-            // "https://forum.effectivealtruism.org",
+            "https://ea.greaterwrong.com/posts", // "https://forum.effectivealtruism.org/posts",
             "https://www.bloomberg.com",
             "https://twitter.com"
         };
@@ -50,7 +50,7 @@ int libre_redirect(const char* uri, char* output)
             "https://teddit.nunosempere.com",
             "https://scribe.rip",
             "https://simplytranslate.org/",
-            // "https://ea.greaterwrong.com",
+            "https://trastos.nunosempere.com/ea-forum/posts", // "https://ea.greaterwrong.com",
             "https://archive.is/https://www.bloomberg.com",
             "https://nitter.net"
         };
