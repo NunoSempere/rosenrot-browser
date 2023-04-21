@@ -38,6 +38,13 @@ if (document.domain == "mail.proton.me" ){
 			}
 	`
 }
+if (document.domain == "forum.nunosempere.com" ){
+  styles = `
+   body {
+     zoom: 0.625 !important;
+	 }
+  `
+}
 
 if(styles != null){
 	  var styleSheet = document.createElement('style')

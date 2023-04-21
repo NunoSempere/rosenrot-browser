@@ -2394,7 +2394,7 @@ if (document.domain == "archive.is" ){
   iframe {
 	  display: none;
   }
-	#div[id^='stickyModal'] {
+	#div[id^='stickypbModal'] {
 	 display: none;
 	}
   `
