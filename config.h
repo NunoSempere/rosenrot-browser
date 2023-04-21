@@ -11,13 +11,13 @@
 #define ROSE_HOMEPAGE true
 #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://lite.duckduckgo.com/html"
 #define SEARCH "https://search.nunosempere.com/search?q=%s" // "https://lite.duckduckgo.com/html/?q=%s"
-#define CACHE_DIR "/home/loki/.cache/rose"
+#define CACHE_DIR "/home/root/.cache/rose"
 
 #define WIDTH 1920
 #define HEIGHT 1080
 #define SEARCH_BAR_SIZE 1200
 #define KEY(x) GDK_KEY_##x
-#define ZOOM 1.4  /* Starting zoom level.*/
+#define ZOOM 1  /* Starting zoom level.*/
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
 #define DEBUG false 

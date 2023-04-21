@@ -2386,10 +2386,17 @@ if (document.domain == "archive.is" ){
 			display: none !important;
   }
 
+	/* Matt Levine's Money Stuff specific stuff: */
+
 	p > span > em {
 			display: none !important;
 	}
-	/* ^ deletes the subscribe prompt in Matt Levine's Money Stuff. */
+  iframe {
+	  display: none;
+  }
+	#div[id^='stickyModal'] {
+	 display: none;
+	}
   `
 }
 
