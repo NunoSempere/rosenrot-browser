@@ -6,7 +6,7 @@
 # make uninstall
 
 ## C compiler
-CC=gcc
+CC=tcc # much faster compilation than gcc
 
 ## Main file
 SRC=rose.c
@@ -53,6 +53,13 @@ DEFAULT_DIR=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot
 CURRENT_DIR=`pwd`
 
 build: $(SRC) $(PLUGS) $(CONFIG)
+	# Recompute constants
+	cd /plugins/readability/
+	sh recompute_READABILITY_N.sh
+	cd -
+	cd /plugins/style
+	sh recompute_STYLE_N.sh 
+	cd -
 	# Make cache
 	mkdir -p $(CURRENT_CACHE_DIR)
 	# Hardcode cache path
