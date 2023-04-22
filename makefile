@@ -54,12 +54,8 @@ CURRENT_DIR=`pwd`
 
 build: $(SRC) $(PLUGS) $(CONFIG)
 	# Recompute constants
-	cd /plugins/readability/
-	sh recompute_READABILITY_N.sh
-	cd -
-	cd /plugins/style
-	sh recompute_STYLE_N.sh 
-	cd -
+	cd plugins/readability/ && sh recompute_READABILITY_N.sh
+	cd plugins/style && sh recompute_STYLE_N.sh 
 	# Make cache
 	mkdir -p $(CURRENT_CACHE_DIR)
 	# Hardcode cache path
