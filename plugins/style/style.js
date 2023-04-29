@@ -45,7 +45,13 @@ if (document.domain == "forum.nunosempere.com" ){
 	 }
   `
 }
-
+if (document.domain == "search.nunosempere.com" ){
+  styles = `
+   footer {
+     display: none;
+	 }
+  `
+}
 if(styles != null){
 	  var styleSheet = document.createElement('style')
 	  styleSheet.innerText = styles

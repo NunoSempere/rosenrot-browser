@@ -8,9 +8,9 @@
 	    "enable-smooth-scrolling", false
 
 #define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
-#define ROSE_HOMEPAGE true
-#define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://lite.duckduckgo.com/html"
+#define ROSE_HOMEPAGE false
 #define SEARCH "https://search.nunosempere.com/search?q=%s" // "https://lite.duckduckgo.com/html/?q=%s"
+#define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 #define CACHE_DIR "/home/loki/.cache/rose"
 
 #define WIDTH 1920
