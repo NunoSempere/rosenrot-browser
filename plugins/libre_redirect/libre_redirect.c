@@ -36,21 +36,21 @@ int libre_redirect(const char* uri, char* output)
         strcpy(tmp_output, output);
 
         char* annoying_sites[] = {
-            "https://www.youtube.com",
             "https://www.reddit.com",
+            "https://www.youtube.com",
+						"https://google.com"
             "https://medium.com",
             "https://translate.google.com",
-            "https://ea.greaterwrong.com/posts", // "https://forum.effectivealtruism.org/posts",
             "https://www.bloomberg.com",
             "https://twitter.com"
         };
 
         char* alternatives[] = {
-            "https://yt.artemislena.eu",
             "https://teddit.nunosempere.com",
+            "https://yt.artemislena.eu",
+						"https://search.nunosempere.com"
             "https://scribe.rip",
             "https://simplytranslate.org/",
-            "https://trastos.nunosempere.com/ea-forum/posts", // "https://ea.greaterwrong.com",
             "https://archive.is/https://www.bloomberg.com",
             "https://nitter.net"
         };
