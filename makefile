@@ -6,7 +6,7 @@
 # make uninstall
 
 ## C compiler
-CC=tcc # much faster compilation than gcc
+CC=gcc # tcc: much faster, gcc: more options. Also I don't know whether tcc has error messages/debug options.
 
 ## Main file
 SRC=rose.c
@@ -20,7 +20,7 @@ LIBS=`pkg-config --libs ${DEPS}`
 
 ## Optional adblocking
 ## depends on https://github.com/jun7/wyebadblock
-ADBLOCK='-L/usr/lib/wyebrowser/adblock.so'
+ADBLOCK=#'-L/usr/lib/wyebrowser/adblock.so'
 
 ## Plugins
 LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirect/str_replace_start.c 
@@ -65,9 +65,11 @@ build: $(SRC) $(PLUGS) $(CONFIG)
 	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
+	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
 	$(CC) $(DEBUG) $(INCS) $(PLUGS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
 install: rose
+	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
 	cp -f rose /usr/bin
 	mkdir -p /usr/share/themes/rose
 	cp style.css /usr/share/themes/rose/

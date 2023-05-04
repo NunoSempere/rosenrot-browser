@@ -77,3 +77,4 @@ Done:
 ### Known bugs
 
 - [ ] Doesn't work with when Spanish is selected as the language, for some reason. 
+- [ ] At some point, I tried to install libsoup-3 and borked some unknown installation option. So now I need to run rose with `GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/ /bin/rose` (or put `export GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/` in my .bashrc). This won't affect new users though, just double checked on a fresh machine.
