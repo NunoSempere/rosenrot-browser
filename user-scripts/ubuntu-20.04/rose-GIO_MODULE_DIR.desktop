@@ -3,7 +3,7 @@
 Version=1.0
 Type=Application
 Terminal=false
-Exec=/bin/rose %u
+Exec=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose.sh %u
 Name=Rose
 Comment=Minimalistic browser
 Icon=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-desktop-icon.png
