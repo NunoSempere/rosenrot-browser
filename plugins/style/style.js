@@ -52,6 +52,17 @@ if (document.domain == "search.nunosempere.com" ){
 	 }
   `
 }
+if (document.domain == "twitter.com" ){
+  styles = `
+	[data-testid="placementTracking"] {
+		display: none;
+	}
+	[data-testid="sidebarColumn"] {
+		display: none;
+	}
+  `
+}
+
 if(styles != null){
 	  var styleSheet = document.createElement('style')
 	  styleSheet.innerText = styles
@@ -60,3 +71,4 @@ if(styles != null){
 }
 
 document.body.style.visibility = "visible"
+
