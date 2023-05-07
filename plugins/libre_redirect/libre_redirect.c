@@ -50,7 +50,7 @@ int libre_redirect(const char* uri, char* output)
             "https://yt.artemislena.eu",
 						"https://search.nunosempere.com"
             "https://scribe.rip",
-            "https://simplytranslate.org/",
+            "https://translate.riverside.rocks/",
             "https://archive.is/https://www.bloomberg.com",
             // "https://nitter.net"
         };
