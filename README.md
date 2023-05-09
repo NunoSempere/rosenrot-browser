@@ -3,7 +3,7 @@
 A small browser forked from [rose](https://github.com/mini-rose/rose). 
 
 - Rose is a minimal browser based on webkit2gtk which aims to be a "basement for creating your own browser using [the] gtk and webkit libraries". 
-- Rosenrot is my fork from rose. It has accumulated cruft that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock).
+- Rosenrot is my fork from rose. It has accumulated quality of life features/cruft that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
 - Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
 
 You can see some screenshots in the [screenshots](./screenshots) folder.
@@ -74,7 +74,12 @@ Done:
   - And for actually opening links with the href new_tab option.
   - Links: [1](<https://docs.gtk.org/gobject/func.signal_connect.html>), [2](<https://webkitgtk.org/reference/webkit2gtk/2.37.90/signal.AutomationSession.create-web-view.html>), [3](<https://webkitgtk.org/reference/webkit2gtk/2.26.0/WebKitWebView.html#WebKitWebView-create>), [4](<https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>)
 
-### Known bugs
+## Cool things
+
+I just found out that you can inspect a GTK application with the GTK explorer if you set a certain command-line variable. Try this with `make inspect`.
+
+### Known bugs/gotchas.
 
 - [ ] Doesn't work with when Spanish is selected as the language, for some reason. 
 - [ ] At some point, I tried to install libsoup-3 and borked some unknown installation option/paths. So now I need to run rose with `GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/ /bin/rose` (or put `export GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/` in my .bashrc). This won't affect new users though, just double checked on a fresh machine.
+- [ ] By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.

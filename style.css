@@ -11,13 +11,25 @@
 	outline-color: @Lavender;
 	color: @Text;
 	border-color: white;
-	font-size: 16px;
 	/*@Base; */
 	/* border-bottom-color: @Base; */
 }
 
 window, notebook, headerbar {
 	background: @Base;
+	fontsize: 30px !important;
+}
+
+/* Make titlebar pretty gigantic. I'm pretty myopic. */
+.titlebar  {
+  padding: 10px;
+  font-size: 30px;
+}
+
+
+.titlebar * {
+  padding: 10px;
+  font-size: 27px;
 }
 
 tabs {

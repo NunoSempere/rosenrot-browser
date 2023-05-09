@@ -6,7 +6,8 @@
 # make uninstall
 
 ## C compiler
-CC=gcc # tcc: much faster, gcc: more options. Also I don't know whether tcc has error messages/debug options.
+CC=gcc # gcc: more options. Also I don't know whether tcc has error messages/debug options.
+## CC=tcc # tcc: much faster
 
 ## Main file
 SRC=rose.c
@@ -67,6 +68,9 @@ build: $(SRC) $(PLUGS) $(CONFIG)
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
 	$(CC) $(DEBUG) $(INCS) $(PLUGS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+
+inspect: build
+	GTK_DEBUG=interactive ./rose
 
 install: rose
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
