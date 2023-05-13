@@ -2,6 +2,8 @@
 
 Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose), with some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and with detailed installation instructions for Ubuntu 20.04.
 
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/screenshots/7-hello-world-search.png)
+
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/screenshots/6-hello-world.png)
 
 ### Installation
