@@ -7,6 +7,7 @@
 
 #include "plugins/libre_redirect/libre_redirect.h"
 #include "plugins/readability/readability.h"
+#include "plugins/shortcuts/shortcuts.h"
 #include "plugins/style/style.h"
 
 // #include "plugins/stand_in/stand_in.h"
@@ -91,15 +92,40 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
         notebook, gtk_notebook_get_current_page(notebook)));
 }
 
+
+void redirect_if_annoying(WebKitWebView* view, const char* uri)
+{
+    int l = LIBRE_N + strlen(uri) + 1;
+    char uri_filtered[l];
+    str_init(uri_filtered, l);
+
+    int check = libre_redirect(uri, uri_filtered);
+
+    if (check == 2) {
+        webkit_web_view_load_uri(view, uri_filtered);
+    }
+}
+
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
     } else {
-        // webkit_web_view_load_uri(view, uri);
-        char tmp[strlen(uri) + strlen(SEARCH)];
-        snprintf(tmp, sizeof(tmp), SEARCH, uri);
-        webkit_web_view_load_uri(view, tmp);
+				// Check for shortcuts
+				int l = SHORTCUT_N + strlen(uri) + 1;
+				char uri_expanded[l];
+				str_init(uri_expanded, l);
+				int check = shortcut_expand(uri, uri_expanded);
+
+				if (check == 2) {
+						webkit_web_view_load_uri(view, uri_expanded);
+				} else {
+					// Feed into search engine.
+					char tmp[strlen(uri) + strlen(SEARCH)];
+					snprintf(tmp, sizeof(tmp), SEARCH, uri);
+					webkit_web_view_load_uri(view, tmp);
+				}
+				
     }
 }
 

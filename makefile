@@ -25,12 +25,13 @@ ADBLOCK=#'-L/usr/lib/wyebrowser/adblock.so'
 
 ## Plugins
 LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirect/str_replace_start.c 
-READABILITY=./plugins/readability/readability.c 
 CUSTOM_STYLES=./plugins/style/style.c
+READABILITY=./plugins/readability/readability.c 
+SHORTCUTS=./plugins/shortcuts/shortcuts.c
 
 STAND_IN=./plugins/stand_in/stand_in.c # gives function definitions for the above, which do nothing
 
-PLUGS=$(LIBRE_REDIRECT) $(READABILITY) $(CUSTOM_STYLES)
+PLUGS=$(LIBRE_REDIRECT) $(READABILITY) $(CUSTOM_STYLES) $(SHORTCUTS)
 # PLUGS=$(STAND_IN)
 # Note that if you want some plugins but not others,
 # You should edit the stand_in.c file
