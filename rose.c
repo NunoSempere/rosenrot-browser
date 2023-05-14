@@ -92,20 +92,6 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
         notebook, gtk_notebook_get_current_page(notebook)));
 }
 
-
-void redirect_if_annoying(WebKitWebView* view, const char* uri)
-{
-    int l = LIBRE_N + strlen(uri) + 1;
-    char uri_filtered[l];
-    str_init(uri_filtered, l);
-
-    int check = libre_redirect(uri, uri_filtered);
-
-    if (check == 2) {
-        webkit_web_view_load_uri(view, uri_filtered);
-    }
-}
-
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
@@ -116,7 +102,6 @@ void load_uri(WebKitWebView* view, const char* uri)
 				char uri_expanded[l];
 				str_init(uri_expanded, l);
 				int check = shortcut_expand(uri, uri_expanded);
-
 				if (check == 2) {
 						webkit_web_view_load_uri(view, uri_expanded);
 				} else {

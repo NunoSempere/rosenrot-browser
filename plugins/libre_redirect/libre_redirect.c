@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "str_init.h"
 #include "str_replace_start.h"
 
 #define LIBRE_N 19
@@ -10,13 +11,6 @@
 /* #define DEBUG */
 
 /* Inspired by https://libredirect.github.io/, but in C. */
-
-void str_init(char* str, int n)
-{
-    for (int i = 0; i < n; i++)
-        str[i] = ' ';
-    str[n] = '\0';
-} // could also use <https://manpages.ubuntu.com/manpages/impish/man3/strinit.3pub.html>
 
 int libre_redirect(const char* uri, char* output)
 {

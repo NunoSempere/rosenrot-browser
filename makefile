@@ -24,7 +24,7 @@ LIBS=`pkg-config --libs ${DEPS}`
 ADBLOCK=#'-L/usr/lib/wyebrowser/adblock.so'
 
 ## Plugins
-LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirect/str_replace_start.c 
+LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirect/str_replace_start.c ./plugins/libre_redirect/str_init.c 
 CUSTOM_STYLES=./plugins/style/style.c
 READABILITY=./plugins/readability/readability.c 
 SHORTCUTS=./plugins/shortcuts/shortcuts.c

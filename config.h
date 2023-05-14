@@ -20,7 +20,7 @@
 #define ZOOM 1.6  /* Starting zoom level.*/
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
-#define DEBUG false 
+#define DEBUG false
 
 typedef enum {
 	goback,

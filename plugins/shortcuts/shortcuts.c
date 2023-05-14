@@ -3,23 +3,18 @@
 #include <string.h>
 
 #include "../libre_redirect/str_replace_start.h"
+#include "../libre_redirect/str_init.h"
 
-#define SHORTCUT_N 20
+#define SHORTCUT_N 41
 
 /* Uncomment for debug */
 /* #define DEBUG */
 
 /* Inspired by https://duckduckgo.com/bangs */
 
-void str_init(char* str, int n)
-{
-    for (int i = 0; i < n; i++)
-        str[i] = ' ';
-    str[n] = '\0';
-} // could also use <https://manpages.ubuntu.com/manpages/impish/man3/strinit.3pub.html>
-
 int shortcut_expand(const char* uri, char* output)
 {
+    printf("SHORTCUT EXPAND!");
     int l1 = strlen(uri);
     int l2 = strlen(output);
     int len;
