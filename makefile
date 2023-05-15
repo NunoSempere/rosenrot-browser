@@ -6,15 +6,19 @@
 # make uninstall
 
 ## C compiler
-CC=gcc # gcc: more options. Also I don't know whether tcc has error messages/debug options.
-## CC=tcc # tcc: much faster
+CC=gcc# gcc: more options. Also I don't know whether tcc has error messages/debug options.
+# CC=tcc # tcc: much faster, may not work with some options.
+## CC=clang # tcc: much faster, may not work with some options.
+
+## Compiler flags
+DEBUG= #'-g'
+# MULTICORE=-j 4#
 
 ## Main file
 SRC=rose.c
 
 ## Dependencies
 DEPS='webkit2gtk-4.0'
-DEBUG= #'-g'
 
 INCS=`pkg-config --cflags ${DEPS}`
 LIBS=`pkg-config --libs ${DEPS}`
