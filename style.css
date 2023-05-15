@@ -1,22 +1,18 @@
-/*
 @define-color Surface0 #313244;
 @define-color Surface1 #45475a;
 @define-color Base     #1e1e2e;
 @define-color Mantle   #181825;
 @define-color Lavender #b4befe;
-@define-color Text     #cdd6f4; 
-*/
+@define-color Text     #cdd6f4;
+
 * {
-	/* <https://github.com/bsundman/Yosembiance/blob/master/Yosembiance-Kraken-Blue/gtk-3.0/gtk-widgets.css~> */
 	padding: 0px;
 	margin: 0px;
 	outline-color: @Lavender;
-	/* color: @Text; */
-	color: black;
+	color: @Text;
 	border-color: white;
 	font-size: 25px;
 	/*@Base; */
-	/* background: @Base !important; */
 	/* border-bottom-color: @Base; */
 }
 
@@ -72,9 +68,3 @@ entry:focus {
 	padding-left: 10px;
 
 }
-
-GtkPopover * {
-  color: black;
-}
-
-
