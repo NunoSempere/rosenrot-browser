@@ -1,6 +1,6 @@
 ## Rosenrot
 
-Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose), with some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and with detailed installation instructions for Ubuntu 20.04.
+Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose). It has some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and detailed installation instructions for Ubuntu 20.04.
 
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/screenshots/7-hello-world-search.png)
 
@@ -8,7 +8,7 @@ Rosenrot is a small browser forked from an earlier version of [rose](https://git
 
 ### Installation
 
-You can see detailed instructions [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh), for Ubuntu 20.04 in particular—though they should generalize trivially. Or a video installing rosenrot in a fresh Ubuntu 20.04 virtual machine [here](https://video.nunosempere.com/w/t3oAvJLPHTSAMViQ6zbwTV).
+You can see detailed instructions [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh), for Ubuntu 20.04 in particular—though they should generalize easily to other distributions. Or a video installing rosenrot in a fresh Ubuntu 20.04 virtual machine [here](https://video.nunosempere.com/w/t3oAvJLPHTSAMViQ6zbwTV).
 
 The general steps are to install dependencies, and then
 
@@ -74,19 +74,22 @@ I just found out that you can inspect a GTK application with the GTK explorer if
 ### To do
 
 #### Quality of life:
+
 - [ ] Add css for js alerts
 - [ ] Figure out better way to have plugins
 - [ ] Double check newtab/next-tab behavior
 - [ ] Document creating new applications, e.g., as in [Asana for Linux](https://git.nunosempere.com/NunoSempere/asana-for-linux)
 
 #### Maintenance 
-- [ ] Use something other than Whatsapp as an example syslink.
+
 - [ ] Set [`webkit_web_context_set_sandbox_enabled`](<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended [here](<https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>)
+- [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
 - [ ] Upgrade to GTK-4 / Webkitgtk 6.0? Will take a fair amount of time, since these are not available on Ubuntu 20.04.
 
 #### Previously done
 
+- [x] Add a shortcut for hiding the search tab. => Already exists: Ctrl+K
 - [x] Find out what each of the css elements refers to. => done, see make inspect
 - [x] Figure out if downloading files is doable. => it is
 - [x] Look at using relative rather than absolute paths for configuration. => now makefile is a bit smarter
