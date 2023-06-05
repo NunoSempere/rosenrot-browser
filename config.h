@@ -13,7 +13,7 @@
 #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 #define CACHE_DIR "/home/loki/.cache/rose"
 
-#define WIDTH 960 // 960 for half-width, 1920 for full width
+#define WIDTH 1920 // 960 for half-width, 1920 for full width
 #define HEIGHT 1080
 #define SEARCH_BAR_SIZE 1200
 #define KEY(x) GDK_KEY_##x

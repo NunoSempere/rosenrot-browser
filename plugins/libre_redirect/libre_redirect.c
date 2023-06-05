@@ -36,7 +36,7 @@ int libre_redirect(const char* uri, char* output)
             "https://medium.com",
             "https://translate.google.com",
             "https://www.bloomberg.com",
-            "https://royalroad.com",
+            "https://www.royalroad.com",
             // "https://twitter.com"
         };
 
