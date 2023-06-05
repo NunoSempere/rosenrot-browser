@@ -79,6 +79,7 @@ I just found out that you can inspect a GTK application with the GTK explorer if
 - [ ] Figure out better way to have plugins
 - [ ] Double check newtab/next-tab behavior
 - [ ] Document creating new applications, e.g., as in [Asana for Linux](https://git.nunosempere.com/NunoSempere/asana-for-linux)
+- [ ] Add list of similar projects: <https://github.com/qutebrowser/qutebrowser#similar-projects>
 
 #### Maintenance 
 

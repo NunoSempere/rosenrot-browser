@@ -36,6 +36,7 @@ int libre_redirect(const char* uri, char* output)
             "https://medium.com",
             "https://translate.google.com",
             "https://www.bloomberg.com",
+            "https://royalroad.com",
             // "https://twitter.com"
         };
 
@@ -46,6 +47,7 @@ int libre_redirect(const char* uri, char* output)
             "https://scribe.rip",
             "https://translate.riverside.rocks/",
             "https://archive.is/https://www.bloomberg.com",
+            "https://royalread.nunosempere.com",
             // "https://nitter.net"
         };
 
