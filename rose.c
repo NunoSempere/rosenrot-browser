@@ -16,6 +16,7 @@ int LIBRE_REDIRECT_ENABLED = true;
 int READABILITY_ENABLED = true;
 int CUSTOM_STYLE_ENABLED = true;
 int CUSTOM_USER_AGENT = true;
+int NUM_TABS = 0;
 
 // to enable plugins,
 // 1. Enable them:
@@ -193,13 +194,18 @@ void notebook_append(GtkNotebook* notebook, const char* uri);
 GtkWidget* handle_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
-{
-    WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
-    const char* uri = webkit_uri_request_get_uri(uri_request);
-    printf("Creating new window: %s\n", uri);
-    notebook_append(notebook, uri);
-    gtk_notebook_set_show_tabs(notebook, true);
-    return NULL;
+{   
+	  if(NUM_TABS < MAX_NUM_TABS || NUM_TABS == 0){
+			WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
+			const char* uri = webkit_uri_request_get_uri(uri_request);
+			printf("Creating new window: %s\n", uri);
+			notebook_append(notebook, uri);
+			gtk_notebook_set_show_tabs(notebook, true);
+			return NULL;
+		} else {
+			webkit_web_view_run_javascript(notebook_get_webview(notebook),
+					"alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
+		}
     /* WebKitGTK documentation recommends returning the new webview.
    * I imagine that this might allow e.g., to go back in a new tab
    * or generally to keep track of history.
@@ -210,27 +216,33 @@ GtkWidget* handle_create_new_tab(WebKitWebView* self,
 
 void notebook_append(GtkNotebook* notebook, const char* uri)
 {
-    GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
-    GdkVisual* rgba_visual = gdk_screen_get_rgba_visual(screen);
-    GdkRGBA rgba;
+	  if(NUM_TABS < MAX_NUM_TABS || NUM_TABS == 0){
+			GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
+			GdkVisual* rgba_visual = gdk_screen_get_rgba_visual(screen);
+			GdkRGBA rgba;
 
-    gdk_rgba_parse(&rgba, BG_COLOR);
+			gdk_rgba_parse(&rgba, BG_COLOR);
 
-    WebKitWebView* view = webview_new();
+			WebKitWebView* view = webview_new();
 
-    gtk_widget_set_visual(GTK_WIDGET(window), rgba_visual);
-    g_signal_connect(view, "load_changed", G_CALLBACK(load_changed), notebook);
-    g_signal_connect(view, "create", G_CALLBACK(handle_create_new_tab), notebook);
+			gtk_widget_set_visual(GTK_WIDGET(window), rgba_visual);
+			g_signal_connect(view, "load_changed", G_CALLBACK(load_changed), notebook);
+			g_signal_connect(view, "create", G_CALLBACK(handle_create_new_tab), notebook);
 
-    int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
-    gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
-    gtk_widget_show_all(GTK_WIDGET(window));
-    gtk_widget_hide(GTK_WIDGET(bar));
-    webkit_web_view_set_background_color(view, &rgba);
-    load_uri(view, (uri) ? uri : HOME);
-    gtk_notebook_set_current_page(notebook, n);
-    gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
-    webkit_web_view_set_zoom_level(view, ZOOM);
+			int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
+			gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
+			gtk_widget_show_all(GTK_WIDGET(window));
+			gtk_widget_hide(GTK_WIDGET(bar));
+			webkit_web_view_set_background_color(view, &rgba);
+			load_uri(view, (uri) ? uri : HOME);
+			gtk_notebook_set_current_page(notebook, n);
+			gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
+			webkit_web_view_set_zoom_level(view, ZOOM);
+			NUM_TABS+=1;
+		} else {
+			webkit_web_view_run_javascript(notebook_get_webview(notebook),
+					"alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
+		}
 }
 
 void show_bar(GtkNotebook* notebook)

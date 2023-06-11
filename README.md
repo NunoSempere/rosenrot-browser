@@ -41,6 +41,7 @@ You can also create a rose.desktop file so that it will show up in your desktop 
 - Customize appearance of the browser through css
 - Built-in rose-mklink script for in-shell static links
 - Optional adblocking through [wyebadblock](https://github.com/jun7/wyebadblock)
+- Max number of tabs (by default 8), configurable.
 - Plugin system, seeded with:
   - Libre redirect: Redirect annoying websites to open source frontends
   - Readability: Strip webpages of unnecessary elements for ease of reading with a custom shortcut
