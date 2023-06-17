@@ -127,7 +127,7 @@ window.alert = (message) => {
     document.getElementById('alertMessage').textContent = message;
     alertDiv.classList.add('visible');
 }
+// ^ takes 0.014ms to run, so performance is not the concern here.
+// timed with console.time, console.timeEnd
 
-
-// alert("Hello world!")
 document.body.style.visibility = "visible"
