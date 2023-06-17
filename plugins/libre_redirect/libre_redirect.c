@@ -32,7 +32,7 @@ int libre_redirect(const char* uri, char* output)
         char* annoying_sites[] = {
             "https://www.reddit.com",
             "https://www.youtube.com",
-						"https://google.com"
+            "https://google.com"
             "https://medium.com",
             "https://translate.google.com",
             "https://www.bloomberg.com",
@@ -43,7 +43,7 @@ int libre_redirect(const char* uri, char* output)
         char* alternatives[] = {
             "https://teddit.nunosempere.com",
             "https://yt.artemislena.eu",
-						"https://search.nunosempere.com"
+            "https://search.nunosempere.com"
             "https://scribe.rip",
             "https://translate.riverside.rocks/",
             "https://archive.is/https://www.bloomberg.com",

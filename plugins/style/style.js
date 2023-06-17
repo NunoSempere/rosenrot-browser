@@ -73,63 +73,61 @@ if(styles != null){
 
 // Replace default alert with new function
 // whose style can be changed!
-window.alert = function(message) {
-    // Check if the alert dialog already exists
-    var alertDiv = document.getElementById('customAlert');
+window.alert = (message) => {
+    let alertDiv = document.getElementById('customAlert');
     if (!alertDiv) {
-        // Create the alert dialog
-        alertDiv = document.createElement('div');
-        alertDiv.id = 'customAlert';
-        alertDiv.className = 'custom-alert hidden';
-
-        var contentDiv = document.createElement('div');
-        contentDiv.className = 'custom-alert-content';
-
-        var alertMessage = document.createElement('p');
-        alertMessage.id = 'alertMessage';
-
-        var okButton = document.createElement('button');
-        okButton.id = 'alertOkButton';
-        okButton.textContent = 'OK';
-        okButton.onclick = function() {
-            alertDiv.classList.add('hidden');
+        const html = `
+            <div id="customAlert" class="custom-alert">
+                <div class="custom-alert-content">
+                    <p id="alertMessage"></p>
+                    <button id="alertOkButton">OK</button>
+                </div>
+            </div>
+            <style>
+                .custom-alert {
+                    display: none;
+                    position: fixed;
+                    z-index: 999;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0,0,0,0.4);
+                }
+                .custom-alert-content {
+                    background-color: #fefefe;
+                    margin: 15% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                    font-family: monospace; /* Use monospace font */
+                }
+                .visible {
+                    display: block;
+                }
+            </style>
+        `;
+        document.body.insertAdjacentHTML('beforeend', html);
+        alertDiv = document.getElementById('customAlert');
+        document.getElementById('alertOkButton').onclick = () => {
+            alertDiv.classList.remove('visible');
+            document.removeEventListener('keydown', dismissAlert);
         };
-
-        contentDiv.appendChild(alertMessage);
-        contentDiv.appendChild(okButton);
-        alertDiv.appendChild(contentDiv);
-        document.body.appendChild(alertDiv);
-
-        // Inject CSS
-        var style = document.createElement('style');
-        style.innerHTML = `
-        .custom-alert {
-            position: fixed;
-            z-index: 999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .custom-alert-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-        .hidden {
-            display: none;
-        }`;
-        document.head.appendChild(style);
     }
-
-    // Show the alert dialog
+  
+    const dismissAlert = (event) => {
+        if (event.key === 'Enter' /*&& event.ctrlKey*/ && alertDiv.classList.contains('visible')) {
+            alertDiv.classList.remove('visible');
+            document.removeEventListener('keydown', dismissAlert);
+        }
+    }
+  
+    document.addEventListener('keydown', dismissAlert);
     document.getElementById('alertMessage').textContent = message;
-    alertDiv.classList.remove('hidden');
-} 
+    alertDiv.classList.add('visible');
+}
+
 
 // alert("Hello world!")
 document.body.style.visibility = "visible"

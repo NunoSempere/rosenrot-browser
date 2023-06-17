@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../libre_redirect/str_replace_start.h"
 #include "../libre_redirect/str_init.h"
+#include "../libre_redirect/str_replace_start.h"
 
 #define SHORTCUT_N 41
 
@@ -33,8 +33,8 @@ int shortcut_expand(const char* uri, char* output)
         char* shortcuts[] = {
             "!fnf",
             "!fnc",
-						"!hn",
-						"!hnb"
+            "!hn",
+            "!hnb"
         };
 
         char* expansions[] = {
@@ -45,7 +45,7 @@ int shortcut_expand(const char* uri, char* output)
         };
 
         // len = sizeof(shortcuts) / sizeof(shortcuts[0]);
-        len = sizeof(shortcuts) / sizeof(char *);
+        len = sizeof(shortcuts) / sizeof(char*);
 
         for (int i = 0; i < len; i++) {
             int replace_check = str_replace_start(tmp_uri, shortcuts[i],
