@@ -70,5 +70,66 @@ if(styles != null){
 	  console.log('Style changed')
 }
 
-document.body.style.visibility = "visible"
 
+// Replace default alert with new function
+// whose style can be changed!
+window.alert = function(message) {
+    // Check if the alert dialog already exists
+    var alertDiv = document.getElementById('customAlert');
+    if (!alertDiv) {
+        // Create the alert dialog
+        alertDiv = document.createElement('div');
+        alertDiv.id = 'customAlert';
+        alertDiv.className = 'custom-alert hidden';
+
+        var contentDiv = document.createElement('div');
+        contentDiv.className = 'custom-alert-content';
+
+        var alertMessage = document.createElement('p');
+        alertMessage.id = 'alertMessage';
+
+        var okButton = document.createElement('button');
+        okButton.id = 'alertOkButton';
+        okButton.textContent = 'OK';
+        okButton.onclick = function() {
+            alertDiv.classList.add('hidden');
+        };
+
+        contentDiv.appendChild(alertMessage);
+        contentDiv.appendChild(okButton);
+        alertDiv.appendChild(contentDiv);
+        document.body.appendChild(alertDiv);
+
+        // Inject CSS
+        var style = document.createElement('style');
+        style.innerHTML = `
+        .custom-alert {
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .custom-alert-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .hidden {
+            display: none;
+        }`;
+        document.head.appendChild(style);
+    }
+
+    // Show the alert dialog
+    document.getElementById('alertMessage').textContent = message;
+    alertDiv.classList.remove('hidden');
+} 
+
+// alert("Hello world!")
+document.body.style.visibility = "visible"

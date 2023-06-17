@@ -235,6 +235,15 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
 			gtk_widget_hide(GTK_WIDGET(bar));
 			webkit_web_view_set_background_color(view, &rgba);
 			load_uri(view, (uri) ? uri : HOME);
+
+			if (CUSTOM_STYLE_ENABLED) {
+					char* style_js = malloc(STYLE_N + 1);
+					read_style_js(style_js);
+					webkit_web_view_run_javascript(notebook_get_webview(notebook), style_js,
+							NULL, NULL, NULL);
+					free(style_js);
+			}
+
 			gtk_notebook_set_current_page(notebook, n);
 			gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
 			webkit_web_view_set_zoom_level(view, ZOOM);
@@ -329,6 +338,7 @@ int handle_key(func id, GtkNotebook* notebook)
 
     case close_tab:
         gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
+				NUM_TABS-=1;
 
         switch (gtk_notebook_get_n_pages(notebook)) {
         case 0:

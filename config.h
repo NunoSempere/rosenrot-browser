@@ -21,7 +21,7 @@
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
 #define DEBUG false
-#define MAX_NUM_TABS 10 // set to 0 or false if you want unlimited tabs, or look at the relevant rose.c code.
+#define MAX_NUM_TABS 8 // set to 0 or false if you want unlimited tabs, or look at the relevant rose.c code.
 
 typedef enum {
 	goback,
