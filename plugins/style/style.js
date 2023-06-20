@@ -27,6 +27,7 @@ if (document.domain == "forum.effectivealtruism.org"){
 
 if (document.domain == "mail.proton.me" ){
 	styles = `
+	    /*
 			.item-container-row.read, .item-container.read {
 					background-color: white;
 			}
@@ -36,6 +37,8 @@ if (document.domain == "mail.proton.me" ){
 			.selection .item-container-row.item-is-selected, .item-container.item-is-selected {
 					background-color: var(--selection-background-color) !important;
 			}
+     zoom: 0.625 !important;
+			*/
 	`
 }
 if (document.domain == "forum.nunosempere.com" ){

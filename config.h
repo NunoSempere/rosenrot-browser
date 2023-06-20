@@ -68,7 +68,7 @@ static struct {
     { CTRL,        KEY(w),          close_tab          },
     { 0x0,         KEY(F11),        toggle_fullscreen  },
     { CTRL,        KEY(l),          show_searchbar     },
-    { CTRL,        KEY(j),          hide_bar     },
+    { CTRL,        KEY(semicolon),          hide_bar     },
     { CTRL,        KEY(f),          show_finder        },
     { CTRL,        KEY(n),          finder_next        },
     { CTRL | SFT,  KEY(N),          finder_prev        },
