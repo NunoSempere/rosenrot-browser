@@ -14,7 +14,7 @@
 
 int shortcut_expand(const char* uri, char* output)
 {
-    printf("SHORTCUT EXPAND!");
+    printf("SHORTCUT EXPAND!\n");
     int l1 = strlen(uri);
     int l2 = strlen(output);
     int len;
