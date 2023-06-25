@@ -15,7 +15,7 @@
 int LIBRE_REDIRECT_ENABLED = true;
 int READABILITY_ENABLED = true;
 int CUSTOM_STYLE_ENABLED = true;
-int CUSTOM_USER_AGENT = true;
+int CUSTOM_USER_AGENT = false;
 int NUM_TABS = 0;
 
 // to enable plugins,
