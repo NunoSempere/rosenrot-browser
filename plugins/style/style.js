@@ -50,6 +50,10 @@ if (document.domain == "forum.nunosempere.com" ){
 }
 if (document.domain == "search.nunosempere.com" ){
   styles = `
+   body {
+     /* zoom: 1.8; */
+	 }
+
    footer {
      display: none;
 	 }

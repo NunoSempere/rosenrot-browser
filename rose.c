@@ -468,7 +468,7 @@ void setup(GtkNotebook* notebook, int argc, char** argv)
     window_init(notebook);
 
     // Initialize with first uri
-    char* first_uri = argc > 1 ? argv[1] : NULL;
+    char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_init(notebook, first_uri);
     g_object_set(gtk_settings_get_default(), GTK, NULL);
 
