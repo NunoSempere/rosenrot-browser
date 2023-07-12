@@ -67,7 +67,7 @@ I just found out that you can inspect a GTK application with the GTK explorer if
 
 ### Known bugs/gotchas.
 
-- [ ] Doesn't work with when Spanish is selected as the language, for some reason. 
+- [x] ~~Doesn't work with when Spanish is selected as the language, for some reason~~ => Previously misdiagnosed. The real issue was that it freezes when interacting with [Espanso](https://espanso.org/) substitutions, which I had set-up automatically on my machine when using words containing an ñ, like my own name, Nuño.
 - [ ] At some point, I tried to install libsoup-3 and borked some unknown installation option/paths. So now I need to run rose with `GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/ /bin/rose` (or put `export GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/` in my .bashrc). This won't affect new users though, just double checked on a fresh machine.
 - [ ] By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.
 - [ ] The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /usr/share/themes/rose/style.css, and that file isn't updated until make install.

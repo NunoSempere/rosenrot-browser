@@ -5,7 +5,7 @@
 #include "str_init.h"
 #include "str_replace_start.h"
 
-#define LIBRE_N 19
+#define LIBRE_N 50
 
 /* Uncomment for debug */
 /* #define DEBUG */
@@ -37,6 +37,7 @@ int libre_redirect(const char* uri, char* output)
             "https://translate.google.com",
             "https://www.bloomberg.com",
             "https://www.royalroad.com",
+						"https://archive.org",
             // "https://twitter.com"
         };
 
@@ -48,6 +49,7 @@ int libre_redirect(const char* uri, char* output)
             "https://translate.riverside.rocks/",
             "https://archive.is/https://www.bloomberg.com",
             "https://royalread.nunosempere.com",
+						"https://wayback.nunosempere.com",
             // "https://nitter.net"
         };
 
