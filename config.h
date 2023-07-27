@@ -12,7 +12,7 @@
 #define SEARCH "https://search.nunosempere.com/search?q=%s" // "https://lite.duckduckgo.com/html/?q=%s"
 #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 // #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
-#define CACHE_DIR "/home/loki/.cache/rose"
+#define CACHE_DIR "/home/root/.cache/rose"
 
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
 #define HEIGHT 1080

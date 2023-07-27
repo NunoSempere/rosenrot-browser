@@ -70,6 +70,24 @@ if (document.domain == "twitter.com" ){
   `
 }
 
+if (document.domain == "reddit.com" || document.domain == "old.reddit.com"){
+	styles = `
+	/* kill sidebar ads */
+	.native-ad-container,
+	.premium-banner-outer,
+	.native-sidebar-ad,
+	.infobar-toaster-container,
+	#eu-cookie-policy,
+	.ad-container,
+	a[href="/premium"],
+	[data-promoted^="true"],
+	a[href^="https://alb.reddit.com"]
+	{
+		display: none !important;
+	}
+	`
+}
+
 if(styles != null){
 	  var styleSheet = document.createElement('style')
 	  styleSheet.innerText = styles

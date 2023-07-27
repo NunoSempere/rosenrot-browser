@@ -7,6 +7,8 @@
 
 ## C compiler
 CC=gcc # gcc: more options. Also I don't know whether tcc has error messages/debug options.
+WARNINGS=-Wall
+OPTIMIZED=-O3  #-Ofast
 ## CC=tcc # tcc: much faster
 
 ## Main file
@@ -68,7 +70,7 @@ build: $(SRC) $(PLUGS) $(CONFIG)
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(DEBUG) $(INCS) $(PLUGS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED) $(DEBUG) $(INCS) $(PLUGS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
 inspect: build
 	GTK_DEBUG=interactive ./rose

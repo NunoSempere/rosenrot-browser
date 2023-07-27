@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define STYLE_N 4023 + 1
+#define STYLE_N 4390 + 100
 
 void read_style_js(char* string)
 {
