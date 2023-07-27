@@ -61,10 +61,10 @@ if (document.domain == "search.nunosempere.com" ){
 }
 if (document.domain == "twitter.com" ){
   styles = `
-	[data-testid="placementTracking"] {
+	[data-testid^="placementTracking"] {
 		display: none;
 	}
-	[data-testid="sidebarColumn"] {
+	[data-testid^="sidebarColumn"] {
 		display: none;
 	}
   `
