@@ -61,9 +61,20 @@ if (document.domain == "search.nunosempere.com" ){
 }
 if (document.domain == "twitter.com" ){
   styles = `
+	/* hide promoted tweets */
+	:has(meta[property="og:site_name"][content="Twitter"])
+		[data-testid="cellInnerDiv"]:has(svg + [dir="auto"]) {
+		display: none;
+	}
 	[data-testid^="placementTracking"] {
 		display: none;
 	}
+
+  /* hide what's happening section */
+  :has(meta[property="og:site_name"][content="Twitter"])
+    [aria-label="Timeline: Trending now"] {
+    display: none !important;
+  }
 	[data-testid^="sidebarColumn"] {
 		display: none;
 	}
@@ -79,6 +90,7 @@ if (document.domain == "reddit.com" || document.domain == "old.reddit.com"){
 	.infobar-toaster-container,
 	#eu-cookie-policy,
 	.ad-container,
+	.listingsignupbar,
 	a[href="/premium"],
 	[data-promoted^="true"],
 	a[href^="https://alb.reddit.com"]
