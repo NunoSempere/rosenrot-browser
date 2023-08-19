@@ -488,7 +488,7 @@ void setup(GtkNotebook* notebook, int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-    GtkNotebook* notebook;
+    GtkNotebook* notebook = NULL;
     gtk_init(NULL, NULL);
     setup(notebook, argc, argv);
     gtk_main();

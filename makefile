@@ -72,6 +72,9 @@ build: $(SRC) $(PLUGS) $(CONFIG)
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
 	$(CC) $(WARNINGS) $(OPTIMIZED) $(DEBUG) $(INCS) $(PLUGS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
+lint: 
+	clang-tidy $(SRC) $(PLUGS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.0'` -o rose `pkg-config --libs 'webkit2gtk-4.0'`
+
 inspect: build
 	GTK_DEBUG=interactive ./rose
 
