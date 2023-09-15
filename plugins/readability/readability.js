@@ -2377,10 +2377,18 @@ document.body.innerHTML = `<h1>${article.title}</h1>\n${article.content}`
 
 
 /* Hack for archive.is */ 
-var styles
+var styles = `
+img {
+  max-width: 80% !important;
+	height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+`
 
 if (document.domain == "archive.is" ){
-  styles = `
+  styles+= `
 
   li > span {
 			display: none !important;
@@ -2400,9 +2408,7 @@ if (document.domain == "archive.is" ){
   `
 }
 
-if(styles != null){
-    var styleSheet = document.createElement('style')
-    styleSheet.innerText = styles
-    document.head.appendChild(styleSheet)
-    console.log('Style changed')
-}
+var styleSheet = document.createElement('style')
+styleSheet.innerText = styles
+document.head.appendChild(styleSheet)
+console.log('Style changed')
