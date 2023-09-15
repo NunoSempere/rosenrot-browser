@@ -2,8 +2,8 @@
 
 var styles = null;
 
-if (document.domain == "forum.effectivealtruism.org"){
-	styles = `
+if (document.domain == "forum.effectivealtruism.org") {
+  styles = `
 	    .Layout-main {
                 margin-left: 100px;
 	    }
@@ -18,15 +18,15 @@ if (document.domain == "forum.effectivealtruism.org"){
             .intercom-lightweight-app{
                 display: none;
             }
-  `
-	  var styleSheet = document.createElement('style')
-	  styleSheet.innerText = styles
-	  document.head.appendChild(styleSheet)
-	  console.log('Style changed')
+  `;
+  var styleSheet = document.createElement("style");
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+  console.log("Style changed");
 }
 
-if (document.domain == "mail.proton.me" ){
-	styles = `
+if (document.domain == "mail.proton.me") {
+  styles = `
 	    /*
 			.item-container-row.read, .item-container.read {
 					background-color: white;
@@ -39,16 +39,16 @@ if (document.domain == "mail.proton.me" ){
 			}
      zoom: 0.625 !important;
 			*/
-	`
+	`;
 }
-if (document.domain == "forum.nunosempere.com" ){
+if (document.domain == "forum.nunosempere.com") {
   styles = `
    body {
      zoom: 0.625 !important;
 	 }
-  `
+  `;
 }
-if (document.domain == "search.nunosempere.com" ){
+if (document.domain == "search.nunosempere.com") {
   styles = `
    body {
      /* zoom: 1.8; */
@@ -57,9 +57,9 @@ if (document.domain == "search.nunosempere.com" ){
    footer {
      display: none;
 	 }
-  `
+  `;
 }
-if (document.domain == "twitter.com" ){
+if (document.domain == "twitter.com") {
   styles = `
 	/* hide promoted tweets */
 	:has(meta[property="og:site_name"][content="Twitter"])
@@ -78,11 +78,11 @@ if (document.domain == "twitter.com" ){
 	[data-testid^="sidebarColumn"] {
 		display: none;
 	}
-  `
+  `;
 }
 
-if (document.domain == "reddit.com" || document.domain == "old.reddit.com"){
-	styles = `
+if (document.domain == "reddit.com" || document.domain == "old.reddit.com") {
+  styles = `
 	/* kill sidebar ads */
 	.native-ad-container,
 	.premium-banner-outer,
@@ -97,23 +97,22 @@ if (document.domain == "reddit.com" || document.domain == "old.reddit.com"){
 	{
 		display: none !important;
 	}
-	`
+	`;
 }
 
-if(styles != null){
-	  var styleSheet = document.createElement('style')
-	  styleSheet.innerText = styles
-	  document.head.appendChild(styleSheet)
-	  console.log('Style changed')
+if (styles != null) {
+  var styleSheet = document.createElement("style");
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+  console.log("Style changed");
 }
-
 
 // Replace default alert with new function
 // whose style can be changed!
 window.alert = (message) => {
-    let alertDiv = document.getElementById('customAlert');
-    if (!alertDiv) {
-        const html = `
+  let alertDiv = document.getElementById("customAlert");
+  if (!alertDiv) {
+    const html = `
             <div id="customAlert" class="custom-alert">
                 <div class="custom-alert-content">
                     <p id="alertMessage"></p>
@@ -145,26 +144,29 @@ window.alert = (message) => {
                 }
             </style>
         `;
-        document.body.insertAdjacentHTML('beforeend', html);
-        alertDiv = document.getElementById('customAlert');
-        document.getElementById('alertOkButton').onclick = () => {
-            alertDiv.classList.remove('visible');
-            document.removeEventListener('keydown', dismissAlert);
-        };
+    document.body.insertAdjacentHTML("beforeend", html);
+    alertDiv = document.getElementById("customAlert");
+    document.getElementById("alertOkButton").onclick = () => {
+      alertDiv.classList.remove("visible");
+      document.removeEventListener("keydown", dismissAlert);
+    };
+  }
+
+  const dismissAlert = (event) => {
+    if (
+      event.key === "Enter" /*&& event.ctrlKey*/ &&
+      alertDiv.classList.contains("visible")
+    ) {
+      alertDiv.classList.remove("visible");
+      document.removeEventListener("keydown", dismissAlert);
     }
-  
-    const dismissAlert = (event) => {
-        if (event.key === 'Enter' /*&& event.ctrlKey*/ && alertDiv.classList.contains('visible')) {
-            alertDiv.classList.remove('visible');
-            document.removeEventListener('keydown', dismissAlert);
-        }
-    }
-  
-    document.addEventListener('keydown', dismissAlert);
-    document.getElementById('alertMessage').textContent = message;
-    alertDiv.classList.add('visible');
-}
+  };
+
+  document.addEventListener("keydown", dismissAlert);
+  document.getElementById("alertMessage").textContent = message;
+  alertDiv.classList.add("visible");
+};
 // ^ takes 0.014ms to run, so performance is not the concern here.
 // timed with console.time, console.timeEnd
 
-document.body.style.visibility = "visible"
+document.body.style.visibility = "visible";
