@@ -55,7 +55,7 @@ WebKitWebView* webview_new()
     WebKitCookieManager* cookiemanager;
     WebKitUserContentManager* contentmanager;
 
-    settings = webkit_settings_new_with_settings(WEBKIT, NULL);
+    settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
     if (CUSTOM_USER_AGENT) {
         webkit_settings_set_user_agent(
             settings,

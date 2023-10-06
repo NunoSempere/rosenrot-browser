@@ -2,8 +2,10 @@
 #include <stdbool.h>
 
 /* See more:
- * https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html */
-#define WEBKIT \
+ * https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
+ * 
+*/
+#define WEBKIT_DEFAULT_SETTINGS \
 	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
 	"enable-smooth-scrolling", false, \
     "default-charset", "utf-8"
