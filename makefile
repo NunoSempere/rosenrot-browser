@@ -96,5 +96,4 @@ clean:
 	rm $(CACHE_DIR)
 
 format: $(SRC) $(PLUGS)
-	$(FORMATTER) $(SRC) $(PLUGS)
-
+	$(FORMATTER) $(SRC) $(PLUGS) $(rose.h)

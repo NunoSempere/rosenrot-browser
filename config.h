@@ -5,7 +5,8 @@
  * https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html */
 #define WEBKIT                                                                                     \
 	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true,          \
-	    "enable-smooth-scrolling", false
+	"enable-smooth-scrolling", false, \
+    "default-charset", "utf-8"
 
 #define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 #define ROSE_HOMEPAGE false
