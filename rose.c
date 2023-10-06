@@ -204,7 +204,7 @@ GtkWidget* handle_create_new_tab(WebKitWebView* self,
     } else {
         webkit_web_view_run_javascript(notebook_get_webview(notebook),
             "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
-				return NULL;
+        return NULL;
     }
     /* WebKitGTK documentation recommends returning the new webview.
    * I imagine that this might allow e.g., to go back in a new tab
