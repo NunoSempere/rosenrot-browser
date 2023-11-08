@@ -89,19 +89,33 @@ if (document.domain == "twitter.com") {
   }
   `;
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Select all the videoPlayer elements
-    var videoPlayers = document.querySelectorAll('[data-testid="videoPlayer"]');
+  // Function to hide the grandparent of video players
+  function hideVideoPlayerGrandparent() {
+    document
+      .querySelectorAll('[data-testid="videoPlayer"]')
+      .forEach(function (videoPlayer) {
+        var grandparentElement = videoPlayer.parentElement.parentElement;
+        grandparentElement.style.display = "none";
+      });
+  }
 
-    // Loop through the NodeList
-    videoPlayers.forEach(function(videoPlayer) {
-      // Traverse two levels up the DOM tree
-      var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-      
-      // Hide the grandparent element
-      grandparentElement.style.display = 'none';
+  // Create a new MutationObserver instance
+  var observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.addedNodes.length) {
+        hideVideoPlayerGrandparent(); // Call the function to hide video players
+      }
     });
   });
+
+  // Options for the observer (which mutations to observe)
+  var config = { childList: true, subtree: true };
+
+  // Start observing the target node for configured mutations
+  observer.observe(document.body, config);
+
+  // Call the function initially to hide any video players on initial load
+  hideVideoPlayerGrandparent();
 }
 
 if (document.domain == "reddit.com" || document.domain == "old.reddit.com") {
