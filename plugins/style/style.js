@@ -94,8 +94,14 @@ if (document.domain == "twitter.com") {
     document
       .querySelectorAll('[data-testid="videoPlayer"]')
       .forEach(function (videoPlayer) {
-        var grandparentElement = videoPlayer.parentElement.parentElement;
-        grandparentElement.style.display = "none";
+        var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+        // grandparentElement.style.display = "none";
+        grandparentElement.innerHtml = "none";
+        // Make sure not to replace the content if it's already been replaced
+        if (grandparentElement.getAttribute('data-content-replaced') !== 'true') {
+          grandparentElement.textContent = '  [twitter video]';
+          grandparentElement.setAttribute('data-content-replaced', 'true');
+        }
       });
   }
 
