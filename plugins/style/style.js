@@ -82,12 +82,26 @@ if (document.domain == "twitter.com") {
 	/* hide video */
 
   [data-testid^="videoPlayer"] {
-    display: none;
+    display: none !important;
   }
   [data-testid^="videoPlayer"]:before {
     content: '[twitter video]';
   }
   `;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Select all the videoPlayer elements
+    var videoPlayers = document.querySelectorAll('[data-testid="videoPlayer"]');
+
+    // Loop through the NodeList
+    videoPlayers.forEach(function(videoPlayer) {
+      // Traverse two levels up the DOM tree
+      var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+      
+      // Hide the grandparent element
+      grandparentElement.style.display = 'none';
+    });
+  });
 }
 
 if (document.domain == "reddit.com" || document.domain == "old.reddit.com") {
