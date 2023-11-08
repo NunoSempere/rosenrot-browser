@@ -12,7 +12,7 @@
 
 #define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 #define ROSE_HOMEPAGE false
-#define SEARCH "https://search.nunosempere.com/search?q=%s" // "https://lite.duckduckgo.com/html/?q=%s"
+#define SEARCH "https://lite.duckduckgo.com/html/?q=%s" // "https://search.nunosempere.com/search?q=%s"
 #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 // #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 #define CACHE_DIR "/home/loki/.cache/rose"
@@ -21,7 +21,7 @@
 #define HEIGHT 1080
 #define SEARCH_BAR_SIZE 1200
 #define KEY(x) GDK_KEY_##x
-#define ZOOM 1.6  /* Starting zoom level.*/
+#define ZOOM 1.6 /* Starting zoom level.*/
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
 #define DEBUG false

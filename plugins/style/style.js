@@ -78,6 +78,15 @@ if (document.domain == "twitter.com") {
 	[data-testid^="sidebarColumn"] {
 		display: none;
 	}
+
+	/* hide video */
+
+  [data-testid^="videoPlayer"] {
+    display: none;
+  }
+  [data-testid^="videoPlayer"]:before {
+    content: '[twitter video]';
+  }
   `;
 }
 
