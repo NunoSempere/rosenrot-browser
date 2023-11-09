@@ -95,13 +95,10 @@ if (document.domain == "twitter.com") {
       .querySelectorAll('[data-testid="videoPlayer"]')
       .forEach(function (videoPlayer) {
         var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        // grandparentElement.style.display = "none";
-        grandparentElement.innerHtml = "none";
-        // Make sure not to replace the content if it's already been replaced
-        if (grandparentElement.getAttribute('data-content-replaced') !== 'true') {
-          grandparentElement.textContent = '  [twitter video]';
-          grandparentElement.setAttribute('data-content-replaced', 'true');
-        }
+        var newTextElement = document.createElement('div');
+        newTextElement.textContent = '[twitter video]';
+        newTextElement.style.borderWidth = '0px !important';
+        grandparentElement.replaceWith(newTextElement);
       });
   }
 
