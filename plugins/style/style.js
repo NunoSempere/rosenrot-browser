@@ -78,13 +78,40 @@ if (document.domain == "twitter.com") {
 	[data-testid^="sidebarColumn"] {
 		display: none;
 	}
+
+	/* Hide DMs v2 */
 	[data-testid^="DMDrawerHeader"] {
 		display: none;
 	}
+
+	/* Tweak main column */
 	[data-testid^="primaryColumn"] {
 		min-width: 900px;
 		max-width: 900px;
+	}
 
+	/* Delete a few unused or annoying elements */
+	[aria-label^="Verified Orgs"] {
+		display: none;
+	}
+	[aria-label^="Lists"] {
+		display: none;
+	}
+	[aria-label^="Communities"] {
+		display: none;
+	}
+	[aria-label^="Primary"] {
+		margin-top: 50px;
+	}
+	[role^="progressbar"]{
+		display: none;
+	}
+	.r-1h8ys4a {
+		display: none;
+	}
+
+	.r-ymttw5 { 
+		display: none;
 	}
 
 	/* hide video */

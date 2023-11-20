@@ -84,6 +84,7 @@ install: rose
 	mkdir -p /usr/share/themes/rose
 	cp style.css /usr/share/themes/rose/
 	cp rose-mklink /usr/bin
+	sudo cp rose /usr/bin/rose-browser/twitter # custom twitter tweaks
 
 uninstall: 
 	rm -r /usr/share/themes/rose
