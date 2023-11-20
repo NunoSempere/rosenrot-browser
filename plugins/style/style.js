@@ -89,6 +89,13 @@ if (document.domain == "twitter.com") {
 		min-width: 900px;
 		max-width: 900px;
 	}
+	[data-testid^="cellInnerDiv"] {
+		min-width: 700px;
+		max-width: 700px;
+	}
+	[aria-label^="Timeline: Conversation"]{
+	  margin-left: 145px;
+	}
 
 	/* Delete a few unused or annoying elements */
 	[aria-label^="Verified Orgs"] {
@@ -110,19 +117,12 @@ if (document.domain == "twitter.com") {
 		display: none;
 	}
 
-	.r-ymttw5 { 
-		display: none;
-	}
-
 	/* hide video */
-
   [data-testid^="videoPlayer"] {
     display: none !important;
   }
   [data-testid^="videoPlayer"]:before {
     content: '<br>[twitter video]';
-    margin: 5px;
-    border: 10px;
   }
   `;
 
@@ -134,7 +134,9 @@ if (document.domain == "twitter.com") {
         var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
         var newTextElement = document.createElement('div');
         newTextElement.textContent = ' [ twitter video ] ';
-        newTextElement.style["margin"] = "10px";
+        newTextElement.style["margin-top"] = "10px";
+        newTextElement.style["margin-left"] = "10px";
+        newTextElement.style["margin-bottom"] = "10px";
         grandparentElement.replaceWith(newTextElement);
       });
   }
