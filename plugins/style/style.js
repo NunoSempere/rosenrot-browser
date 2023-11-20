@@ -78,6 +78,14 @@ if (document.domain == "twitter.com") {
 	[data-testid^="sidebarColumn"] {
 		display: none;
 	}
+	[data-testid^="DMDrawerHeader"] {
+		display: none;
+	}
+	[data-testid^="primaryColumn"] {
+		min-width: 900px;
+		max-width: 900px;
+
+	}
 
 	/* hide video */
 
