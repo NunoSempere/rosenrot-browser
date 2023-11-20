@@ -120,7 +120,9 @@ if (document.domain == "twitter.com") {
     display: none !important;
   }
   [data-testid^="videoPlayer"]:before {
-    content: '[twitter video]';
+    content: '<br>[twitter video]';
+    margin: 5px;
+    border: 10px;
   }
   `;
 
@@ -131,8 +133,8 @@ if (document.domain == "twitter.com") {
       .forEach(function (videoPlayer) {
         var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
         var newTextElement = document.createElement('div');
-        newTextElement.textContent = '[twitter video]';
-        newTextElement.style.borderWidth = '0px !important';
+        newTextElement.textContent = ' [ twitter video ] ';
+        newTextElement.style["margin"] = "10px";
         grandparentElement.replaceWith(newTextElement);
       });
   }
