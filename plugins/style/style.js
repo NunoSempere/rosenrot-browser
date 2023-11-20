@@ -113,16 +113,10 @@ if (document.domain == "twitter.com") {
 	[role^="progressbar"]{
 		display: none;
 	}
-	.r-1h8ys4a {
-		display: none;
-	}
 
 	/* hide video */
   [data-testid^="videoPlayer"] {
     display: none !important;
-  }
-  [data-testid^="videoPlayer"]:before {
-    content: '<br>[twitter video]';
   }
   `;
 
