@@ -96,6 +96,9 @@ if (document.domain == "twitter.com") {
 	[aria-label^="Timeline: Conversation"]{
 	  margin-left: 145px;
 	}
+	[data-testid^="DMDrawer"]{
+	  display: none;
+	}
 
 	/* Delete a few unused or annoying elements */
 	[aria-label^="Verified Orgs"] {
