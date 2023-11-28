@@ -121,6 +121,13 @@ if (document.domain == "twitter.com") {
   [data-testid^="videoPlayer"] {
     display: none !important;
   }
+
+  /* No change of colors in hover */
+  *:hover {
+    background-color: inherit !important;
+    transition: none !important;
+  }
+
   `;
 
   // Function to hide the grandparent of video players
