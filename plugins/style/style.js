@@ -127,6 +127,15 @@ if (document.domain == "twitter.com") {
     background-color: inherit !important;
     transition: none !important;
   }
+  /* Hide go to top button */
+  [aria-label^="New posts are available. Push the period key to go to the them."]{
+		display: none;
+  }
+
+  /* No transparency at the top */
+  [aria-live^="polite"]{
+    background: white !important;
+  }
 
   `;
 
