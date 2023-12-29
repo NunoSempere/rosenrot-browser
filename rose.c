@@ -414,7 +414,15 @@ int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
     for (int i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
         if ((e->key.state == keys[i].mod || keys[i].mod == 0x0) && e->key.keyval == keys[i].key)
             return handle_key(keys[i].id, notebook);
-
+    /*
+    printf("Event type: %d\n", e->type);
+    printf("Keyval: %d\n", e->key.keyval);
+    // Note: if I wanted to bind button presses, like the extra button in the mouse, 
+    // I would have to bind the button-press-event signal instead.
+    // Some links in case I go down that road: <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
+    // https://docs.gtk.org/gdk3/union.Event.html
+    // https://docs.gtk.org/gdk3/struct.EventButton.html
+    */
     return 0;
 }
 
