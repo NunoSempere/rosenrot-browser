@@ -412,7 +412,7 @@ int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
     (void)self;
 
     for (int i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
-        if ((e->key.state == keys[i].mod || keys[i].mod == 0x0) && e->key.keyval == keys[i].key )
+        if ((e->key.state == keys[i].mod || keys[i].mod == 0x0) && e->key.keyval == keys[i].key)
             return handle_key(keys[i].id, notebook);
 
     return 0;
