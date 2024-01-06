@@ -316,24 +316,19 @@ int handle_key(func id, GtkNotebook* notebook)
             (zoom = ZOOM));
         break;
 
-    case prev_tab:
-        if (gtk_notebook_get_current_page(notebook) == 0) {
-            gtk_notebook_set_current_page(notebook,
-                gtk_notebook_get_n_pages(notebook) - 1);
-        } else {
-            gtk_notebook_prev_page(notebook);
-        }
-
+    case prev_tab:; // declarations aren't statements
+        // <https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement>
+        int n = gtk_notebook_get_n_pages(notebook);
+        int k = gtk_notebook_get_current_page(notebook);
+        int l = (n + k - 1) % n;
+        gtk_notebook_set_current_page(notebook, l);
         break;
 
-    case next_tab:
-        if (gtk_notebook_get_current_page(notebook) == gtk_notebook_get_n_pages(notebook) - 1) {
-            notebook_append(notebook, NULL);
-            gtk_notebook_set_show_tabs(notebook, true);
-            webkit_web_view_set_zoom_level(notebook_get_webview(notebook), zoom);
-        } else {
-            gtk_notebook_next_page(notebook);
-        }
+    case next_tab:;
+        int m = gtk_notebook_get_n_pages(notebook);
+        int i = gtk_notebook_get_current_page(notebook);
+        int j = (i + 1) % m;
+        gtk_notebook_set_current_page(notebook, j);
         break;
 
     case close_tab:
