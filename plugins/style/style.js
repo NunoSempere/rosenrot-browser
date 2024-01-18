@@ -124,9 +124,15 @@ if (document.domain == "twitter.com") {
 
   /* No change of colors in hover */
   *:hover {
+    /* background-color: white !important; */
+    background-color: !important;
+    transition: none !important;
+  }*/
+  /*
+  *:hover {
     background-color: inherit !important;
     transition: none !important;
-  }
+  }*/
   /* Hide go to top button */
   [aria-label^="New posts are available. Push the period key to go to the them."]{
 		display: none;
