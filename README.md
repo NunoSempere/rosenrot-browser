@@ -6,8 +6,6 @@ Rosenrot is a small browser forked from an earlier version of [rose](https://git
 
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/6-hello-world.png)
 
-![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/0-architecture.png)
-
 ### Installation
 
 You can see detailed instructions [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh), for Ubuntu 20.04 in particular—though they should generalize easily to other distributions. Or a video installing rosenrot in a fresh Ubuntu 20.04 virtual machine [here](https://video.nunosempere.com/w/t3oAvJLPHTSAMViQ6zbwTV).
@@ -52,11 +50,26 @@ You can also create a rose.desktop file so that it will show up in your desktop 
 
 You can see some screenshots in the [images](./images) folder.
 
+## Architecture
+
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/0-architecture.png)
+
 ## Relationship with [rose](https://github.com/mini-rose/rose)
 
 - Rose is a minimal browser based on webkit2gtk. Previously, it described itself as aiming to be a "basement for creating your own browser using [the] gtk and webkit libraries". 
 - Rosenrot is my (@NunoSempere's) fork from rose. It has accumulated quality of life features/cruft that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
 - Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
+
+## Comparison with [surf](https://git.suckless.org/surf/file/surf.c.html)
+
+- Surf is another browser based on GTK/Webkit, from the suckless community. 
+- It is more complex: surf.c has [2170](https://git.suckless.org/surf/file/surf.c.html) lines, vs rose.c's [454](https://git.nunosempere.com/open.source/rosenrot/src/branch/master/rose.c)
+- I find its code messier and harder to understand
+- Conversely, surf has significantly more configuration options, and digs deeper into webkit internals.
+- Anecdotically, surf feels slower, though I haven't tested this rigorously.
+- surf has a larger community, with patches and modifications
+- surf is more opinionated, but also less amateurish. For instance, rosenrot 
+- My recommendation would be to use rose, and if you find some feature missing, either look how surf does it and import it to rose, or move to surf.
 
 ### Contribute
 
@@ -84,16 +97,14 @@ About my own system:
 
 #### Quality of life:
 
-- [ ] Add css for js alerts
-  - [x] Add custom alert whose css can be customized
-  - [ ] Debug problems, e.g., this version is non-blocking.
-- [ ] Figure out better way to have plugins
-- [ ] Double check newtab/next-tab behavior
 - [ ] Document creating new applications, e.g., as in [Asana for Linux](https://git.nunosempere.com/NunoSempere/asana-for-linux)
 - [ ] Add list of similar projects: <https://github.com/qutebrowser/qutebrowser#similar-projects>
 
 #### Maintenance 
 
+- [x] Add css for js alerts
+  - [x] Add custom alert whose css can be customized
+  - [ ] ~~Debug problems, e.g., this version is non-blocking.~~ => will leave as is 
 - [ ] Set [`webkit_web_context_set_sandbox_enabled`](<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended [here](<https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>)
 - [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
@@ -101,6 +112,8 @@ About my own system:
 
 #### Previously done
 
+- [x] Figure out better way to have plugins => stand_in code seems superfluous
+- [x] Double check newtab/next-tab behavior => custom style now loading correctly.
 - [x] Add a shortcut for hiding the search tab. => Already exists: Ctrl+K
 - [x] Find out what each of the css elements refers to. => done, see make inspect
 - [x] Figure out if downloading files is doable. => it is

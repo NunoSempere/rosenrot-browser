@@ -1,31 +1,19 @@
-# make
-# make build
-# (sudo) make install
-# make format
-# make clean
-# make uninstall
 
-## C compiler
-CC=gcc # gcc: more options. Also I don't know whether tcc has error messages/debug options.
-## CC=tcc # tcc: much faster compilation
-## other alternatives; clang, zig cc
+# C compiler
+CC=gcc # other options: tcc, clang, zig cc 
 WARNINGS=-Wall
-OPTIMIZED=-O3 #-Ofast
-LOCAL=-march=native # binary will not be compatible with other computers, but may be much faster
-
-## Main file
-SRC=rose.c
-
-## Dependencies
-DEPS='webkit2gtk-4.0'
 DEBUG= #'-g'
+OPTIMIZED_SOME=-O3 
+OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
 
+# Dependencies
+DEPS='webkit2gtk-4.0'
 INCS=`pkg-config --cflags ${DEPS}`
 LIBS=`pkg-config --libs ${DEPS}`
 
-## Optional adblocking
-## depends on https://github.com/jun7/wyebadblock
-ADBLOCK=#'-L/usr/lib/wyebrowser/adblock.so'
+# Code
+SRC=rose.c
+CONFIG=config.h
 
 ## Plugins
 LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirect/str_replace_start.c ./plugins/libre_redirect/str_init.c 
@@ -33,22 +21,14 @@ CUSTOM_STYLES=./plugins/style/style.c
 READABILITY=./plugins/readability/readability.c 
 SHORTCUTS=./plugins/shortcuts/shortcuts.c
 STAND_IN=./plugins/stand_in/stand_in.c # gives function definitions for the above, which do nothing
-
 PLUGINS=$(LIBRE_REDIRECT) $(READABILITY) $(CUSTOM_STYLES) $(SHORTCUTS)
-# PLUGINS=$(STAND_IN)
-# Note that if you want some plugins but not others,
-# You should edit the stand_in.c file
-
-# CONFIG
-CONFIG=config.h
-# cp -f config.def.h config.h
+ADBLOCK='-L/usr/lib/wyebrowser/adblock.so' ## optional adblocking; depends on https://github.com/jun7/wyebadblock
 
 ## Formatter
 STYLE_BLUEPRINT=webkit
 FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
-## Commands
 
-## Hardcoded paths
+# Change hardcoded paths when building
 ## Cache
 USER=`whoami`
 DEFAULT_CACHE_DIR=/home/loki/.cache/rose
@@ -71,11 +51,16 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_SOME) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
-local: $(SRC) $(PLUGINS) $(CONFIG)
+fast: $(SRC) $(PLUGINS) $(CONFIG)
+	rm -f *.gcda
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED) $(LOCAL) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	@echo "Now use the browser for a while to gather some profiling data"
+	./rose
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	rm -f *.gcda
 
 lint: 
 	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.0'` -o rose `pkg-config --libs 'webkit2gtk-4.0'`
