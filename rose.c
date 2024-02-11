@@ -12,17 +12,19 @@ static GtkNotebook* notebook;
 static GtkWindow* window;
 
 // Search, find and url bar
-static GtkHeaderBar* bar;
-static GtkEntry* bar_line; // widget
-static GtkEntryBuffer* bar_line_text;
-static enum { _SEARCH, _FIND, _HIDDEN } bar_entry_mode;
+static struct {
+    GtkHeaderBar *header;
+    GtkEntry *bar_line;
+    GtkEntryBuffer *bar_line_text;
+    enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
+} bar;
 
 /* Plugins */
-int LIBRE_REDIRECT_ENABLED = true;
-int READABILITY_ENABLED = true;
-int CUSTOM_STYLE_ENABLED = true;
-int CUSTOM_USER_AGENT = false;
-int NUM_TABS = 0;
+#define LIBRE_REDIRECT_ENABLED true
+#define READABILITY_ENABLED true
+#define CUSTOM_STYLE_ENABLED true
+#define CUSTOM_USER_AGENT false
+static int num_tabs = 0;
 /*
 To disable plugins:
 1. set their corresponding variable to false
@@ -182,7 +184,7 @@ GtkWidget* handle_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
 {
-    if (NUM_TABS < MAX_NUM_TABS || NUM_TABS == 0) {
+    if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
         printf("Creating new window: %s\n", uri);
@@ -204,7 +206,7 @@ GtkWidget* handle_create_new_tab(WebKitWebView* self,
 
 void notebook_append(GtkNotebook* notebook, const char* uri)
 {
-    if (NUM_TABS < MAX_NUM_TABS || NUM_TABS == 0) {
+    if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
         GdkVisual* rgba_visual = gdk_screen_get_rgba_visual(screen);
         GdkRGBA rgba;
@@ -220,7 +222,7 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_show_all(GTK_WIDGET(window));
-        gtk_widget_hide(GTK_WIDGET(bar));
+        gtk_widget_hide(GTK_WIDGET(bar.header));
         webkit_web_view_set_background_color(view, &rgba);
         load_uri(view, (uri) ? uri : HOME);
 
@@ -235,7 +237,7 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
         gtk_notebook_set_current_page(notebook, n);
         gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
         webkit_web_view_set_zoom_level(view, ZOOM);
-        NUM_TABS += 1;
+        num_tabs += 1;
     } else {
         webkit_web_view_run_javascript(notebook_get_webview(notebook),
             "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
@@ -244,24 +246,24 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
 
 void show_bar(GtkNotebook* notebook)
 {
-    if (bar_entry_mode == _SEARCH) {
+    if (bar.entry_mode == _SEARCH) {
         const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
-        gtk_entry_set_placeholder_text(bar_line, "Search");
-        gtk_entry_buffer_set_text(bar_line_text, url, strlen(url));
-        gtk_widget_show(GTK_WIDGET(bar));
-        gtk_window_set_focus(window, GTK_WIDGET(bar_line));
-    } else if (bar_entry_mode == _HIDDEN) {
-        gtk_widget_hide(GTK_WIDGET(bar));
+        gtk_entry_set_placeholder_text(bar.bar_line, "Search");
+        gtk_entry_buffer_set_text(bar.bar_line_text, url, strlen(url));
+        gtk_widget_show(GTK_WIDGET(bar.header));
+        gtk_window_set_focus(window, GTK_WIDGET(bar.bar_line));
+    } else if (bar.entry_mode == _HIDDEN) {
+        gtk_widget_hide(GTK_WIDGET(bar.header));
     } else {
         const char* search_text = webkit_find_controller_get_search_text(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 
         if (search_text != NULL)
-            gtk_entry_buffer_set_text(bar_line_text, search_text, strlen(search_text));
+            gtk_entry_buffer_set_text(bar.bar_line_text, search_text, strlen(search_text));
 
-        gtk_entry_set_placeholder_text(bar_line, "Find");
-        gtk_widget_show(GTK_WIDGET(bar));
-        gtk_window_set_focus(window, GTK_WIDGET(bar_line));
+        gtk_entry_set_placeholder_text(bar.bar_line, "Find");
+        gtk_widget_show(GTK_WIDGET(bar.header));
+        gtk_window_set_focus(window, GTK_WIDGET(bar.bar_line));
     }
 }
 
@@ -321,7 +323,7 @@ int handle_key(func id, GtkNotebook* notebook)
 
     case close_tab:
         gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
-        NUM_TABS -= 1;
+        num_tabs -= 1;
 
         switch (gtk_notebook_get_n_pages(notebook)) {
         case 0:
@@ -344,12 +346,12 @@ int handle_key(func id, GtkNotebook* notebook)
         break;
 
     case show_searchbar:
-        bar_entry_mode = _SEARCH;
+        bar.entry_mode = _SEARCH;
         show_bar(notebook);
         break;
 
     case show_finder:
-        bar_entry_mode = _FIND;
+        bar.entry_mode = _FIND;
         show_bar(notebook);
         break;
 
@@ -366,12 +368,12 @@ int handle_key(func id, GtkNotebook* notebook)
     case new_tab:
         notebook_append(notebook, NULL);
         gtk_notebook_set_show_tabs(notebook, true);
-        bar_entry_mode = _SEARCH;
+        bar.entry_mode = _SEARCH;
         show_bar(notebook);
         break;
 
     case hide_bar:
-        bar_entry_mode = _HIDDEN;
+        bar.entry_mode = _HIDDEN;
         show_bar(notebook);
         break;
 
@@ -411,17 +413,17 @@ int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
 
 void search_activate(GtkEntry* self, GtkNotebook* notebook)
 {
-    if (bar_entry_mode == _SEARCH)
+    if (bar.entry_mode == _SEARCH)
         load_uri(notebook_get_webview(notebook),
-            gtk_entry_buffer_get_text(bar_line_text));
-    else if (bar_entry_mode == _FIND)
+            gtk_entry_buffer_get_text(bar.bar_line_text));
+    else if (bar.entry_mode == _FIND)
         webkit_find_controller_search(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
-            gtk_entry_buffer_get_text(bar_line_text),
+            gtk_entry_buffer_get_text(bar.bar_line_text),
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
 
-    gtk_widget_hide(GTK_WIDGET(bar));
+    gtk_widget_hide(GTK_WIDGET(bar.header));
 }
 
 void window_init(GtkNotebook* notebook)
@@ -432,11 +434,11 @@ void window_init(GtkNotebook* notebook)
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
         GTK_STYLE_PROVIDER(css), 800);
     gtk_entry_buffer_new("", 0);
-    gtk_entry_set_alignment(bar_line, 0.48);
-    gtk_widget_set_size_request(GTK_WIDGET(bar_line), BAR_SIZE, -1);
-    gtk_header_bar_set_custom_title(bar, GTK_WIDGET(bar_line));
-    gtk_window_set_titlebar(window, GTK_WIDGET(bar));
-    g_signal_connect(bar_line, "activate", G_CALLBACK(search_activate), notebook);
+    gtk_entry_set_alignment(bar.bar_line, 0.48);
+    gtk_widget_set_size_request(GTK_WIDGET(bar.bar_line), BAR_SIZE, -1);
+    gtk_header_bar_set_custom_title(bar.header, GTK_WIDGET(bar.bar_line));
+    gtk_window_set_titlebar(window, GTK_WIDGET(bar.header));
+    g_signal_connect(bar.bar_line, "activate", G_CALLBACK(search_activate), notebook);
     g_signal_connect(window, "key-press-event", G_CALLBACK(keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 }
@@ -455,9 +457,9 @@ int main(int argc, char** argv)
 
     // Define GTK entities. These are declared globally
     window = GTK_WINDOW(gtk_window_new(0));
-    bar = GTK_HEADER_BAR(gtk_header_bar_new());
-    bar_line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
-    bar_line = GTK_ENTRY(gtk_entry_new_with_buffer(bar_line_text));
+    bar.header = GTK_HEADER_BAR(gtk_header_bar_new());
+    bar.bar_line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
+    bar.bar_line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.bar_line_text));
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     window_init(notebook);
@@ -470,7 +472,7 @@ int main(int argc, char** argv)
     // More GTK stuff
     gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
     gtk_widget_show_all(GTK_WIDGET(window));
-    gtk_widget_hide(GTK_WIDGET(bar));
+    gtk_widget_hide(GTK_WIDGET(bar.header));
 
     // Deal with more uris, if this is necessary.
     if (argc > 2) {
