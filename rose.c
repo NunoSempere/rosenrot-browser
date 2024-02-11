@@ -62,13 +62,6 @@ WebKitWebView* webview_new()
         web_context, "user-content-manager", contentmanager,
         NULL);
 }
-
-WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
-{
-    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
-        notebook, gtk_notebook_get_current_page(notebook)));
-}
-
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
@@ -90,6 +83,14 @@ void load_uri(WebKitWebView* view, const char* uri)
     }
 }
 
+
+WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
+{
+    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
+        notebook, gtk_notebook_get_current_page(notebook)));
+}
+
+/* Deal with new load or changed load */
 void redirect_if_annoying(WebKitWebView* view, const char* uri)
 {
     int l = LIBRE_N + strlen(uri) + 1;
@@ -102,7 +103,6 @@ void redirect_if_annoying(WebKitWebView* view, const char* uri)
         webkit_web_view_load_uri(view, uri_filtered);
     }
 }
-
 void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     GtkNotebook* notebook)
 {
@@ -160,11 +160,11 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     }
 }
 
+/* Create new tabs */
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
-/* notebook_create_new_tab calls handle_create, but  handle_create also calls
- * notebook_create_new_tab. Therefore we need to declare notebook_create_new_tab, so that
- * handle_signal_create_new_tab knows its type.
- */
+// handle_signal_create_new_tab is bound to a signal inside notebook_create_new_tab
+// and itself calls notebook_create_new_tab
+// therefore we need to do a forward declaration for one of them.
 
 GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
@@ -182,14 +182,14 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
             "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
         return NULL;
     }
-    /* WebKitGTK documentation recommends returning the new webview.
-   * I imagine that this might allow e.g., to go back in a new tab
-   * or generally to keep track of history.
-   * However, this would require either modifying notebook_create_new_tab
-   * or duplicating its contents, for unclear gain.
+   /* 
+     WebKitGTK documentation recommends returning the new webview.
+     I imagine that this might allow e.g., to go back in a new tab
+     or generally to keep track of history.
+     However, this would require either modifying notebook_create_new_tab
+     or duplicating its contents, for unclear gain.
    */
 }
-
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
@@ -205,7 +205,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
         g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
-        int n = gtk_notebook_create_new_tab_page(notebook, GTK_WIDGET(view), NULL);
+        int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_show_all(GTK_WIDGET(window));
         gtk_widget_hide(GTK_WIDGET(bar.widget));
@@ -270,24 +270,6 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 }
 
 /* Handle shortcuts */
-// Listen to key presses 
-int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
-{
-    (void)self;
-
-    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
-        if ((event->key.state == shortcut[i].mod || shortcut[i].mod == 0x0) && event->key.keyval == shortcut[i].key)
-            return handle_shortcut(shortcut[i].id, notebook);
-    /*
-    If I wanted to bind button presses, like the extra button in the mouse, 
-    I would have to bind the button-press-event signal instead.
-    Some links in case I go down that road: 
-    - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
-    - <https://docs.gtk.org/gdk3/union.Event.html>
-    - https://docs.gtk.org/gdk3/struct.EventButton.html
-    */
-    return 0;
-}
 // Act when a particular shortcut is detected
 int handle_shortcut(func id, GtkNotebook* notebook)
 {
@@ -412,6 +394,24 @@ int handle_shortcut(func id, GtkNotebook* notebook)
     }
 
     return 1;
+}
+// Listen to key presses 
+int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
+{
+    (void)self;
+
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
+        if ((event->key.state == shortcut[i].mod || shortcut[i].mod == 0x0) && event->key.keyval == shortcut[i].key)
+            return handle_shortcut(shortcut[i].id, notebook);
+    /*
+    If I wanted to bind button presses, like the extra button in the mouse, 
+    I would have to bind the button-press-event signal instead.
+    Some links in case I go down that road: 
+    - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
+    - <https://docs.gtk.org/gdk3/union.Event.html>
+    - https://docs.gtk.org/gdk3/struct.EventButton.html
+    */
+    return 0;
 }
 
 int main(int argc, char** argv)
