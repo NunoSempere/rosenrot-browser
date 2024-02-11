@@ -58,6 +58,7 @@ fast: $(SRC) $(PLUGINS) $(CONFIG)
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
 	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 	@echo "Now use the browser for a while to gather some profiling data"
+	sleep 2
 	./rose
 	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 	rm -f *.gcda
