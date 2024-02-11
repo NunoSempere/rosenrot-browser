@@ -1,4 +1,4 @@
-## Rosenrot
+# Rosenrot
 
 Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose). It has some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and detailed installation instructions for Ubuntu 20.04.
 
@@ -28,7 +28,7 @@ rose
 
 You can also create a rose.desktop file so that it will show up in your desktop environment. You can see this documented [here](./user-scripts/ubuntu-20.04/install-with-dependencies.sh).
 
-### Features
+## Features
 
 - Tabs, cookies, caching
 - Minimal ui, autohiding elements
@@ -36,11 +36,11 @@ You can also create a rose.desktop file so that it will show up in your desktop 
 - Customize appearance of the browser through css
 - Built-in rose-mklink script for in-shell static links
 - Optional adblocking through [wyebadblock](https://github.com/jun7/wyebadblock)
-- Max number of tabs (by default 8), configurable.
 - Plugin system, seeded with:
   - Libre redirect: Redirect annoying websites to open source frontends
   - Readability: Strip webpages of unnecessary elements for ease of reading with a custom shortcut
   - Custom style: Override the css of predetermined websites
+  - Max number of tabs (by default 8), configurable.
   - Stand in plugin: Mimick function definitions which do nothing for the above plugins so that they can be quickly removed
 
 You can see some screenshots in the [images](./images) folder.
@@ -64,7 +64,7 @@ You can see some screenshots in the [images](./images) folder.
 - surf is more opinionated, but also less amateurish. For instance, rosenrot 
 - My recommendation would be to use rose, and if you find some feature missing, either look how surf does it and import it to rose, or move to surf.
 
-### Folk wisdom
+## Folk wisdom
 
 Of general interest:
 
