@@ -7,9 +7,10 @@
 
 ## C compiler
 CC=gcc # gcc: more options. Also I don't know whether tcc has error messages/debug options.
+## CC=tcc # tcc: much faster compilation
+## other alternatives; clang, zig cc
 WARNINGS=-Wall
 OPTIMIZED=-O3  #-Ofast
-## CC=tcc # tcc: much faster
 
 ## Main file
 SRC=rose.c
