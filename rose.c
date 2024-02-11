@@ -19,24 +19,10 @@ static struct {
     enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
 } bar;
 
-/* Plugins */
-#define LIBRE_REDIRECT_ENABLED true
-#define READABILITY_ENABLED true
-#define CUSTOM_STYLE_ENABLED true
-#define CUSTOM_USER_AGENT false
+// Number of open tabs
 static int num_tabs = 0;
-/*
-To disable plugins:
-1. set their corresponding variable to false
-2. you could also look into this file at commit afe93518a for an approach using stand-in code.
-3. recompile 
 
-To remove plugins completely;
-1. Remove the corresponding code in this file by looking for the variables above.
-2. Remove PLUGIN and $(PLUGIN) from the makefiel
-3. Recompile
-*/
-
+/* */
 WebKitWebView* webview_new()
 {
     char* style;

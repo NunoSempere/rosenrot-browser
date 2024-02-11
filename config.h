@@ -16,6 +16,23 @@
 #define SEARCH "https://lite.duckduckgo.com/html/?q=%s" // "https://search.nunosempere.com/search?q=%s"
 #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 
+// Plugins
+#define LIBRE_REDIRECT_ENABLED true
+#define READABILITY_ENABLED true
+#define CUSTOM_STYLE_ENABLED true
+#define CUSTOM_USER_AGENT false
+/*
+To disable plugins:
+1. set their corresponding variable to false
+2. you could also look into this file at commit afe93518a for an approach using stand-in code.
+3. recompile 
+
+To remove plugins completely;
+1. Remove the corresponding code in this file by looking for the variables above.
+2. Remove PLUGIN and $(PLUGIN) from the makefiel
+3. Recompile
+*/
+
 // Webkit settings
 // See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
 #define WEBKIT_DEFAULT_SETTINGS \
