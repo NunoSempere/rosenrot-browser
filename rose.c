@@ -1,20 +1,22 @@
-#include <stdlib.h>
-#include <string.h>
-#include <webkit2/webkit2.h>
 #include "config.h"
 #include "plugins/libre_redirect/libre_redirect.h"
 #include "plugins/readability/readability.h"
 #include "plugins/shortcuts/shortcuts.h"
 #include "plugins/style/style.h"
+#include <stdlib.h>
+#include <string.h>
+#include <webkit2/webkit2.h>
 
 /* Global declarations */
 static GtkNotebook* notebook;
 static GtkWindow* window;
 static struct {
-    GtkHeaderBar *widget;
-    GtkEntry *line;
-    GtkEntryBuffer *line_text;
-    enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
+    GtkHeaderBar* widget;
+    GtkEntry* line;
+    GtkEntryBuffer* line_text;
+    enum { _SEARCH,
+        _FIND,
+        _HIDDEN } entry_mode;
 } bar; // top bar.
 static int num_tabs = 0;
 
@@ -62,7 +64,8 @@ void redirect_if_annoying(WebKitWebView* view, const char* uri)
         }
     }
 }
-void set_custom_style(WebKitWebView* view){
+void set_custom_style(WebKitWebView* view)
+{
     if (CUSTOM_STYLE_ENABLED) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
@@ -78,15 +81,15 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
         /* see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
      */
     case WEBKIT_LOAD_STARTED:
-            set_custom_style(self);
-            redirect_if_annoying(self, webkit_web_view_get_uri(self));
+        set_custom_style(self);
+        redirect_if_annoying(self, webkit_web_view_get_uri(self));
         break;
     case WEBKIT_LOAD_REDIRECTED:
-            redirect_if_annoying(self, webkit_web_view_get_uri(self));
+        redirect_if_annoying(self, webkit_web_view_get_uri(self));
         break;
     case WEBKIT_LOAD_COMMITTED:
-            redirect_if_annoying(self, webkit_web_view_get_uri(self));
-            set_custom_style(self);
+        redirect_if_annoying(self, webkit_web_view_get_uri(self));
+        set_custom_style(self);
         break;
     case WEBKIT_LOAD_FINISHED: {
         /* Add gtk tab title */
@@ -131,7 +134,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
             "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
         return NULL;
     }
-   /* 
+    /* 
      WebKitGTK documentation recommends returning the new webview.
      I imagine that this might allow e.g., to go back in a new tab
      or generally to keep track of history.
@@ -401,14 +404,14 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 int main(int argc, char** argv)
 {
     /* Initialize GTK in general */
-    gtk_init(NULL, NULL);  // <https://docs.gtk.org/gtk3/func.init.html>
+    gtk_init(NULL, NULL); // <https://docs.gtk.org/gtk3/func.init.html>
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // <https://docs.gtk.org/gobject/method.Object.set.html>
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css", NULL);
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);
 
     /* Initialize GTK objects. These are declared as static globals */
-    // Notebook 
+    // Notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_show_tabs(notebook, false);
     gtk_notebook_set_show_border(notebook, false);
