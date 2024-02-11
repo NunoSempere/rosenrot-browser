@@ -84,7 +84,7 @@ static struct {
 	unsigned mod;
 	unsigned key;
 	func id;
-} keys[] = {
+} shortcut[] = {
     { CTRL,        KEY(h),          goback             },
     { CTRL,        KEY(j),          goforward          },
     { CTRL,        KEY(r),          refresh            },

@@ -230,6 +230,8 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
     }
 }
 
+/* Top bar */
+
 void show_bar(GtkNotebook* notebook)
 {
     if (bar.entry_mode == _SEARCH) {
@@ -253,7 +255,46 @@ void show_bar(GtkNotebook* notebook)
     }
 }
 
-int handle_key(func id, GtkNotebook* notebook)
+// Press enter when on bar
+void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
+{
+    // Defines what happens when the user has typed something in the bar and then presses enter
+    if (bar.entry_mode == _SEARCH)
+        load_uri(notebook_get_webview(notebook),
+            gtk_entry_buffer_get_text(bar.line_text));
+    else if (bar.entry_mode == _FIND)
+        webkit_find_controller_search(
+            webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
+            gtk_entry_buffer_get_text(bar.line_text),
+            WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
+            G_MAXUINT);
+
+    gtk_widget_hide(GTK_WIDGET(bar.widget));
+}
+
+/* Handle shortcuts */
+
+// Listen to key presses 
+int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
+{
+    (void)self;
+
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
+        if ((event->key.state == shortcut[i].mod || shortcut[i].mod == 0x0) && event->key.keyval == shortcut[i].key)
+            return handle_shortcut(shortcut[i].id, notebook);
+    /*
+    If I wanted to bind button presses, like the extra button in the mouse, 
+    I would have to bind the button-press-event signal instead.
+    Some links in case I go down that road: 
+    - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
+    - <https://docs.gtk.org/gdk3/union.Event.html>
+    - https://docs.gtk.org/gdk3/struct.EventButton.html
+    */
+    return 0;
+}
+
+// Act when a particular shortcut is detected
+int handle_shortcut(func id, GtkNotebook* notebook)
 {
     static double zoom = ZOOM;
     static bool is_fullscreen = 0;
@@ -378,41 +419,6 @@ int handle_key(func id, GtkNotebook* notebook)
     return 1;
 }
 
-int handle_signal_keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
-{
-    (void)self;
-
-    for (int i = 0; i < sizeof(keys) / sizeof(keys[0]); i++)
-        if ((e->key.state == keys[i].mod || keys[i].mod == 0x0) && e->key.keyval == keys[i].key)
-            return handle_key(keys[i].id, notebook);
-    /*
-    printf("Event type: %d\n", e->type);
-    printf("Keyval: %d\n", e->key.keyval);
-    // Note: if I wanted to bind button presses, like the extra button in the mouse, 
-    // I would have to bind the button-press-event signal instead.
-    // Some links in case I go down that road: <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
-    // https://docs.gtk.org/gdk3/union.Event.html
-    // https://docs.gtk.org/gdk3/struct.EventButton.html
-    */
-    return 0;
-}
-
-void handle_signal_bar_activate(GtkEntry* self, GtkNotebook* notebook)
-{
-    // Defines what happens when the user has typed something in the bar and then presses enter
-    if (bar.entry_mode == _SEARCH)
-        load_uri(notebook_get_webview(notebook),
-            gtk_entry_buffer_get_text(bar.line_text));
-    else if (bar.entry_mode == _FIND)
-        webkit_find_controller_search(
-            webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
-            gtk_entry_buffer_get_text(bar.line_text),
-            WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
-            G_MAXUINT);
-
-    gtk_widget_hide(GTK_WIDGET(bar.widget));
-}
-
 int main(int argc, char** argv)
 {
     // <https://docs.gtk.org/gtk3/func.init.html>
@@ -443,7 +449,7 @@ int main(int argc, char** argv)
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
     gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
-    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_activate), notebook);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
@@ -453,7 +459,7 @@ int main(int argc, char** argv)
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_append(notebook, first_uri);
 
-    // Show 
+    // Show
     gtk_widget_show_all(GTK_WIDGET(window));
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 
