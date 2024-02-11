@@ -1,10 +1,7 @@
-#include <stdlib.h> // necessary for free, malloc.
+#include <stdlib.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
-
 #include "config.h"
-
-// Plugins
 #include "plugins/libre_redirect/libre_redirect.h"
 #include "plugins/readability/readability.h"
 #include "plugins/shortcuts/shortcuts.h"
@@ -16,9 +13,9 @@ static GtkWindow* window;
 
 // Search, find and url bar
 static GtkHeaderBar* bar;
-static GtkEntryBuffer* search_buf;
-static GtkEntry* search;
-static int entry_mode;
+static GtkEntry* bar_line; // widget
+static GtkEntryBuffer* bar_line_text;
+static int bar_entry_mode;
 enum { _SEARCH, _FIND, _HIDDEN };
 
 /* Plugins */
@@ -248,24 +245,24 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
 
 void show_bar(GtkNotebook* notebook)
 {
-    if (entry_mode == _SEARCH) {
+    if (bar_entry_mode == _SEARCH) {
         const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
-        gtk_entry_set_placeholder_text(search, "Search");
-        gtk_entry_buffer_set_text(search_buf, url, strlen(url));
+        gtk_entry_set_placeholder_text(bar_line, "Search");
+        gtk_entry_buffer_set_text(bar_line_text, url, strlen(url));
         gtk_widget_show(GTK_WIDGET(bar));
-        gtk_window_set_focus(window, GTK_WIDGET(search));
-    } else if (entry_mode == _HIDDEN) {
+        gtk_window_set_focus(window, GTK_WIDGET(bar_line));
+    } else if (bar_entry_mode == _HIDDEN) {
         gtk_widget_hide(GTK_WIDGET(bar));
     } else {
         const char* search_text = webkit_find_controller_get_search_text(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 
         if (search_text != NULL)
-            gtk_entry_buffer_set_text(search_buf, search_text, strlen(search_text));
+            gtk_entry_buffer_set_text(bar_line_text, search_text, strlen(search_text));
 
-        gtk_entry_set_placeholder_text(search, "Find");
+        gtk_entry_set_placeholder_text(bar_line, "Find");
         gtk_widget_show(GTK_WIDGET(bar));
-        gtk_window_set_focus(window, GTK_WIDGET(search));
+        gtk_window_set_focus(window, GTK_WIDGET(bar_line));
     }
 }
 
@@ -348,12 +345,12 @@ int handle_key(func id, GtkNotebook* notebook)
         break;
 
     case show_searchbar:
-        entry_mode = _SEARCH;
+        bar_entry_mode = _SEARCH;
         show_bar(notebook);
         break;
 
     case show_finder:
-        entry_mode = _FIND;
+        bar_entry_mode = _FIND;
         show_bar(notebook);
         break;
 
@@ -370,12 +367,12 @@ int handle_key(func id, GtkNotebook* notebook)
     case new_tab:
         notebook_append(notebook, NULL);
         gtk_notebook_set_show_tabs(notebook, true);
-        entry_mode = _SEARCH;
+        bar_entry_mode = _SEARCH;
         show_bar(notebook);
         break;
 
     case hide_bar:
-        entry_mode = _HIDDEN;
+        bar_entry_mode = _HIDDEN;
         show_bar(notebook);
         break;
 
@@ -415,13 +412,13 @@ int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
 
 void search_activate(GtkEntry* self, GtkNotebook* notebook)
 {
-    if (entry_mode == _SEARCH)
+    if (bar_entry_mode == _SEARCH)
         load_uri(notebook_get_webview(notebook),
-            gtk_entry_buffer_get_text(search_buf));
-    else if (entry_mode == _FIND)
+            gtk_entry_buffer_get_text(bar_line_text));
+    else if (bar_entry_mode == _FIND)
         webkit_find_controller_search(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
-            gtk_entry_buffer_get_text(search_buf),
+            gtk_entry_buffer_get_text(bar_line_text),
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
 
@@ -436,11 +433,11 @@ void window_init(GtkNotebook* notebook)
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
         GTK_STYLE_PROVIDER(css), 800);
     gtk_entry_buffer_new("", 0);
-    gtk_entry_set_alignment(search, 0.48);
-    gtk_widget_set_size_request(GTK_WIDGET(search), SEARCH_BAR_SIZE, -1);
-    gtk_header_bar_set_custom_title(bar, GTK_WIDGET(search));
+    gtk_entry_set_alignment(bar_line, 0.48);
+    gtk_widget_set_size_request(GTK_WIDGET(bar_line), BAR_SIZE, -1);
+    gtk_header_bar_set_custom_title(bar, GTK_WIDGET(bar_line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar));
-    g_signal_connect(search, "activate", G_CALLBACK(search_activate), notebook);
+    g_signal_connect(bar_line, "activate", G_CALLBACK(search_activate), notebook);
     g_signal_connect(window, "key-press-event", G_CALLBACK(keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 }
@@ -460,8 +457,8 @@ int main(int argc, char** argv)
     // Define GTK entities. These are declared globally
     window = GTK_WINDOW(gtk_window_new(0));
     bar = GTK_HEADER_BAR(gtk_header_bar_new());
-    search_buf = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
-    search = GTK_ENTRY(gtk_entry_new_with_buffer(search_buf));
+    bar_line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
+    bar_line = GTK_ENTRY(gtk_entry_new_with_buffer(bar_line_text));
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     window_init(notebook);
