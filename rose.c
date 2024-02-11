@@ -18,25 +18,22 @@ static GtkEntryBuffer* bar_line_text;
 static enum { _SEARCH, _FIND, _HIDDEN } bar_entry_mode;
 
 /* Plugins */
-// #include "plugins/stand_in/stand_in.h"
 int LIBRE_REDIRECT_ENABLED = true;
 int READABILITY_ENABLED = true;
 int CUSTOM_STYLE_ENABLED = true;
 int CUSTOM_USER_AGENT = false;
 int NUM_TABS = 0;
+/*
+To disable plugins:
+1. set their corresponding variable to false
+2. you could also look into this file at commit afe93518a for an approach using stand-in code.
+3. recompile 
 
-// To disable plugins: set their variable to false.
-// To exise plugins: 
-
-// 1. Enable them:
-//   - uncomment their #include statement
-//   - set their variable to true
-//   - in build.sh, uncomment: REQS= #./plugins/*/*.c
-// 2. Remove stand_in code;
-//   - Add an #include "plugins/stand_in/stand_in.h" line, and modify
-//   stand_in.c so as to include stand-in functions for the excluded plugin
-//   - In the make file, include the stand_in.c file and exclude the
-//   relevant plugin
+To remove plugins completely;
+1. Remove the corresponding code in this file by looking for the variables above.
+2. Remove PLUGIN and $(PLUGIN) from the makefiel
+3. Recompile
+*/
 
 WebKitWebView* webview_new()
 {

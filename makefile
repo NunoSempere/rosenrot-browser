@@ -30,11 +30,10 @@ LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirec
 CUSTOM_STYLES=./plugins/style/style.c
 READABILITY=./plugins/readability/readability.c 
 SHORTCUTS=./plugins/shortcuts/shortcuts.c
-
 STAND_IN=./plugins/stand_in/stand_in.c # gives function definitions for the above, which do nothing
 
-PLUGS=$(LIBRE_REDIRECT) $(READABILITY) $(CUSTOM_STYLES) $(SHORTCUTS)
-# PLUGS=$(STAND_IN)
+PLUGINS=$(LIBRE_REDIRECT) $(READABILITY) $(CUSTOM_STYLES) $(SHORTCUTS)
+# PLUGINS=$(STAND_IN)
 # Note that if you want some plugins but not others,
 # You should edit the stand_in.c file
 
@@ -56,7 +55,7 @@ CURRENT_CACHE_DIR=/home/$(USER)/.cache/rose
 DEFAULT_DIR=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot
 CURRENT_DIR=`pwd`
 
-build: $(SRC) $(PLUGS) $(CONFIG)
+build: $(SRC) $(PLUGINS) $(CONFIG)
 	# Recompute constants
 	cd plugins/readability/ && sh recompute_READABILITY_N.sh
 	cd plugins/style && sh recompute_STYLE_N.sh 
@@ -70,10 +69,10 @@ build: $(SRC) $(PLUGS) $(CONFIG)
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED) $(DEBUG) $(INCS) $(PLUGS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
 lint: 
-	clang-tidy $(SRC) $(PLUGS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.0'` -o rose `pkg-config --libs 'webkit2gtk-4.0'`
+	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.0'` -o rose `pkg-config --libs 'webkit2gtk-4.0'`
 
 inspect: build
 	GTK_DEBUG=interactive ./rose
@@ -96,5 +95,5 @@ clean:
 	rm rose
 	rm $(CACHE_DIR)
 
-format: $(SRC) $(PLUGS)
-	$(FORMATTER) $(SRC) $(PLUGS) $(rose.h)
+format: $(SRC) $(PLUGINS)
+	$(FORMATTER) $(SRC) $(PLUGINS) $(rose.h)
