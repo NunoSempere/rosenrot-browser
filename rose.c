@@ -13,7 +13,7 @@ static GtkWindow* window;
 
 // Search, find and url bar
 static struct {
-    GtkHeaderBar *header;
+    GtkHeaderBar *widget;
     GtkEntry *line;
     GtkEntryBuffer *line_text;
     enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
@@ -222,7 +222,7 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_show_all(GTK_WIDGET(window));
-        gtk_widget_hide(GTK_WIDGET(bar.header));
+        gtk_widget_hide(GTK_WIDGET(bar.widget));
         webkit_web_view_set_background_color(view, &rgba);
         load_uri(view, (uri) ? uri : HOME);
 
@@ -250,10 +250,10 @@ void show_bar(GtkNotebook* notebook)
         const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
         gtk_entry_set_placeholder_text(bar.line, "Search");
         gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
-        gtk_widget_show(GTK_WIDGET(bar.header));
+        gtk_widget_show(GTK_WIDGET(bar.widget));
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
     } else if (bar.entry_mode == _HIDDEN) {
-        gtk_widget_hide(GTK_WIDGET(bar.header));
+        gtk_widget_hide(GTK_WIDGET(bar.widget));
     } else {
         const char* search_text = webkit_find_controller_get_search_text(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
@@ -262,7 +262,7 @@ void show_bar(GtkNotebook* notebook)
             gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
 
         gtk_entry_set_placeholder_text(bar.line, "Find");
-        gtk_widget_show(GTK_WIDGET(bar.header));
+        gtk_widget_show(GTK_WIDGET(bar.widget));
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
     }
 }
@@ -411,8 +411,9 @@ int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
     return 0;
 }
 
-void search_activate(GtkEntry* self, GtkNotebook* notebook)
+void bar_activate(GtkEntry* self, GtkNotebook* notebook)
 {
+    // Defines what happens when the user has typed something in the bar and then presses enter
     if (bar.entry_mode == _SEARCH)
         load_uri(notebook_get_webview(notebook),
             gtk_entry_buffer_get_text(bar.line_text));
@@ -423,31 +424,15 @@ void search_activate(GtkEntry* self, GtkNotebook* notebook)
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
 
-    gtk_widget_hide(GTK_WIDGET(bar.header));
+    gtk_widget_hide(GTK_WIDGET(bar.widget));
 }
 
 void window_init(GtkNotebook* notebook)
 {
-    GtkCssProvider* css = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css",
-        NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-        GTK_STYLE_PROVIDER(css), 800);
-    gtk_entry_buffer_new("", 0);
-    gtk_entry_set_alignment(bar.line, 0.48);
-    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
-    gtk_header_bar_set_custom_title(bar.header, GTK_WIDGET(bar.line));
-    gtk_window_set_titlebar(window, GTK_WIDGET(bar.header));
-    g_signal_connect(bar.line, "activate", G_CALLBACK(search_activate), notebook);
-    g_signal_connect(window, "key-press-event", G_CALLBACK(keypress), notebook);
-    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 }
 
 void notebook_init(GtkNotebook* notebook, const char* uri)
 {
-    gtk_notebook_set_show_border(notebook, false);
-    gtk_notebook_set_show_tabs(notebook, false);
-    notebook_append(notebook, uri);
 }
 
 int main(int argc, char** argv)
@@ -457,22 +442,40 @@ int main(int argc, char** argv)
 
     // Define GTK entities. These are declared globally
     window = GTK_WINDOW(gtk_window_new(0));
-    bar.header = GTK_HEADER_BAR(gtk_header_bar_new());
+    bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    window_init(notebook);
+
+    // window_init(notebook);
+    GtkCssProvider* css = gtk_css_provider_new();
+    gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css",
+        NULL);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css), 800);
+    gtk_entry_buffer_new("", 0);
+    gtk_entry_set_alignment(bar.line, 0.48);
+    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
+    gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
+    gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
+    g_signal_connect(bar.line, "activate", G_CALLBACK(bar_activate), notebook);
+    g_signal_connect(window, "key-press-event", G_CALLBACK(keypress), notebook);
+    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 
     // Initialize with first uri
     char* first_uri = argc > 1 ? argv[1] : HOME;
-    notebook_init(notebook, first_uri);
+    // notebook_init(notebook, first_uri);
+    gtk_notebook_set_show_border(notebook, false);
+    gtk_notebook_set_show_tabs(notebook, false);
+    notebook_append(notebook, first_uri);
+
     g_object_set(gtk_settings_get_default(), GTK, NULL);
 
     // More GTK stuff
     gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
     gtk_widget_show_all(GTK_WIDGET(window));
-    gtk_widget_hide(GTK_WIDGET(bar.header));
+    gtk_widget_hide(GTK_WIDGET(bar.widget));
 
     // Deal with more uris, if this is necessary.
     if (argc > 2) {
