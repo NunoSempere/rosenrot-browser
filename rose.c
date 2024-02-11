@@ -25,46 +25,7 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
         notebook, gtk_notebook_get_current_page(notebook)));
 }
 
-/* Webkit initialization */
-WebKitWebView* webview_new()
-{
-    char* style;
-    WebKitSettings* settings;
-    WebKitWebContext* web_context;
-    WebKitCookieManager* cookiemanager;
-    WebKitUserContentManager* contentmanager;
-
-    settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
-    if (CUSTOM_USER_AGENT) {
-        webkit_settings_set_user_agent(
-            settings,
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/110.0.0.0 Safari/537.36");
-        // See: <https://www.useragents.me/> for some common user agents
-    }
-    web_context = webkit_web_context_new_with_website_data_manager(
-        webkit_website_data_manager_new(CACHE, NULL));
-    contentmanager = webkit_user_content_manager_new();
-    cookiemanager = webkit_web_context_get_cookie_manager(web_context);
-
-    webkit_cookie_manager_set_persistent_storage(
-        cookiemanager, CACHE_DIR "/cookies.sqlite",
-        WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
-
-    webkit_cookie_manager_set_accept_policy(cookiemanager,
-        WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
-
-    webkit_web_context_set_process_model(
-        web_context, WEBKIT_PROCESS_MODEL_MULTIPLE_SECONDARY_PROCESSES);
-
-    if (g_file_get_contents("~/.config/rose/style.css", &style, NULL, NULL))
-        webkit_user_content_manager_add_style_sheet(
-            contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
-
-    return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context",
-        web_context, "user-content-manager", contentmanager,
-        NULL);
-}
+/* Load content*/
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
@@ -166,7 +127,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
         gtk_notebook_set_show_tabs(notebook, true);
         return NULL;
     } else {
-        webkit_web_view_run_javascript(notebook_get_webview(notebook),
+        webkit_web_view_run_javascript(self,
             "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
         return NULL;
     }
@@ -178,16 +139,55 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
      or duplicating its contents, for unclear gain.
    */
 }
+WebKitWebView* create_new_webview()
+{
+    char* style;
+    WebKitSettings* settings;
+    WebKitWebContext* web_context;
+    WebKitCookieManager* cookiemanager;
+    WebKitUserContentManager* contentmanager;
+
+    settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
+    if (CUSTOM_USER_AGENT) {
+        webkit_settings_set_user_agent(
+            settings,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+            "like Gecko) Chrome/110.0.0.0 Safari/537.36");
+        // See: <https://www.useragents.me/> for some common user agents
+    }
+    web_context = webkit_web_context_new_with_website_data_manager(
+        webkit_website_data_manager_new(CACHE, NULL));
+    contentmanager = webkit_user_content_manager_new();
+    cookiemanager = webkit_web_context_get_cookie_manager(web_context);
+
+    webkit_cookie_manager_set_persistent_storage(
+        cookiemanager, CACHE_DIR "/cookies.sqlite",
+        WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
+
+    webkit_cookie_manager_set_accept_policy(cookiemanager,
+        WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
+
+    webkit_web_context_set_process_model(
+        web_context, WEBKIT_PROCESS_MODEL_MULTIPLE_SECONDARY_PROCESSES);
+
+    if (g_file_get_contents("~/.config/rose/style.css", &style, NULL, NULL))
+        webkit_user_content_manager_add_style_sheet(
+            contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
+
+    return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context",
+        web_context, "user-content-manager", contentmanager,
+        NULL);
+}
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
-    if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
+    if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
         GdkVisual* rgba_visual = gdk_screen_get_rgba_visual(screen);
         GdkRGBA rgba;
 
         gdk_rgba_parse(&rgba, BG_COLOR);
 
-        WebKitWebView* view = webview_new();
+        WebKitWebView* view = create_new_webview();
 
         gtk_widget_set_visual(GTK_WIDGET(window), rgba_visual);
         g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
@@ -200,13 +200,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         webkit_web_view_set_background_color(view, &rgba);
         load_uri(view, (uri) ? uri : HOME);
 
-        if (CUSTOM_STYLE_ENABLED) {
-            char* style_js = malloc(STYLE_N + 1);
-            read_style_js(style_js);
-            webkit_web_view_run_javascript(notebook_get_webview(notebook), style_js,
-                NULL, NULL, NULL);
-            free(style_js);
-        }
+        set_custom_style(view);
 
         gtk_notebook_set_current_page(notebook, n);
         gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
@@ -264,37 +258,39 @@ int handle_shortcut(func id, GtkNotebook* notebook)
     static double zoom = ZOOM;
     static bool is_fullscreen = 0;
 
+    WebKitWebView* view = notebook_get_webview(notebook);
+
     switch (id) {
     case goback:
-        webkit_web_view_go_back(notebook_get_webview(notebook));
+        webkit_web_view_go_back(view);
         break;
     case goforward:
-        webkit_web_view_go_forward(notebook_get_webview(notebook));
+        webkit_web_view_go_forward(view);
         break;
 
     case refresh:
-        webkit_web_view_reload(notebook_get_webview(notebook));
+        webkit_web_view_reload(view);
         break;
     case refresh_force:
-        webkit_web_view_reload_bypass_cache(notebook_get_webview(notebook));
+        webkit_web_view_reload_bypass_cache(view);
         break;
 
     case back_to_home:
-        load_uri(notebook_get_webview(notebook), HOME);
+        load_uri(view, HOME);
         break;
 
     case zoomin:
-        webkit_web_view_set_zoom_level(notebook_get_webview(notebook),
+        webkit_web_view_set_zoom_level(view,
             (zoom += ZOOM_VAL));
         break;
 
     case zoomout:
-        webkit_web_view_set_zoom_level(notebook_get_webview(notebook),
+        webkit_web_view_set_zoom_level(view,
             (zoom -= ZOOM_VAL));
         break;
 
     case zoom_reset:
-        webkit_web_view_set_zoom_level(notebook_get_webview(notebook),
+        webkit_web_view_set_zoom_level(view,
             (zoom = ZOOM));
         break;
 
@@ -349,12 +345,12 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
     case finder_next:
         webkit_find_controller_search_next(
-            webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
+            webkit_web_view_get_find_controller(view));
         break;
 
     case finder_prev:
         webkit_find_controller_search_previous(
-            webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
+            webkit_web_view_get_find_controller(view));
         break;
 
     case new_tab:
@@ -373,7 +369,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         if (READABILITY_ENABLED) {
             char* readability_js = malloc(READABILITY_N + 1);
             read_readability_js(readability_js);
-            webkit_web_view_run_javascript(notebook_get_webview(notebook),
+            webkit_web_view_run_javascript(view,
                 readability_js, NULL, NULL, NULL);
             free(readability_js);
         }
