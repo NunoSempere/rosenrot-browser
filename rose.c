@@ -18,7 +18,14 @@ static struct {
 } bar; // top bar.
 static int num_tabs = 0;
 
-/* */
+/* Utils */
+WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
+{
+    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
+        notebook, gtk_notebook_get_current_page(notebook)));
+}
+
+/* Webkit initialization */
 WebKitWebView* webview_new()
 {
     char* style;
@@ -79,24 +86,28 @@ void load_uri(WebKitWebView* view, const char* uri)
     }
 }
 
-
-WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
-{
-    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
-        notebook, gtk_notebook_get_current_page(notebook)));
-}
-
 /* Deal with new load or changed load */
 void redirect_if_annoying(WebKitWebView* view, const char* uri)
 {
-    int l = LIBRE_N + strlen(uri) + 1;
-    char uri_filtered[l];
-    str_init(uri_filtered, l);
+    if (LIBRE_REDIRECT_ENABLED) {
+        int l = LIBRE_N + strlen(uri) + 1;
+        char uri_filtered[l];
+        str_init(uri_filtered, l);
 
-    int check = libre_redirect(uri, uri_filtered);
+        int check = libre_redirect(uri, uri_filtered);
 
-    if (check == 2) {
-        webkit_web_view_load_uri(view, uri_filtered);
+        if (check == 2) {
+            webkit_web_view_load_uri(view, uri_filtered);
+        }
+    }
+}
+void set_custom_style(WebKitWebView* view){
+    if (CUSTOM_STYLE_ENABLED) {
+        char* style_js = malloc(STYLE_N + 1);
+        read_style_js(style_js);
+        webkit_web_view_run_javascript(notebook_get_webview(notebook), style_js,
+            NULL, NULL, NULL);
+        free(style_js);
     }
 }
 void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
@@ -106,33 +117,15 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
         /* see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
      */
     case WEBKIT_LOAD_STARTED:
-        if (CUSTOM_STYLE_ENABLED) {
-            char* style_js = malloc(STYLE_N + 1);
-            read_style_js(style_js);
-            webkit_web_view_run_javascript(notebook_get_webview(notebook), style_js,
-                NULL, NULL, NULL);
-            free(style_js);
-        }
-        if (LIBRE_REDIRECT_ENABLED) {
+            set_custom_style(self);
             redirect_if_annoying(self, webkit_web_view_get_uri(self));
-        }
         break;
     case WEBKIT_LOAD_REDIRECTED:
-        if (LIBRE_REDIRECT_ENABLED) {
             redirect_if_annoying(self, webkit_web_view_get_uri(self));
-        }
         break;
     case WEBKIT_LOAD_COMMITTED:
-        if (LIBRE_REDIRECT_ENABLED) {
             redirect_if_annoying(self, webkit_web_view_get_uri(self));
-        }
-        if (CUSTOM_STYLE_ENABLED) {
-            char* style_js = malloc(STYLE_N + 1);
-            read_style_js(style_js);
-            webkit_web_view_run_javascript(notebook_get_webview(notebook), style_js,
-                NULL, NULL, NULL);
-            free(style_js);
-        }
+            set_custom_style(self);
         break;
     case WEBKIT_LOAD_FINISHED: {
         /* Add gtk tab title */
