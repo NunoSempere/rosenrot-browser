@@ -49,20 +49,21 @@ You can see some screenshots in the [images](./images) folder.
 
 ### Relationship with [rose](https://github.com/mini-rose/rose)
 
-- Rose is a minimal browser based on webkit2gtk. Previously, it described itself as aiming to be a "basement for creating your own browser using [the] gtk and webkit libraries". 
-- Rosenrot is my (@NunoSempere's) fork from rose. It has accumulated quality of life features/cruft that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
+- Rose is a small browser based on webkit2gtk. Previously, it described itself as aiming to be a "basement for creating your own browser using [the] gtk and webkit libraries". It has since diverged into a more featureful small browser with lua bindings, and rebased its history. You can see the original, minimal version [here](https://github.com/NunoSempere/rosenrot-browser/blob/a45d1c70f58586fed97df70650e5d066b73d0a0d/rose.c).
+- Rosenrot is my (@NunoSempere's) fork from that earlier minimal rose. It has accumulated quality of life features and, honestly, cruft, that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
 - Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
 
 ### Comparison with [surf](https://git.suckless.org/surf/file/surf.c.html)
 
 - Surf is another browser based on GTK/Webkit, from the suckless community. 
-- It is more complex: surf.c has [2170](https://git.suckless.org/surf/file/surf.c.html) lines, vs rose.c's [454](https://git.nunosempere.com/open.source/rosenrot/src/branch/master/rose.c)
-- I find its code messier and harder to understand
+- It is significantly more complex: surf.c has [2170](https://git.suckless.org/surf/file/surf.c.html) lines, vs rose.c's [454](https://git.nunosempere.com/open.source/rosenrot/src/branch/master/rose.c).
+- I find its code messier and harder to understand.
 - Conversely, surf has significantly more configuration options, and digs deeper into webkit internals.
 - Anecdotically, surf feels slower, though I haven't tested this rigorously.
-- surf has a larger community, with patches and modifications
-- surf is more opinionated, but also less amateurish. For instance, rosenrot 
-- My recommendation would be to use rose, and if you find some feature missing, either look how surf does it and import it to rose, or move to surf.
+- surf has a larger community, with patches and modifications.
+- surf is more opinionated, but also less amateurish.
+- My recommendation would be to use rosenrot, and if you find some feature missing, either look how surf does it and import it to rose, or move to surf.
+  - But then again, I've built rosenrot to cater to my own tastes, so I'd say that.
 
 ## Folk wisdom
 
