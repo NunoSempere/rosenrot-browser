@@ -10,16 +10,12 @@
 /* Global declarations */
 static GtkNotebook* notebook;
 static GtkWindow* window;
-
-// Search, find and url bar
 static struct {
     GtkHeaderBar *widget;
     GtkEntry *line;
     GtkEntryBuffer *line_text;
     enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
-} bar;
-
-// Number of open tabs
+} bar; // top bar.
 static int num_tabs = 0;
 
 /* */
@@ -395,7 +391,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
     return 1;
 }
-// Listen to key presses 
+// Listen to key presses and call shortcuts if needed.
 int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 {
     (void)self;
@@ -416,17 +412,14 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 
 int main(int argc, char** argv)
 {
-    // <https://docs.gtk.org/gtk3/func.init.html>
-    gtk_init(NULL, NULL);
-
-    // <https://docs.gtk.org/gobject/method.Object.set.html>
-    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL);
-    // Global css for gtk components 
+    /* Initialize GTK in general */
+    gtk_init(NULL, NULL);  // <https://docs.gtk.org/gtk3/func.init.html>
+    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // <https://docs.gtk.org/gobject/method.Object.set.html>
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css", NULL);
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);
 
-    // Define GTK entities. These are declared globally
+    /* Initialize GTK objects. These are declared as static globals */
     // Notebook 
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_show_tabs(notebook, false);
@@ -450,15 +443,15 @@ int main(int argc, char** argv)
     gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
-    // Initialize with first uri
+    /* Load first tab */
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
-    // Show
+    /* Show to user */
     gtk_widget_show_all(GTK_WIDGET(window));
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 
-    // Deal with more uris, if this is necessary.
+    /* Deal with more tabs */
     if (argc > 2) {
         gtk_notebook_set_show_tabs(notebook, true);
         for (int i = 2; i < argc; i++) {
