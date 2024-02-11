@@ -33,7 +33,7 @@
         "service-worker-registrations-directory", CACHE_DIR
 
 // GTK 
-#define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+#define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 #define KEY(x) GDK_KEY_##x
 
 // Shortcuts

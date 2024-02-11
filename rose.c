@@ -117,7 +117,7 @@ void redirect_if_annoying(WebKitWebView* view, const char* uri)
     }
 }
 
-void load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
+void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     GtkNotebook* notebook)
 {
     switch (load_event) {
@@ -177,10 +177,10 @@ void load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
 void notebook_append(GtkNotebook* notebook, const char* uri);
 /* notebook_append calls handle_create, but  handle_create also calls
  * notebook_append. Therefore we need to declare notebook_append, so that
- * handle_create_new_tab knows its type.
+ * handle_signal_create_new_tab knows its type.
  */
 
-GtkWidget* handle_create_new_tab(WebKitWebView* self,
+GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
 {
@@ -216,8 +216,8 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
         WebKitWebView* view = webview_new();
 
         gtk_widget_set_visual(GTK_WIDGET(window), rgba_visual);
-        g_signal_connect(view, "load_changed", G_CALLBACK(load_changed), notebook);
-        g_signal_connect(view, "create", G_CALLBACK(handle_create_new_tab), notebook);
+        g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
+        g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
@@ -392,7 +392,7 @@ int handle_key(func id, GtkNotebook* notebook)
     return 1;
 }
 
-int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
+int handle_signal_keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
 {
     (void)self;
 
@@ -411,7 +411,7 @@ int keypress(void* self, GdkEvent* e, GtkNotebook* notebook)
     return 0;
 }
 
-void bar_activate(GtkEntry* self, GtkNotebook* notebook)
+void handle_signal_bar_activate(GtkEntry* self, GtkNotebook* notebook)
 {
     // Defines what happens when the user has typed something in the bar and then presses enter
     if (bar.entry_mode == _SEARCH)
@@ -427,53 +427,47 @@ void bar_activate(GtkEntry* self, GtkNotebook* notebook)
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 }
 
-void window_init(GtkNotebook* notebook)
-{
-}
-
-void notebook_init(GtkNotebook* notebook, const char* uri)
-{
-}
-
 int main(int argc, char** argv)
 {
     // <https://docs.gtk.org/gtk3/func.init.html>
     gtk_init(NULL, NULL);
 
+    // <https://docs.gtk.org/gobject/method.Object.set.html>
+    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL);
+    // Global css for gtk components 
+    GtkCssProvider* css = gtk_css_provider_new();
+    gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css", NULL);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);
+
     // Define GTK entities. These are declared globally
+    // Notebook 
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_set_show_tabs(notebook, false);
+    gtk_notebook_set_show_border(notebook, false);
+
+    // Window
     window = GTK_WINDOW(gtk_window_new(0));
-    bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
+    gtk_window_set_default_size(window, WIDTH, HEIGHT);
+    g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
+    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
+    gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
+
+    // Bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
-    gtk_window_set_default_size(window, WIDTH, HEIGHT);
-    notebook = GTK_NOTEBOOK(gtk_notebook_new());
-
-    // window_init(notebook);
-    GtkCssProvider* css = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css",
-        NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-        GTK_STYLE_PROVIDER(css), 800);
-    gtk_entry_buffer_new("", 0);
     gtk_entry_set_alignment(bar.line, 0.48);
     gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_activate), notebook);
+
+    bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
-    g_signal_connect(bar.line, "activate", G_CALLBACK(bar_activate), notebook);
-    g_signal_connect(window, "key-press-event", G_CALLBACK(keypress), notebook);
-    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 
     // Initialize with first uri
     char* first_uri = argc > 1 ? argv[1] : HOME;
-    // notebook_init(notebook, first_uri);
-    gtk_notebook_set_show_border(notebook, false);
-    gtk_notebook_set_show_tabs(notebook, false);
     notebook_append(notebook, first_uri);
 
-    g_object_set(gtk_settings_get_default(), GTK, NULL);
-
-    // More GTK stuff
-    gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
+    // Show 
     gtk_widget_show_all(GTK_WIDGET(window));
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 
@@ -486,5 +480,4 @@ int main(int argc, char** argv)
     }
 
     gtk_main();
-    // this point is never reached, since gtk_main(); never exits.
 }
