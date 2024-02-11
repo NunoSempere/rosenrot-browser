@@ -1,32 +1,42 @@
 #include <gdk/gdkkeysyms.h>
 #include <stdbool.h>
 
-/* See more:
- * https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
- * 
-*/
-#define WEBKIT_DEFAULT_SETTINGS \
-	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
-	"enable-smooth-scrolling", false, \
-    "default-charset", "utf-8"
-
-#define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
-#define ROSE_HOMEPAGE false
-#define SEARCH "https://lite.duckduckgo.com/html/?q=%s" // "https://search.nunosempere.com/search?q=%s"
-#define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
-// #define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
-#define CACHE_DIR "/home/loki/.cache/rose"
-
+// Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
 #define HEIGHT 1080
 #define SEARCH_BAR_SIZE 1000
-#define KEY(x) GDK_KEY_##x
+
+// More user config
 #define ZOOM 1.6 /* Starting zoom level.*/
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
 #define DEBUG false
 #define MAX_NUM_TABS 8 // set to 0 or false if you want unlimited tabs, or look at the relevant rose.c code.
+#define ROSE_HOMEPAGE false
+#define SEARCH "https://lite.duckduckgo.com/html/?q=%s" // "https://search.nunosempere.com/search?q=%s"
+#define HOME ROSE_HOMEPAGE ? "file:///home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-homepage.png" : "https://search.nunosempere.com/"
 
+// Webkit settings
+// See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
+#define WEBKIT_DEFAULT_SETTINGS \
+	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
+	"enable-smooth-scrolling", false, \
+    "default-charset", "utf-8"
+/* CACHE */
+#define CACHE_DIR "/home/loki/.cache/rose"
+#define CACHE                                                                \
+    "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,     \
+        "disk-cache-directory", CACHE_DIR, "dom-cache-directory", CACHE_DIR, \
+        "hsts-cache-directory", CACHE_DIR, "indexeddb-directory", CACHE_DIR, \
+        "itp-directory", CACHE_DIR, "local-storage-directory", CACHE_DIR,    \
+        "offline-application-cache-directory", CACHE_DIR,                    \
+        "service-worker-registrations-directory", CACHE_DIR
+
+// GTK 
+#define GTK "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+#define KEY(x) GDK_KEY_##x
+
+// Shortcuts
 typedef enum {
 	goback,
 	goforward,
@@ -103,3 +113,4 @@ static struct {
     { CTRL,        KEY(p),     prettify          }
 };
 */
+
