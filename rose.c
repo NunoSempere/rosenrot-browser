@@ -14,8 +14,8 @@ static GtkWindow* window;
 // Search, find and url bar
 static struct {
     GtkHeaderBar *header;
-    GtkEntry *bar_line;
-    GtkEntryBuffer *bar_line_text;
+    GtkEntry *line;
+    GtkEntryBuffer *line_text;
     enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
 } bar;
 
@@ -248,10 +248,10 @@ void show_bar(GtkNotebook* notebook)
 {
     if (bar.entry_mode == _SEARCH) {
         const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
-        gtk_entry_set_placeholder_text(bar.bar_line, "Search");
-        gtk_entry_buffer_set_text(bar.bar_line_text, url, strlen(url));
+        gtk_entry_set_placeholder_text(bar.line, "Search");
+        gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
         gtk_widget_show(GTK_WIDGET(bar.header));
-        gtk_window_set_focus(window, GTK_WIDGET(bar.bar_line));
+        gtk_window_set_focus(window, GTK_WIDGET(bar.line));
     } else if (bar.entry_mode == _HIDDEN) {
         gtk_widget_hide(GTK_WIDGET(bar.header));
     } else {
@@ -259,11 +259,11 @@ void show_bar(GtkNotebook* notebook)
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 
         if (search_text != NULL)
-            gtk_entry_buffer_set_text(bar.bar_line_text, search_text, strlen(search_text));
+            gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
 
-        gtk_entry_set_placeholder_text(bar.bar_line, "Find");
+        gtk_entry_set_placeholder_text(bar.line, "Find");
         gtk_widget_show(GTK_WIDGET(bar.header));
-        gtk_window_set_focus(window, GTK_WIDGET(bar.bar_line));
+        gtk_window_set_focus(window, GTK_WIDGET(bar.line));
     }
 }
 
@@ -415,11 +415,11 @@ void search_activate(GtkEntry* self, GtkNotebook* notebook)
 {
     if (bar.entry_mode == _SEARCH)
         load_uri(notebook_get_webview(notebook),
-            gtk_entry_buffer_get_text(bar.bar_line_text));
+            gtk_entry_buffer_get_text(bar.line_text));
     else if (bar.entry_mode == _FIND)
         webkit_find_controller_search(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
-            gtk_entry_buffer_get_text(bar.bar_line_text),
+            gtk_entry_buffer_get_text(bar.line_text),
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
 
@@ -434,11 +434,11 @@ void window_init(GtkNotebook* notebook)
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
         GTK_STYLE_PROVIDER(css), 800);
     gtk_entry_buffer_new("", 0);
-    gtk_entry_set_alignment(bar.bar_line, 0.48);
-    gtk_widget_set_size_request(GTK_WIDGET(bar.bar_line), BAR_SIZE, -1);
-    gtk_header_bar_set_custom_title(bar.header, GTK_WIDGET(bar.bar_line));
+    gtk_entry_set_alignment(bar.line, 0.48);
+    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
+    gtk_header_bar_set_custom_title(bar.header, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.header));
-    g_signal_connect(bar.bar_line, "activate", G_CALLBACK(search_activate), notebook);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(search_activate), notebook);
     g_signal_connect(window, "key-press-event", G_CALLBACK(keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 }
@@ -458,8 +458,8 @@ int main(int argc, char** argv)
     // Define GTK entities. These are declared globally
     window = GTK_WINDOW(gtk_window_new(0));
     bar.header = GTK_HEADER_BAR(gtk_header_bar_new());
-    bar.bar_line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
-    bar.bar_line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.bar_line_text));
+    bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
+    bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     window_init(notebook);
