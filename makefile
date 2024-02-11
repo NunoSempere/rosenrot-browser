@@ -10,7 +10,8 @@ CC=gcc # gcc: more options. Also I don't know whether tcc has error messages/deb
 ## CC=tcc # tcc: much faster compilation
 ## other alternatives; clang, zig cc
 WARNINGS=-Wall
-OPTIMIZED=-O3  #-Ofast
+OPTIMIZED=-O3 #-Ofast
+LOCAL=-march=native # binary will not be compatible with other computers, but may be much faster
 
 ## Main file
 SRC=rose.c
@@ -71,6 +72,10 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
 	$(CC) $(WARNINGS) $(OPTIMIZED) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+
+local: $(SRC) $(PLUGINS) $(CONFIG)
+	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
+	$(CC) $(WARNINGS) $(OPTIMIZED) $(LOCAL) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
 lint: 
 	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.0'` -o rose `pkg-config --libs 'webkit2gtk-4.0'`
