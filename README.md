@@ -63,14 +63,15 @@ You can see some screenshots in the [screenshots](./screenshots) folder.
 
 ### Cool things
 
-I just found out that you can inspect a GTK application with the GTK explorer if you set a certain command-line variable. Try this with `make inspect`.
+- I just found out that you can inspect a GTK application with the GTK explorer if you set a certain command-line variable. Try this with `make inspect`.
+- Static variables keep their value between invocations.
 
 ### Known bugs/gotchas.
 
 General:
 
-- [ ] By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.
-- [ ] The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /usr/share/themes/rose/style.css, and that file isn't updated until make install.
+- By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.
+- The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /usr/share/themes/rose/style.css, and that file isn't updated until make install.
 
 About my own system:
 

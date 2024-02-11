@@ -160,9 +160,9 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     }
 }
 
-void notebook_append(GtkNotebook* notebook, const char* uri);
-/* notebook_append calls handle_create, but  handle_create also calls
- * notebook_append. Therefore we need to declare notebook_append, so that
+void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
+/* notebook_create_new_tab calls handle_create, but  handle_create also calls
+ * notebook_create_new_tab. Therefore we need to declare notebook_create_new_tab, so that
  * handle_signal_create_new_tab knows its type.
  */
 
@@ -174,7 +174,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
         printf("Creating new window: %s\n", uri);
-        notebook_append(notebook, uri);
+        notebook_create_new_tab(notebook, uri);
         gtk_notebook_set_show_tabs(notebook, true);
         return NULL;
     } else {
@@ -185,12 +185,12 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     /* WebKitGTK documentation recommends returning the new webview.
    * I imagine that this might allow e.g., to go back in a new tab
    * or generally to keep track of history.
-   * However, this would require either modifying notebook_append
+   * However, this would require either modifying notebook_create_new_tab
    * or duplicating its contents, for unclear gain.
    */
 }
 
-void notebook_append(GtkNotebook* notebook, const char* uri)
+void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
@@ -205,7 +205,7 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
         g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
         g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
-        int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
+        int n = gtk_notebook_create_new_tab_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_show_all(GTK_WIDGET(window));
         gtk_widget_hide(GTK_WIDGET(bar.widget));
@@ -231,7 +231,6 @@ void notebook_append(GtkNotebook* notebook, const char* uri)
 }
 
 /* Top bar */
-
 void show_bar(GtkNotebook* notebook)
 {
     if (bar.entry_mode == _SEARCH) {
@@ -254,11 +253,9 @@ void show_bar(GtkNotebook* notebook)
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
     }
 }
-
-// Press enter when on bar
+// Handle what happens when the user is on the bar and presses enter
 void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 {
-    // Defines what happens when the user has typed something in the bar and then presses enter
     if (bar.entry_mode == _SEARCH)
         load_uri(notebook_get_webview(notebook),
             gtk_entry_buffer_get_text(bar.line_text));
@@ -273,7 +270,6 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 }
 
 /* Handle shortcuts */
-
 // Listen to key presses 
 int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 {
@@ -292,7 +288,6 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     */
     return 0;
 }
-
 // Act when a particular shortcut is detected
 int handle_shortcut(func id, GtkNotebook* notebook)
 {
@@ -393,7 +388,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         break;
 
     case new_tab:
-        notebook_append(notebook, NULL);
+        notebook_create_new_tab(notebook, NULL);
         gtk_notebook_set_show_tabs(notebook, true);
         bar.entry_mode = _SEARCH;
         show_bar(notebook);
@@ -457,7 +452,7 @@ int main(int argc, char** argv)
 
     // Initialize with first uri
     char* first_uri = argc > 1 ? argv[1] : HOME;
-    notebook_append(notebook, first_uri);
+    notebook_create_new_tab(notebook, first_uri);
 
     // Show
     gtk_widget_show_all(GTK_WIDGET(window));
@@ -467,7 +462,7 @@ int main(int argc, char** argv)
     if (argc > 2) {
         gtk_notebook_set_show_tabs(notebook, true);
         for (int i = 2; i < argc; i++) {
-            notebook_append(notebook, argv[i]);
+            notebook_create_new_tab(notebook, argv[i]);
         }
     }
 
