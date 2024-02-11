@@ -1,10 +1,10 @@
-#include <stdbool.h>
 #include <stdlib.h> // necessary for free, malloc.
 #include <string.h>
 #include <webkit2/webkit2.h>
 
 #include "config.h"
 
+// Plugins
 #include "plugins/libre_redirect/libre_redirect.h"
 #include "plugins/readability/readability.h"
 #include "plugins/shortcuts/shortcuts.h"
@@ -20,15 +20,6 @@ static GtkEntryBuffer* search_buf;
 static GtkEntry* search;
 static int entry_mode;
 enum { _SEARCH, _FIND, _HIDDEN };
-
-/* CACHE */
-#define CACHE                                                                \
-    "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,     \
-        "disk-cache-directory", CACHE_DIR, "dom-cache-directory", CACHE_DIR, \
-        "hsts-cache-directory", CACHE_DIR, "indexeddb-directory", CACHE_DIR, \
-        "itp-directory", CACHE_DIR, "local-storage-directory", CACHE_DIR,    \
-        "offline-application-cache-directory", CACHE_DIR,                    \
-        "service-worker-registrations-directory", CACHE_DIR
 
 /* Plugins */
 // #include "plugins/stand_in/stand_in.h"
