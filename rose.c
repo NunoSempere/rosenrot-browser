@@ -105,7 +105,7 @@ void set_custom_style(WebKitWebView* view){
     if (CUSTOM_STYLE_ENABLED) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
-        webkit_web_view_run_javascript(notebook_get_webview(notebook), style_js,
+        webkit_web_view_run_javascript(view, style_js,
             NULL, NULL, NULL);
         free(style_js);
     }
@@ -154,7 +154,6 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 // handle_signal_create_new_tab is bound to a signal inside notebook_create_new_tab
 // and itself calls notebook_create_new_tab
 // therefore we need to do a forward declaration for one of them.
-
 GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
