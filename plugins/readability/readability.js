@@ -2615,12 +2615,13 @@ var style_sheet_simple = `
 <style type="text/css">
 
 body {
-      padding: 40px 200px 40px 200px;
+      padding: 40px 200px 40px 200px !important;
       font-size: 18px;
       font: 18px/1.5 Roboto;
       line-height: 1.6;
       background-color: #FEFEFE !important;
       color: #444 !important;
+      max-width: 99% !important;
 }
 
 #readOverlay {

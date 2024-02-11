@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define READABILITY_N 88023 + 1000
+#define READABILITY_N 88067 + 1000
 
 void read_readability_js(char* string)
 {

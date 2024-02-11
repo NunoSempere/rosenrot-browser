@@ -10,14 +10,33 @@
 #include "plugins/shortcuts/shortcuts.h"
 #include "plugins/style/style.h"
 
-// #include "plugins/stand_in/stand_in.h"
+/* Global declarations */
+static GtkNotebook* notebook;
+static GtkWindow* window;
 
+// Search, find and url bar
+static GtkHeaderBar* bar;
+static GtkEntryBuffer* search_buf;
+static GtkEntry* search;
+static int entry_mode;
+enum { _SEARCH, _FIND, _HIDDEN };
+
+/* CACHE */
+#define CACHE                                                                \
+    "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,     \
+        "disk-cache-directory", CACHE_DIR, "dom-cache-directory", CACHE_DIR, \
+        "hsts-cache-directory", CACHE_DIR, "indexeddb-directory", CACHE_DIR, \
+        "itp-directory", CACHE_DIR, "local-storage-directory", CACHE_DIR,    \
+        "offline-application-cache-directory", CACHE_DIR,                    \
+        "service-worker-registrations-directory", CACHE_DIR
+
+/* Plugins */
+// #include "plugins/stand_in/stand_in.h"
 int LIBRE_REDIRECT_ENABLED = true;
 int READABILITY_ENABLED = true;
 int CUSTOM_STYLE_ENABLED = true;
 int CUSTOM_USER_AGENT = false;
 int NUM_TABS = 0;
-
 // to enable plugins,
 // 1. Enable them:
 //   - uncomment their #include statement
@@ -28,24 +47,6 @@ int NUM_TABS = 0;
 //   stand_in.c so as to include stand-in functions for the excluded plugin
 //   - In the make file, include the stand_in.c file and exclude the
 //   relevant plugin
-
-#define CACHE                                                                \
-    "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,     \
-        "disk-cache-directory", CACHE_DIR, "dom-cache-directory", CACHE_DIR, \
-        "hsts-cache-directory", CACHE_DIR, "indexeddb-directory", CACHE_DIR, \
-        "itp-directory", CACHE_DIR, "local-storage-directory", CACHE_DIR,    \
-        "offline-application-cache-directory", CACHE_DIR,                    \
-        "service-worker-registrations-directory", CACHE_DIR
-
-enum { _SEARCH,
-    _FIND,
-    _HIDDEN };
-
-static int entry_mode;
-static GtkWindow* window;
-static GtkHeaderBar* bar;
-static GtkEntryBuffer* search_buf;
-static GtkEntry* search;
 
 WebKitWebView* webview_new()
 {
@@ -460,15 +461,18 @@ void notebook_init(GtkNotebook* notebook, const char* uri)
     notebook_append(notebook, uri);
 }
 
-void setup(GtkNotebook* notebook, int argc, char** argv)
+int main(int argc, char** argv)
 {
-    // Define GTK entities
+    // <https://docs.gtk.org/gtk3/func.init.html>
+    gtk_init(NULL, NULL);
+
+    // Define GTK entities. These are declared globally
     window = GTK_WINDOW(gtk_window_new(0));
-    notebook = GTK_NOTEBOOK(gtk_notebook_new());
     bar = GTK_HEADER_BAR(gtk_header_bar_new());
     search_buf = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     search = GTK_ENTRY(gtk_entry_new_with_buffer(search_buf));
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
     window_init(notebook);
 
     // Initialize with first uri
@@ -488,13 +492,7 @@ void setup(GtkNotebook* notebook, int argc, char** argv)
             notebook_append(notebook, argv[i]);
         }
     }
-}
 
-int main(int argc, char** argv)
-{
-    GtkNotebook* notebook = NULL;
-    gtk_init(NULL, NULL);
-    setup(notebook, argc, argv);
     gtk_main();
     // this point is never reached, since gtk_main(); never exits.
 }
