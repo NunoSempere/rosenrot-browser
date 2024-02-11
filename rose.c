@@ -15,8 +15,7 @@ static GtkWindow* window;
 static GtkHeaderBar* bar;
 static GtkEntry* bar_line; // widget
 static GtkEntryBuffer* bar_line_text;
-static int bar_entry_mode;
-enum { _SEARCH, _FIND, _HIDDEN };
+static enum { _SEARCH, _FIND, _HIDDEN } bar_entry_mode;
 
 /* Plugins */
 // #include "plugins/stand_in/stand_in.h"
@@ -25,7 +24,10 @@ int READABILITY_ENABLED = true;
 int CUSTOM_STYLE_ENABLED = true;
 int CUSTOM_USER_AGENT = false;
 int NUM_TABS = 0;
-// to enable plugins,
+
+// To disable plugins: set their variable to false.
+// To exise plugins: 
+
 // 1. Enable them:
 //   - uncomment their #include statement
 //   - set their variable to true
