@@ -75,6 +75,7 @@ typedef enum {
 #define SFT  1 << 0
 #define CTRL 1 << 2
 #define ALT  1 << 3
+// reference: <https://github.com/GNOME/gtk/blob/7ea7d5c3906ccd231b04654101bb742f157d82f6/gdk/gdkenums.h#L140>
 
 static struct {
 	unsigned mod;

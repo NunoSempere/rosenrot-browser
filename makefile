@@ -1,8 +1,8 @@
-
 # C compiler
 CC=gcc # other options: tcc, clang, zig cc 
 WARNINGS=-Wall
 DEBUG= #'-g'
+COMPILETIME_DEPRECATION_WARNINGS=#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED # turns out that webkit2gtk-4.1 is using some deprecated stuff, lol
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
 
@@ -29,12 +29,12 @@ STYLE_BLUEPRINT=webkit
 FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 
 # Change hardcoded paths when building
-## Cache
+## Data dirs
 USER=`whoami`
 DEFAULT_DATA_DIR=/home/nuno/.cache/rose
 CURRENT_DATA_DIR=/home/$(USER)/.cache/rose
 ## dir
-DEFAULT_DIR=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot
+DEFAULT_DIR=/home/nuno/Documents/workspace/rosenrot
 CURRENT_DIR=`pwd`
 
 build: $(SRC) $(PLUGINS) $(CONFIG)
@@ -51,7 +51,7 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_SOME) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_SOME) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) $(COMPILETIME_DEPRECATION_WARNINGS) -o rose $(LIBS) $(ADBLOCK)
 
 fast: $(SRC) $(PLUGINS) $(CONFIG)
 	rm -f *.gcda
@@ -92,7 +92,7 @@ format: $(SRC) $(PLUGINS)
 	$(FORMATTER) $(SRC) $(PLUGINS) $(rose.h)
 
 diagnose_deprecations:
-	make && G_ENABLE_DIAGNOSTIC=1 ./rose
+	G_ENABLE_DIAGNOSTIC=1 ./rose
 
 view-gtk3-version:
 	dpkg -l libgtk-3-0
