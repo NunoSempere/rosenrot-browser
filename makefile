@@ -31,8 +31,8 @@ FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 # Change hardcoded paths when building
 ## Cache
 USER=`whoami`
-DEFAULT_CACHE_DIR=/home/loki/.cache/rose
-CURRENT_CACHE_DIR=/home/$(USER)/.cache/rose
+DEFAULT_DATA_DIR=/home/nuno/.cache/rose
+CURRENT_DATA_DIR=/home/$(USER)/.cache/rose
 ## dir
 DEFAULT_DIR=/home/loki/Documents/core/software/fresh/C/rose-browser/rosenrot
 CURRENT_DIR=`pwd`
@@ -42,10 +42,10 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 	cd plugins/readability/ && sh recompute_READABILITY_N.sh
 	cd plugins/style && sh recompute_STYLE_N.sh 
 	# Make cache
-	mkdir -p $(CURRENT_CACHE_DIR)
+	mkdir -p $(CURRENT_DATA_DIR)
 	# Hardcode cache path
 	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
-		sed -i "s|$(DEFAULT_CACHE_DIR)|$(CURRENT_CACHE_DIR)|g" {} +
+		sed -i "s|$(DEFAULT_DATA_DIR)|$(CURRENT_DATA_DIR)|g" {} +
 	# Hardcode git repository path
 	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
@@ -82,11 +82,14 @@ uninstall:
 	rm -r /usr/share/themes/rose
 	rm /usr/bin/rose
 	rm /usr/bin/rose-mklink
-	rm $(CACHE_DIR)
+	rm $(DATA_DIR)
 
 clean:
 	rm rose
-	rm $(CACHE_DIR)
+	rm $(DATA_DIR)
 
 format: $(SRC) $(PLUGINS)
 	$(FORMATTER) $(SRC) $(PLUGINS) $(rose.h)
+
+diagnose_deprecations:
+	make && G_ENABLE_DIAGNOSTIC=1 ./rose

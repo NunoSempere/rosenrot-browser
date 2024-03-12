@@ -40,8 +40,8 @@ To remove plugins completely;
 	"enable-smooth-scrolling", false, \
     "default-charset", "utf-8"
 /* CACHE */
-#define CACHE_DIR "/home/nuno/.cache/rose"
-#define DATA_MANAGER_OPTS "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,
+#define DATA_DIR "/home/nuno/.cache/rose"
+#define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
 
 // GTK 
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false

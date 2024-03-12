@@ -78,7 +78,7 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
 {
     switch (load_event) {
         /* see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
-     */
+         */
     case WEBKIT_LOAD_STARTED:
         set_custom_style(self);
         redirect_if_annoying(self, webkit_web_view_get_uri(self));
@@ -132,7 +132,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
         return NULL;
     }
-    /* 
+    /*
      WebKitGTK documentation recommends returning the new webview.
      I imagine that this might allow e.g., to go back in a new tab
      or generally to keep track of history.
@@ -385,9 +385,9 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
         if ((event->key.state == shortcut[i].mod || shortcut[i].mod == 0x0) && event->key.keyval == shortcut[i].key)
             return handle_shortcut(shortcut[i].id, notebook);
     /*
-    If I wanted to bind button presses, like the extra button in the mouse, 
+    If I wanted to bind button presses, like the extra button in the mouse,
     I would have to bind the button-press-event signal instead.
-    Some links in case I go down that road: 
+    Some links in case I go down that road:
     - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
     - <https://docs.gtk.org/gdk3/union.Event.html>
     - https://docs.gtk.org/gdk3/struct.EventButton.html
