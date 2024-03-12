@@ -93,3 +93,6 @@ format: $(SRC) $(PLUGINS)
 
 diagnose_deprecations:
 	make && G_ENABLE_DIAGNOSTIC=1 ./rose
+
+view-gtk3-version:
+	dpkg -l libgtk-3-0

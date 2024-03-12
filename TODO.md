@@ -9,7 +9,14 @@
 - [ ] Set [`webkit_web_context_set_sandbox_enabled`](<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended [here](<https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>)
 - [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
-- [ ] Upgrade to GTK-4 / Webkitgtk 6.0? Will take a fair amount of time, since these are not available on Ubuntu 20.04. Instructions [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md)
+- [ ] Upgrade to GTK-4 / Webkitgtk 6.0? Will take a fair amount of time, since these are not available on Ubuntu 20.04. 
+  - Instructions for webkit-6.0 [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md)
+  - Instructions for GTK-4 [here](https://docs.gtk.org/gtk4/migrating-3to4.html)
+  - [ ] Update to webkit2gtk-4.1
+  - [ ] Prepare for GTK-3 to GTK-4 transition
+  - [ ] Remove webkit2gtk-4.1 and download webkit2gtk-6.0
+  - [ ] Attempt to compile
+  - [ ] Change README and point to last Ubuntu 20.04 commit
 
 # Previously done
 
