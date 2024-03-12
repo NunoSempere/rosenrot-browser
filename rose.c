@@ -381,8 +381,15 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 {
     (void)self;
 
+    /*
+        printf("Keypress state: %d\n", event->key.state);
+        if(event->key.state & GDK_CONTROL_MASK){
+            printf("Keypress state is: CONTROL\n");
+        }
+        printf("Keypress value: %d\n", event->key.keyval);
+    */
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
-        if ((event->key.state == shortcut[i].mod || shortcut[i].mod == 0x0) && event->key.keyval == shortcut[i].key)
+        if ((event->key.state & shortcut[i].mod || shortcut[i].mod == 0x0) && event->key.keyval == shortcut[i].key)
             return handle_shortcut(shortcut[i].id, notebook);
     /*
     If I wanted to bind button presses, like the extra button in the mouse,

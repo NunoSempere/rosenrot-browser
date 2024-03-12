@@ -64,7 +64,7 @@ fast: $(SRC) $(PLUGINS) $(CONFIG)
 	rm -f *.gcda
 
 lint: 
-	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.0'` -o rose `pkg-config --libs 'webkit2gtk-4.0'`
+	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.1'` -o rose `pkg-config --libs 'webkit2gtk-4.1'`
 
 inspect: build
 	GTK_DEBUG=interactive ./rose

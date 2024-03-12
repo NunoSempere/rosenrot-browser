@@ -1,5 +1,7 @@
-#include <gdk/gdkkeysyms.h>
 #include <stdbool.h>
+#include <gdk/gdk.h>
+// Previously: #include <gdk/gdkkeysyms.h>
+// But GTK now discourages including the individual headers
 
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
@@ -82,8 +84,8 @@ static struct {
     { CTRL,        KEY(h),          goback             },
     { CTRL,        KEY(j),          goforward          },
     { CTRL,        KEY(r),          refresh            },
-    { CTRL | SFT,  KEY(R),          refresh_force      },
-    { CTRL | SFT,  KEY(H),          back_to_home       },
+    { CTRL,        KEY(R),          refresh_force      },
+    { CTRL,        KEY(H),          back_to_home       },
     { CTRL,        KEY(equal),      zoomin             },
     { CTRL,        KEY(minus),      zoomout            },
     { CTRL,        KEY(0),          zoom_reset         },
@@ -96,7 +98,7 @@ static struct {
     { CTRL,        KEY(semicolon),  hide_bar           },
     { CTRL,        KEY(f),          show_finder        },
     { CTRL,        KEY(n),          finder_next        },
-    { CTRL | SFT,  KEY(N),          finder_prev        },
+    { CTRL,        KEY(N),          finder_prev        },
     { CTRL,        KEY(p),          prettify           }
 };
 /* ^ For controls more akin to normal browsers */
