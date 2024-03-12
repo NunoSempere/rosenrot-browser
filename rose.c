@@ -180,10 +180,6 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
-        GdkVisual* rgba_visual = gdk_screen_get_rgba_visual(screen);
-        GdkRGBA rgba;
-
-        gdk_rgba_parse(&rgba, BG_COLOR);
 
         WebKitWebView* view = create_new_webview();
 
@@ -195,7 +191,6 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_show_all(GTK_WIDGET(window));
         gtk_widget_hide(GTK_WIDGET(bar.widget));
-        webkit_web_view_set_background_color(view, &rgba);
         load_uri(view, (uri) ? uri : HOME);
 
         set_custom_style(view);
