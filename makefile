@@ -7,7 +7,7 @@ OPTIMIZED_SOME=-O3
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
 
 # Dependencies
-DEPS='webkit2gtk-4.0'
+DEPS='webkit2gtk-4.1'
 INCS=`pkg-config --cflags ${DEPS}`
 LIBS=`pkg-config --libs ${DEPS}`
 
