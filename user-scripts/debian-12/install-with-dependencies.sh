@@ -6,8 +6,9 @@ sudo apt install libwebkit2gtk-4.1-dev
 git clone https://github.com/jun7/wyebadblock
 cd wyebadblock
 sudo apt install gstreamer1.0-plugins-good gstreamer1.0-libav
-make
-sudo make install 
+WEBKITVER=4.1 make
+sudo WEBKITVER=4.1 make install
+
 cd ..
 mkdir -p ~/.config/wyebadblock
 cd ~/.config/wyebadblock
@@ -19,6 +20,6 @@ make build # or just make
 sudo make install 
 
 cd  - 
-# Ubuntu desktop icon
+# Debian desktop icon
 chmod +x rose.desktop
 sudo cp rose.desktop /usr/share/applications
