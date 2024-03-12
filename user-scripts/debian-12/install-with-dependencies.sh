@@ -1,6 +1,6 @@
 # Key dependencies
 sudo apt install git vim gcc make
-sudo apt install libwebkit2gtk-4.0-dev
+sudo apt install libwebkit2gtk-4.1-dev
 
 # Optional adblock
 git clone https://github.com/jun7/wyebadblock
