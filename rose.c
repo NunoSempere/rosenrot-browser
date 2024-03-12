@@ -17,7 +17,7 @@ static struct {
     enum { _SEARCH,
         _FIND,
         _HIDDEN } entry_mode;
-} bar; // top bar.
+} bar; 
 static int num_tabs = 0;
 
 /* Utils */
@@ -179,11 +179,9 @@ WebKitWebView* create_new_webview()
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
-        GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
 
         WebKitWebView* view = create_new_webview();
 
-        gtk_widget_set_visual(GTK_WIDGET(window), rgba_visual);
         g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
         g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
@@ -381,13 +379,14 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
  	GdkModifierType event_state = 0;
     gdk_event_get_state(event, &event_state);
 
-    /*
+    int debug_shortcuts = 0;
+    if(debug_shortcuts){
         printf("Keypress state: %d\n", event_state);
-        if(event->key.state & GDK_CONTROL_MASK){
+        if(event_state & GDK_CONTROL_MASK){
             printf("Keypress state is: CONTROL\n");
         }
         printf("Keypress value: %d\n", event_keyval);
-    */
+    }
 
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
         if ((event_state & shortcut[i].mod || shortcut[i].mod == 0x0) && event_keyval == shortcut[i].key)
@@ -399,6 +398,9 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
     - <https://docs.gtk.org/gdk3/union.Event.html>
     - https://docs.gtk.org/gdk3/struct.EventButton.html
+    */
+    /*
+    This API is deprecated in GTK4 :(
     */
     return 0;
 }

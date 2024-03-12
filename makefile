@@ -51,7 +51,7 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_SOME) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) $(COMPILETIME_DEPRECATION_WARNINGS) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) $(COMPILETIME_DEPRECATION_WARNINGS) -o rose $(LIBS) $(ADBLOCK)
 
 fast: $(SRC) $(PLUGINS) $(CONFIG)
 	rm -f *.gcda

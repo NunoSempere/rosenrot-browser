@@ -14,6 +14,7 @@
   - Instructions for GTK-4 [here](https://docs.gtk.org/gtk4/migrating-3to4.html)
   - [ ] Update to webkit2gtk-4.1
   - [ ] Prepare for GTK-3 to GTK-4 transition
+    - [ ] Understand wtf is going on with signals and events: <https://docs.gtk.org/gtk4/migrating-3to4.html#stop-using-gtkwidget-event-signals>. <https://github.com/mini-rose/rose-browser/blob/288bf060d095c4895946669ae50d14193168b69c/src/window.c#L42>
   - [ ] Remove webkit2gtk-4.1 and download webkit2gtk-6.0
   - [ ] Attempt to compile
   - [ ] Change README and point to last Ubuntu 20.04 commit

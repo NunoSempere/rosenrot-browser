@@ -1,7 +1,8 @@
 #include <stdbool.h>
 #include <gdk/gdk.h>
 // Previously: #include <gdk/gdkkeysyms.h>
-// But GTK now discourages including the individual headers
+// But GTK3 discourages including the individual headers
+// In GTK4, the location also changes to <gdk/gdkenums.h>
 
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
@@ -107,23 +108,23 @@ static struct {
  * <https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkkeysyms.h> */
 
 /* Old controls: {
-    { CTRL,	   KEY(h),     goback            },
-    { CTRL,	   KEY(l),     goforward         },
-    { CTRL,	   KEY(r),     refresh	         },
+    { CTRL,	       KEY(h),     goback            },
+    { CTRL,	       KEY(l),     goforward         },
+    { CTRL,	       KEY(r),     refresh	         },
     { CTRL | SFT,  KEY(R),     refresh_force     },
     { CTRL | SFT,  KEY(H),     back_to_home      },
-    { CTRL,	   KEY(equal), zoomin	         },
-    { CTRL,	   KEY(minus), zoomout	         },
-    { CTRL,	   KEY(0),     zoom_reset	 },
-    { ALT,	   KEY(h),     prev_tab	         },
+    { CTRL,	       KEY(equal), zoomin	           },
+    { CTRL,	       KEY(minus), zoomout	         },
+    { CTRL,	       KEY(0),     zoom_reset	       },
+    { ALT,	       KEY(h),     prev_tab	         },
     { CTRL,        KEY(k),     hide_searchbar    },
-    { ALT,	   KEY(l),     next_tab	         },
-    { CTRL,	   KEY(w),     close_tab	 },
-    { 0x0,	   KEY(F11),   toggle_fullscreen },
-    { CTRL,	   KEY(e),     show_searchbar	 },
-    { CTRL,	   KEY(f),     show_finder       },
-    { CTRL,	   KEY(n),     finder_next       },
-    { CTRL | SFT,  KEY(N),     finder_prev	 },
+    { ALT,	       KEY(l),     next_tab	         },
+    { CTRL,	       KEY(w),     close_tab	       },
+    { 0x0,	       KEY(F11),   toggle_fullscreen },
+    { CTRL,	       KEY(e),     show_searchbar	   },
+    { CTRL,	       KEY(f),     show_finder       },
+    { CTRL,	       KEY(n),     finder_next       },
+    { CTRL | SFT,  KEY(N),     finder_prev	     },
     { CTRL,        KEY(p),     prettify          }
 };
 */
