@@ -69,8 +69,7 @@ void set_custom_style(WebKitWebView* view)
     if (CUSTOM_STYLE_ENABLED) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
-        webkit_web_view_run_javascript(view, style_js,
-            NULL, NULL, NULL);
+        webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
         free(style_js);
     }
 }
@@ -130,8 +129,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
         gtk_notebook_set_show_tabs(notebook, true);
         return NULL;
     } else {
-        webkit_web_view_run_javascript(self,
-            "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
+        webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
         return NULL;
     }
     /* 
@@ -210,8 +208,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         webkit_web_view_set_zoom_level(view, ZOOM);
         num_tabs += 1;
     } else {
-        webkit_web_view_run_javascript(notebook_get_webview(notebook),
-            "alert('Too many tabs, not opening a new one')", NULL, NULL, NULL);
+
+        webkit_web_view_evaluate_javascript(notebook_get_webview(notebook), "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
 }
 
@@ -372,8 +370,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         if (READABILITY_ENABLED) {
             char* readability_js = malloc(READABILITY_N + 1);
             read_readability_js(readability_js);
-            webkit_web_view_run_javascript(view,
-                readability_js, NULL, NULL, NULL);
+            webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
             free(readability_js);
         }
         break;
