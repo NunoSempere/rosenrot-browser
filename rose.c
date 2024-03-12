@@ -157,12 +157,12 @@ WebKitWebView* create_new_webview()
         // See: <https://www.useragents.me/> for some common user agents
     }
     web_context = webkit_web_context_new_with_website_data_manager(
-        webkit_website_data_manager_new(CACHE, NULL));
+        webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
     contentmanager = webkit_user_content_manager_new();
     cookiemanager = webkit_web_context_get_cookie_manager(web_context);
 
     webkit_cookie_manager_set_persistent_storage(
-        cookiemanager, CACHE_DIR "/cookies.sqlite",
+        cookiemanager, DATA_DIR "/cookies.sqlite",
         WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
 
     webkit_cookie_manager_set_accept_policy(cookiemanager,

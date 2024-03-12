@@ -41,13 +41,7 @@ To remove plugins completely;
     "default-charset", "utf-8"
 /* CACHE */
 #define CACHE_DIR "/home/nuno/.cache/rose"
-#define CACHE                                                                \
-    "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,     \
-        "disk-cache-directory", CACHE_DIR, "dom-cache-directory", CACHE_DIR, \
-        "hsts-cache-directory", CACHE_DIR, "indexeddb-directory", CACHE_DIR, \
-        "itp-directory", CACHE_DIR, "local-storage-directory", CACHE_DIR,    \
-        "offline-application-cache-directory", CACHE_DIR,                    \
-        "service-worker-registrations-directory", CACHE_DIR
+#define DATA_MANAGER_OPTS "base-cache-directory", CACHE_DIR, "base-data-directory", CACHE_DIR,
 
 // GTK 
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
