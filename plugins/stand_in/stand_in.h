@@ -21,3 +21,4 @@ void read_readability_js(char* string);
 
 void read_style_js(char* string);
 
+int shortcut_expand(const char* uri, char* output);

@@ -1,10 +1,9 @@
 # C compiler
-CC=gcc # other options: tcc, clang, zig cc 
+CC=gcc # alternatives: tcc, clang, zig cc 
 WARNINGS=-Wall
-DEBUG=#'-g'
+DEBUG= # -g
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
-# COMPILETIME_DEPRECATION_WARNINGS=#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED # turns out that webkit2gtk-4.1 is using some deprecated stuff, lol
 
 # Dependencies
 DEPS='webkit2gtk-4.1'
@@ -15,62 +14,50 @@ LIBS=`pkg-config --libs ${DEPS}`
 SRC=rosenrot.c
 CONFIG=config.h
 
-## Plugins
-LIBRE_REDIRECT=./plugins/libre_redirect/libre_redirect.c ./plugins/libre_redirect/str_replace_start.c ./plugins/libre_redirect/str_init.c 
-CUSTOM_STYLES=./plugins/style/style.c
-READABILITY=./plugins/readability/readability.c 
-SHORTCUTS=./plugins/shortcuts/shortcuts.c
-STAND_IN=./plugins/stand_in/stand_in.c # gives function definitions for the above, which do nothing
-PLUGINS=$(LIBRE_REDIRECT) $(READABILITY) $(CUSTOM_STYLES) $(SHORTCUTS)
-ADBLOCK='-L/usr/lib/wyebrowser/adblock.so' ## optional adblocking; depends on https://github.com/jun7/wyebadblock
+# Plugins
+# include plugins/plugins.mk
+PLUGINS=./plugins/stand_in/stand_in.c
 
 ## Formatter
 STYLE_BLUEPRINT=webkit
 FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 
-# Change hardcoded paths when building
-## Data dirs
-USER=`whoami`
-DEFAULT_DATA_DIR=/home/nuno/.cache/rosenrot
-USER_DATA_DIR=/home/$(USER)/.cache/rosenrot
-## Startup image dir
-DEFAULT_DIR=/home/nuno/Documents/workspace/rosenrot
-CURRENT_DIR=`pwd`
+# Runtime files 
+MAINTAINER_CACHE_DIR=/home/nuno/.cache/rosenrot
+USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
+RUNTIME_FILES_DIR=/opt/rosenrot/
 
-build: $(SRC) $(PLUGINS) $(CONFIG)
-	# Recompute constants
-	cd plugins/readability/ && sh recompute_READABILITY_N.sh
-	cd plugins/style && sh recompute_STYLE_N.sh 
-	# Make cache
-	mkdir -p $(USER_DATA_DIR)
-	# Hardcode cache path
-	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
-		sed -i "s|$(DEFAULT_DATA_DIR)|$(USER_DATA_DIR)|g" {} +
-	# Hardcode git repository path
-	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
-		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
-	# Compile rosenrot
-	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
+build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 
-install: rosenrot
-	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
+constants:
+	cd plugins/readability/ && sh recompute_READABILITY_N.sh
+	cd plugins/style && sh recompute_STYLE_N.sh 
+
+user_cache:
+	@ # can't make this with sudo, because USER_CACHE_DIR could be /home/root/.cache
+	mkdir -p $(USER_CACHE_DIR)
+	find . -type f -not -path "*.git*" -not -path "*makefile*" -exec \
+		sed -i "s|$(MAINTAINER_CACHE_DIR)|$(USER_CACHE_DIR)|g" {} +
+
+runtime_files:
+	sudo mkdir -p /opt/rosenrot/
+	sudo cp style.css /opt/rosenrot/
+	sudo cp -r images/flower-imgs /opt/rosenrot/
+
+install: rosenrot runtime_files
 	cp -f rosenrot /usr/bin
-	mkdir -p /usr/share/themes/rosenrot
-	cp style.css /usr/share/themes/rosenrot/
 	cp rosenrot-mklink /usr/bin
-	sudo mkdir -p /usr/bin/rosenrot-browser
-	sudo cp rosenrot /usr/bin/rosenrot-browser/twitter # custom twitter tweaks
 
 uninstall: 
-	rm -r /usr/share/themes/rosenrot
+	rm -r /opt/rosenrot
 	rm /usr/bin/rosenrot
 	rm /usr/bin/rosenrot-mklink
-	rm $(DATA_DIR)
+	rm $(USER_CACHE_DIR)
 
 clean:
 	rm rosenrot
-	rm $(DATA_DIR)
+	rm $(USER_CACHE_DIR)
 
 format: $(SRC) $(PLUGINS)
 	$(FORMATTER) $(SRC) $(PLUGINS) $(rosenrot.h)
@@ -98,3 +85,9 @@ diagnose_deprecations:
 
 view-gtk3-version:
 	dpkg -l libgtk-3-0
+
+twitter:
+	sudo mkdir -p /usr/bin/rosenrot-browser
+	sudo cp rosenrot /usr/bin/rosenrot-browser/twitter 
+
+# COMPILETIME_DEPRECATION_WARNINGS=#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED # turns out that webkit2gtk-4.1 is using some deprecated stuff, lol

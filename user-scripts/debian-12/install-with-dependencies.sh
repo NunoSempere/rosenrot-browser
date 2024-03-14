@@ -23,6 +23,8 @@ cd  -
 # Debian desktop icon
 chmod +x rosenrot.desktop
 sudo cp rosenrot.desktop /usr/share/applications
+mkdir -p /opt/rosenrot
+sudo cp rosenrot-desktop-icon.png /opt/rosenrot/
 
 # Optionally, set a shortcut (within GNOME)
 # https://askubuntu.com/questions/597395/how-to-set-custom-keyboard-shortcuts-from-terminal/1007035#1007035

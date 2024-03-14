@@ -1,7 +1,6 @@
 * {
 	font-size: 25px;
-	/*@Base; */
-	/* border-bottom-color: @Base; */
+	color: #333;
 }
 
 /* Make titlebar pretty gigantic. I'm pretty myopic. */
