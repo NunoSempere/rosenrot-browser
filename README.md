@@ -106,7 +106,7 @@ See [this blog post](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api
 
 Migration instructions for migration to webkit2gtk-6 and GTK4 can be seen [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md) and [here](https://docs.gtk.org/gtk4/migrating-3to4.html).
 
-Rosenrot is currently on the stable webkit2gtk-4.1 release using GTK3. It has plans to eventually migrate to webkit2gtk-6.0 eventually but not soon.
+Rosenrot is currently on the stable webkit2gtk-4.1 release using GTK3, and has removed deprecated webkit apis. It has plans to eventually migrate to webkit2gtk-6.0 eventually but not soon, because the GTK4 rewrite seems onerous.
 
 ## Ubuntu 20.04
 
