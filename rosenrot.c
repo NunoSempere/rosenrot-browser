@@ -30,12 +30,12 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 void show_bar(GtkNotebook* notebook);
 void load_uri(WebKitWebView* view, const char* uri)
 {
-    if (strlen(uri) == 0){
+    if (strlen(uri) == 0) {
         webkit_web_view_load_uri(view, "");
         bar.entry_mode = _SEARCH;
         show_bar(notebook);
 
-    }else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
+    } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
     } else {
         // Check for shortcuts
