@@ -17,7 +17,7 @@ static struct {
     enum { _SEARCH,
         _FIND,
         _HIDDEN } entry_mode;
-} bar; 
+} bar;
 static int num_tabs = 0;
 
 /* Utils */
@@ -376,13 +376,13 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 
     guint event_keyval = 0;
     gdk_event_get_keyval(event, &event_keyval);
- 	GdkModifierType event_state = 0;
+    GdkModifierType event_state = 0;
     gdk_event_get_state(event, &event_state);
 
     int debug_shortcuts = 0;
-    if(debug_shortcuts){
+    if (debug_shortcuts) {
         printf("Keypress state: %d\n", event_state);
-        if(event_state & GDK_CONTROL_MASK){
+        if (event_state & GDK_CONTROL_MASK) {
             printf("Keypress state is: CONTROL\n");
         }
         printf("Keypress value: %d\n", event_keyval);
