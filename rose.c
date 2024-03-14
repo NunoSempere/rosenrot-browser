@@ -1,11 +1,9 @@
-#include "config.h"
-#include "plugins/libre_redirect/libre_redirect.h"
-#include "plugins/readability/readability.h"
-#include "plugins/shortcuts/shortcuts.h"
-#include "plugins/style/style.h"
 #include <stdlib.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
+
+#include "config.h"
+#include "plugins/plugins.h"
 
 /* Global declarations */
 static GtkNotebook* notebook;
@@ -399,9 +397,7 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     - <https://docs.gtk.org/gdk3/union.Event.html>
     - https://docs.gtk.org/gdk3/struct.EventButton.html
     */
-    /*
-    This API is deprecated in GTK4 :(
-    */
+    // This API is deprecated in GTK4 :(
     return 0;
 }
 
@@ -414,7 +410,7 @@ int main(int argc, char** argv)
     gtk_css_provider_load_from_path(css, "/usr/share/themes/rose/style.css", NULL);
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);
 
-    /* Initialize GTK objects. These are declared as static globals */
+    /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_show_tabs(notebook, false);
