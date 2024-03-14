@@ -12,7 +12,7 @@ INCS=`pkg-config --cflags ${DEPS}`
 LIBS=`pkg-config --libs ${DEPS}`
 
 # Code
-SRC=rose.c
+SRC=rosenrot.c
 CONFIG=config.h
 
 ## Plugins
@@ -31,8 +31,8 @@ FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 # Change hardcoded paths when building
 ## Data dirs
 USER=`whoami`
-DEFAULT_DATA_DIR=/home/nuno/.cache/rose
-USER_DATA_DIR=/home/$(USER)/.cache/rose
+DEFAULT_DATA_DIR=/home/nuno/.cache/rosenrot
+USER_DATA_DIR=/home/$(USER)/.cache/rosenrot
 ## Startup image dir
 DEFAULT_DIR=/home/nuno/Documents/workspace/rosenrot
 CURRENT_DIR=`pwd`
@@ -51,50 +51,50 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 
-install: rose
+install: rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	cp -f rose /usr/bin
-	mkdir -p /usr/share/themes/rose
-	cp style.css /usr/share/themes/rose/
-	cp rose-mklink /usr/bin
-	sudo mkdir -p /usr/bin/rose-browser
-	sudo cp rose /usr/bin/rose-browser/twitter # custom twitter tweaks
+	cp -f rosenrot /usr/bin
+	mkdir -p /usr/share/themes/rosenrot
+	cp style.css /usr/share/themes/rosenrot/
+	cp rosenrot-mklink /usr/bin
+	sudo mkdir -p /usr/bin/rosenrot-browser
+	sudo cp rosenrot /usr/bin/rosenrot-browser/twitter # custom twitter tweaks
 
 uninstall: 
-	rm -r /usr/share/themes/rose
-	rm /usr/bin/rose
-	rm /usr/bin/rose-mklink
+	rm -r /usr/share/themes/rosenrot
+	rm /usr/bin/rosenrot
+	rm /usr/bin/rosenrot-mklink
 	rm $(DATA_DIR)
 
 clean:
-	rm rose
+	rm rosenrot
 	rm $(DATA_DIR)
 
 format: $(SRC) $(PLUGINS)
-	$(FORMATTER) $(SRC) $(PLUGINS) $(rose.h)
+	$(FORMATTER) $(SRC) $(PLUGINS) $(rosenrot.h)
 
 lint: 
-	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.1'` -o rose `pkg-config --libs 'webkit2gtk-4.1'`
+	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.1'` -o rosenrot `pkg-config --libs 'webkit2gtk-4.1'`
 
 ## A few more commands:
 
 fast: $(SRC) $(PLUGINS) $(CONFIG)
 	rm -f *.gcda
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 	@echo "Now use the browser for a while to gather some profiling data"
 	sleep 2
-	./rose
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	./rosenrot
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 	rm -f *.gcda
 
 inspect: build
-	GTK_DEBUG=interactive ./rose
+	GTK_DEBUG=interactive ./rosenrot
 
 diagnose_deprecations:
-	G_ENABLE_DIAGNOSTIC=1 ./rose
+	G_ENABLE_DIAGNOSTIC=1 ./rosenrot
 
 view-gtk3-version:
 	dpkg -l libgtk-3-0

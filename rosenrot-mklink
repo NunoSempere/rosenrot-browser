@@ -1,7 +1,7 @@
 #!/bin/sh
 
 test "$1" = "--help" || test -z "$1" && {
-    printf "%s\n" "usage: rose-mklink <alias> <url>" \
+    printf "%s\n" "usage: rosenrot-mklink <alias> <url>" \
         "Create a /usr/bin link to a website."
 	exit
 }
@@ -12,6 +12,6 @@ test -z "$2" || {
 		exit 1
 	}
 
-	printf "#!/bin/sh\n\nrose %s" "$2" > /usr/bin/$1
+	printf "#!/bin/sh\n\nrosenrot %s" "$2" > /usr/bin/$1
 	chmod +x /usr/bin/$1
 }

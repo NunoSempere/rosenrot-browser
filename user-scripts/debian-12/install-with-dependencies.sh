@@ -21,5 +21,5 @@ sudo make install
 
 cd  - 
 # Debian desktop icon
-chmod +x rose.desktop
-sudo cp rose.desktop /usr/share/applications
+chmod +x rosenrot.desktop
+sudo cp rosenrot.desktop /usr/share/applications
