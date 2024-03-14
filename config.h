@@ -15,9 +15,11 @@
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
 #define DEBUG false
 #define MAX_NUM_TABS 8 // set to 0 or false if you want unlimited tabs, or look at the relevant rose.c code.
-#define ROSE_HOMEPAGE false
-#define SEARCH "https://lite.duckduckgo.com/html/?q=%s" // "https://search.nunosempere.com/search?q=%s"
-#define HOME ROSE_HOMEPAGE ? "file:///home/nuno/Documents/workspace/rosenrot/user-scripts/debian-12/rose-images/rose-homepage-2.png" : "https://search.nunosempere.com/"
+#define SEARCH "https://search.nunosempere.com/search?q=%s"
+// #define SEARCH "https://lite.duckduckgo.com/html/?q=%s" 
+#define HOME "" 
+// #define HOME "https://search.nunosempere.com/"
+// #define HOME "file:///home/nuno/Documents/workspace/rosenrot/user-scripts/debian-12/rose-images/rose-homepage-2.png" 
 
 // Plugins
 #define LIBRE_REDIRECT_ENABLED true

@@ -4,7 +4,7 @@ Rosenrot is a small browser forked from an earlier version of [rose](https://git
 
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/7-hello-world-search.png)
 
-![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/6-hello-world.png)
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/3-multiple-tabs.png)
 
 ### Installation and usage
 
