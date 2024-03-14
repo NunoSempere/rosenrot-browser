@@ -1,10 +1,10 @@
 # C compiler
 CC=gcc # other options: tcc, clang, zig cc 
 WARNINGS=-Wall
-DEBUG= #'-g'
-COMPILETIME_DEPRECATION_WARNINGS=#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED # turns out that webkit2gtk-4.1 is using some deprecated stuff, lol
+DEBUG=#'-g'
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
+# COMPILETIME_DEPRECATION_WARNINGS=#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED # turns out that webkit2gtk-4.1 is using some deprecated stuff, lol
 
 # Dependencies
 DEPS='webkit2gtk-4.1'
@@ -32,8 +32,8 @@ FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 ## Data dirs
 USER=`whoami`
 DEFAULT_DATA_DIR=/home/nuno/.cache/rose
-CURRENT_DATA_DIR=/home/$(USER)/.cache/rose
-## dir
+USER_DATA_DIR=/home/$(USER)/.cache/rose
+## Startup image dir
 DEFAULT_DIR=/home/nuno/Documents/workspace/rosenrot
 CURRENT_DIR=`pwd`
 
@@ -42,32 +42,16 @@ build: $(SRC) $(PLUGINS) $(CONFIG)
 	cd plugins/readability/ && sh recompute_READABILITY_N.sh
 	cd plugins/style && sh recompute_STYLE_N.sh 
 	# Make cache
-	mkdir -p $(CURRENT_DATA_DIR)
+	mkdir -p $(USER_DATA_DIR)
 	# Hardcode cache path
 	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
-		sed -i "s|$(DEFAULT_DATA_DIR)|$(CURRENT_DATA_DIR)|g" {} +
+		sed -i "s|$(DEFAULT_DATA_DIR)|$(USER_DATA_DIR)|g" {} +
 	# Hardcode git repository path
 	find $(CURRENT_DIR) -type f -not -path "*.git*" -not -path "*makefile*" -exec \
 		sed -i "s|$(DEFAULT_DIR)|$(CURRENT_DIR)|g" {} +
 	# Compile rosenrot
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) $(COMPILETIME_DEPRECATION_WARNINGS) -o rose $(LIBS) $(ADBLOCK)
-
-fast: $(SRC) $(PLUGINS) $(CONFIG)
-	rm -f *.gcda
-	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
-	@echo "Now use the browser for a while to gather some profiling data"
-	sleep 2
-	./rose
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
-	rm -f *.gcda
-
-lint: 
-	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.1'` -o rose `pkg-config --libs 'webkit2gtk-4.1'`
-
-inspect: build
-	GTK_DEBUG=interactive ./rose
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
 
 install: rose
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
@@ -90,6 +74,24 @@ clean:
 
 format: $(SRC) $(PLUGINS)
 	$(FORMATTER) $(SRC) $(PLUGINS) $(rose.h)
+
+lint: 
+	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.1'` -o rose `pkg-config --libs 'webkit2gtk-4.1'`
+
+## A few more commands:
+
+fast: $(SRC) $(PLUGINS) $(CONFIG)
+	rm -f *.gcda
+	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	@echo "Now use the browser for a while to gather some profiling data"
+	sleep 2
+	./rose
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rose $(LIBS) $(ADBLOCK)
+	rm -f *.gcda
+
+inspect: build
+	GTK_DEBUG=interactive ./rose
 
 diagnose_deprecations:
 	G_ENABLE_DIAGNOSTIC=1 ./rose
