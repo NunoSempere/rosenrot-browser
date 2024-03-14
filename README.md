@@ -100,8 +100,6 @@ The "architecture" of the application looks as follows:
 
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/0-architecture.png)
 
-Specific to my own system:
-
 ## webkit2gtk-4.0 vs webkit2gtk-4.1 vs webkit2gtk-6.0
 
 See [this blog post](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api-for-gtk-4-is-now-stable/) for details. webkit2gtk-4.0  is deprecated, webkit2gtk-4.1 is the current [stable](https://webkitgtk.org/reference/webkit2gtk/stable/index.html) release and uses GTK3. webkit2gtk-6.0 is the current [unstable](https://webkitgtk.org/reference/webkitgtk/unstable/index.html) release, and uses GTK4.
