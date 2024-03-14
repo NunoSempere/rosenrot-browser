@@ -15,8 +15,8 @@ SRC=rosenrot.c
 CONFIG=config.h
 
 # Plugins
-# include plugins/plugins.mk
-PLUGINS=./plugins/stand_in/stand_in.c
+include plugins/plugins.mk
+# PLUGINS=./plugins/stand_in/stand_in.c
 
 ## Formatter
 STYLE_BLUEPRINT=webkit
@@ -77,10 +77,10 @@ fast: $(SRC) $(PLUGINS) $(CONFIG)
 	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 	rm -f *.gcda
 
-inspect: build
+inspect: rosenrot 
 	GTK_DEBUG=interactive ./rosenrot
 
-diagnose_deprecations:
+diagnose_deprecations: rosenrot
 	G_ENABLE_DIAGNOSTIC=1 ./rosenrot
 
 view-gtk3-version:
