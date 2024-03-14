@@ -45,7 +45,27 @@ You can also create a rose.desktop file so that it will show up in your desktop 
 
 You can see some screenshots in the [images](./images) folder.
 
-## Comparisons 
+## Similar projects
+
+Here are some similar projects that I could find (minimalist, mostly based on webkit):
+
+- [Surf](https://git.suckless.org/surf/). Suckless community. Similar goals, higher coding standards, less actively maintained.
+- [Rose](https://github.com/mini-rose/rose-browser). Lua integrations, supports compilation with GTK4. Every now and then, the developer nukes the git history and tries some different approach.
+- [Epiphany](https://gitlab.gnome.org/GNOME/epiphany). GNOME. Clean browser, distributed via flathub, aimed at nontechnical users. Seems actively maintained.
+- [Vimb](https://github.com/fanglingsu/vimb). Reasonably actively maintained, vim keybindings.
+- [Nyxt](https://github.com/atlas-engineer/nyxt). Emphasis on sophisticated key bindings. 
+- [Wyeb](https://github.com/jun7/wyeb)
+- [Luakit](https://github.com/luakit/luakit)
+- ~~[Qutebrowser](https://github.com/qutebrowser/qutebrowser). More actively maintained. I don't understand the tech stack.~~ [Based](https://github.com/qutebrowser/qutebrowser/blob/main/doc/faq.asciidoc) on [Chromium](https://wiki.qt.io/QtWebEngine)
+
+Here are other projects I haven't checked out as much: [netsurf](https://www.netsurf-browser.org/), [uzbl](https://www.uzbl.org/), [edbrowse](https://github.com/CMB/edbrowse), 
+
+Here are projects with their own rendering engines which could appeal to users of rosenrot:
+
+- [lynx](https://lynx.invisible-island.net/) (links, elinks), [w3m](https://w3m.sourceforge.net/): command line browsers.
+- [dillo](https://github.com/dillo-browser/dillo/). Has its own rendering engine, and no javascript.
+- [Ladybird](https://github.com/SerenityOS/serenity/tree/master/Ladybird). SerenityOS. Uses its own html and javascript engine. Compiling it on a mainstream Linux distribution, and documenting instructions could be an interesting project, but the few times I've tried that I've failed.
+- [servo](https://github.com/servo/servo). Firefox/Mozilla. An in-development browser engine written in Rust, meant to replace Gecko. Could be extremely cool once it is ready, but it has been many years in development.
 
 ### Relationship with [rose](https://github.com/mini-rose/rose)
 

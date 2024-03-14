@@ -6,4 +6,4 @@ Terminal=false
 Exec=/bin/rose %u
 Name=Rose
 Comment=Minimalistic browser
-Icon=/home/nuno/Documents/workspace/rosenrot/user-scripts/ubuntu-20.04/rose-images/rose-desktop-icon.png
+Icon=/home/nuno/Documents/workspace/rosenrot/user-scripts/debian-12/rose-images/rose-desktop-icon.png
