@@ -2,9 +2,11 @@
 
 Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose). It has some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and detailed installation instructions for Debian 12.
 
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/3-init.png)
+
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/7-hello-world-search.png)
 
-![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/3-multiple-tabs.png)
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/6-multiple-tabs.png)
 
 ### Installation and usage
 
