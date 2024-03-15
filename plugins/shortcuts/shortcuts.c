@@ -31,6 +31,7 @@ int shortcut_expand(const char* uri, char* output)
         strcpy(tmp_output, output);
 
         char* shortcuts[] = {
+            "!x",
             "!fnf",
             "!fnc",
             "!hn",
@@ -38,6 +39,7 @@ int shortcut_expand(const char* uri, char* output)
         };
 
         char* expansions[] = {
+            "https://twitter.com"
             "https://forum.nunosempere.com/frontpage",
             "https://forum.nunosempere.com/comments",
             "https://news.ycombinator.com",

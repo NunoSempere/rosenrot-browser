@@ -3,6 +3,7 @@
 var styles = null;
 
 if (document.domain == "forum.effectivealtruism.org") {
+  /*
   styles = `
 	    .Layout-main {
                 margin-left: 100px;
@@ -23,6 +24,7 @@ if (document.domain == "forum.effectivealtruism.org") {
   styleSheet.innerText = styles;
   document.head.appendChild(styleSheet);
   console.log("Style changed");
+  */
 }
 
 if (document.domain == "mail.proton.me") {
