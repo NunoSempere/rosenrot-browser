@@ -25,7 +25,7 @@ tabs {
 }
 
 tab {
-	margin: 2px 5px 2px 0px;
+	margin: 2px 5px 4px 0px; /* top right bottom left */
 	padding: 5px;
 	border-style: solid;
   font-size: 27px;
