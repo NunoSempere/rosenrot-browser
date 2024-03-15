@@ -5,6 +5,8 @@
 - [ ] Document creating new applications, e.g., as in [Asana for Linux](https://git.nunosempere.com/NunoSempere/asana-for-linux)
 - [ ] Use something other than Whatsapp as an example syslink.
 - [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
+  - See whether it even exists at all
+- [ ] Fix PageUp/PageDown shortcuts.
 - [ ] Upgrade to GTK-4 / Webkitgtk 6.0? Will take a fair amount of time, since GTK4 redesigns the application model somewhat.
   - Instructions for webkit-6.0 [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md)
   - Instructions for GTK-4 [here](https://docs.gtk.org/gtk4/migrating-3to4.html)

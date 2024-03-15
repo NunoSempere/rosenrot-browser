@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
+#include <gdk/gdk.h>
 
 #include "config.h"
 #include "plugins/plugins.h"
@@ -391,6 +392,8 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
             printf("Keypress state is: CONTROL\n");
         }
         printf("Keypress value: %d\n", event_keyval);
+        printf("PageUp: %d\n", KEY(Page_Up));
+        printf("PageDown: %d\n", KEY(Page_Down));
     }
 
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
