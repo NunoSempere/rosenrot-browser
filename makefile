@@ -1,9 +1,9 @@
 # C compiler
 CC=gcc # alternatives: tcc, clang, zig cc 
 WARNINGS=-Wall
-DEBUG= # -g
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
+DEBUG= # -g
 
 # Dependencies
 DEPS='webkit2gtk-4.1'
@@ -31,14 +31,18 @@ build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 
 constants:
+	@echo "# Computing constants"
 	cd plugins/readability/ && sh recompute_READABILITY_N.sh
 	cd plugins/style && sh recompute_STYLE_N.sh 
+	@echo
 
 user_cache:
-	@ # can't make this with sudo, because USER_CACHE_DIR could be /home/root/.cache
+	@if [ `id -u` -eq 0 ]; then echo "can't run make user_cache with sudo, because USER_CACHE_DIR would be /home/root/.cache"; return 1; fi
+	@echo "# Create user cache"
 	mkdir -p $(USER_CACHE_DIR)
 	find . -type f -not -path "*.git*" -not -path "*makefile*" -exec \
 		sed -i "s|$(MAINTAINER_CACHE_DIR)|$(USER_CACHE_DIR)|g" {} +
+	@echo
 
 runtime_files:
 	sudo mkdir -p /opt/rosenrot/

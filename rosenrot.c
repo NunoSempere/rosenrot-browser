@@ -447,7 +447,9 @@ int main(int argc, char** argv)
 
     /* Show to user */
     gtk_widget_show_all(GTK_WIDGET(window));
-    // gtk_widget_hide(GTK_WIDGET(bar.widget));
+    if (argc != 0) {
+        gtk_widget_hide(GTK_WIDGET(bar.widget));
+    }
 
     /* Deal with more tabs */
     if (argc > 2) {
