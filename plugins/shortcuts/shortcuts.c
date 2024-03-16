@@ -32,6 +32,7 @@ int shortcut_expand(const char* uri, char* output)
 
         char* shortcuts[] = {
             "!x",
+            "!blog",
             "!fnf",
             "!fnc",
             "!hn",
@@ -39,7 +40,8 @@ int shortcut_expand(const char* uri, char* output)
         };
 
         char* expansions[] = {
-            "https://twitter.com"
+            "https://twitter.com",
+            "https://nunosempere.com/blog",
             "https://forum.nunosempere.com/frontpage",
             "https://forum.nunosempere.com/comments",
             "https://news.ycombinator.com",
