@@ -34,8 +34,8 @@ To disable plugins:
 3. recompile 
 
 To remove plugins completely;
-1. Remove the corresponding code in this file by looking for the variables above.
-2. Remove PLUGIN and $(PLUGIN) from the makefiel
+1. Remove the corresponding code in the rosenrot.c by looking for the variables above.
+2. Remove PLUGIN and $(PLUGIN) from the makefile
 3. Recompile
 */
 

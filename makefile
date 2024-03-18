@@ -48,6 +48,8 @@ runtime_files:
 	sudo mkdir -p /opt/rosenrot/
 	sudo cp style.css /opt/rosenrot/
 	sudo cp -r images/flower-imgs /opt/rosenrot/
+	sudo cp plugins/style/style.js /opt/rosenrot/
+	sudo cp plugins/readability/readability.js /opt/rosenrot/
 
 install: rosenrot runtime_files
 	cp -f rosenrot /usr/bin
@@ -67,8 +69,7 @@ format: $(SRC) $(PLUGINS)
 	$(FORMATTER) $(SRC) $(PLUGINS) $(rosenrot.h)
 
 lint: 
-	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3    `pkg-config --cflags 'webkit2gtk-4.1'` -o rosenrot `pkg-config --libs 'webkit2gtk-4.1'`
-
+	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3 $(INCS) -o rosenrot $(LIBS)
 ## A few more commands:
 
 fast: $(SRC) $(PLUGINS) $(CONFIG)

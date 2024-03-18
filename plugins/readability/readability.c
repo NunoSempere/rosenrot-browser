@@ -5,9 +5,10 @@
 
 void read_readability_js(char* string)
 {
-    FILE* fp = fopen("/home/nuno/Documents/workspace/rosenrot/plugins/readability/readability.js", "r");
+    FILE* fp = fopen("/opt/rosenrot/readability.js", "r");
     if (!fp) { // fp is NULL, fopen failed
         fprintf(stderr, "Failed to open file\n");
+        fprintf(stderr, "Consider running $ sudo make runtime_files\n");
         string = NULL;
         return;
     }
