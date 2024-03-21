@@ -15,7 +15,8 @@
 #define BG_COLOR "#FEFEFE" /* "FEFEFE", "#1E1E2E" */
 #define DEBUG false
 #define MAX_NUM_TABS 8 // set to 0 or false if you want unlimited tabs, or look at the relevant rose.c code.
-#define SEARCH "https://search.nunosempere.com/search?q=%s"
+#define SEARCH "https://search.brave.com/search?q=%s"
+// #define SEARCH "https://search.nunosempere.com/search?q=%s"
 // #define SEARCH "https://lite.duckduckgo.com/html/?q=%s" 
 #define HOME "" 
 // ^ Could also be a website ("https://search.nunosempere.com"), or a file ("file:///opt/rose/homepage.png")
