@@ -1,10 +1,17 @@
-// Replicates the Stylus app: <https://addons.mozilla.org/en-GB/firefox/addon/styl-us/>
+// Inspired by the Stylus app: <https://addons.mozilla.org/en-GB/firefox/addon/styl-us/>
 
 var styles = null;
 
+/*
+
+.class
+#id
+
+*/
+
 if (document.domain == "forum.effectivealtruism.org") {
-  /*
   styles = `
+  /*
 	    .Layout-main {
                 margin-left: 100px;
 	    }
@@ -19,12 +26,16 @@ if (document.domain == "forum.effectivealtruism.org") {
             .intercom-lightweight-app{
                 display: none;
             }
-  `;
-  var styleSheet = document.createElement("style");
-  styleSheet.innerText = styles;
-  document.head.appendChild(styleSheet);
-  console.log("Style changed");
   */
+  `;
+}
+
+if (document.domain == "nationstates.net") {
+  styles = `
+    .adidentifier {
+      display: none;
+    }
+  `;
 }
 
 if (document.domain == "mail.proton.me") {
@@ -152,9 +163,11 @@ if (document.domain == "twitter.com") {
     document
       .querySelectorAll('[data-testid="videoPlayer"]')
       .forEach(function (videoPlayer) {
-        var grandparentElement = videoPlayer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        var newTextElement = document.createElement('div');
-        newTextElement.textContent = ' [ twitter video ] ';
+        var grandparentElement =
+          videoPlayer.parentElement.parentElement.parentElement.parentElement
+            .parentElement.parentElement;
+        var newTextElement = document.createElement("div");
+        newTextElement.textContent = " [ twitter video ] ";
         newTextElement.style["margin-top"] = "10px";
         newTextElement.style["margin-left"] = "10px";
         newTextElement.style["margin-bottom"] = "10px";
