@@ -44,10 +44,10 @@ int libre_redirect(const char* uri, char* output)
 
         char* alternatives[] = {
             "https://old.reddit.com", // "https://teddit.nunosempere.com",
-            "https://yt.artemislena.eu",
+            "https://invidious.private.coffee",
             "https://search.nunosempere.com",
             "https://scribe.rip",
-            "https://translate.riverside.rocks/",
+            "https://translate.riverside.rocks",
             "https://archive.is/https://www.bloomberg.com",
             "https://royalread.nunosempere.com",
             "https://dumb.vern.cc",
