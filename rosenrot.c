@@ -35,7 +35,6 @@ void load_uri(WebKitWebView* view, const char* uri)
         webkit_web_view_load_uri(view, "");
         bar.entry_mode = _SEARCH;
         toggle_bar(notebook);
-
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
     } else {
@@ -398,8 +397,8 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
             printf("Keypress state is: CONTROL\n");
         }
         printf("Keypress value: %d\n", event_keyval);
-        printf("PageUp: %d\n", KEY(Page_Up));
-        printf("PageDown: %d\n", KEY(Page_Down));
+        printf("PageUp: %d %d\n", KEY(Page_Up), GDK_KEY_KP_Page_Up);
+        printf("PageDown: %d %d\n", KEY(Page_Down),GDK_KEY_KP_Page_Down);
     }
 
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)

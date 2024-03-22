@@ -53,6 +53,13 @@ To remove plugins completely;
 // GTK 
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 #define KEY(x) GDK_KEY_##x
+/*
+There are two different constants for Page_Up/Page_Down:
+This could possibly have something to so with having Page_Down/Page_Up
+as part of a keypad with/without NumLock
+See: https://docs.gtk.org/gdk3/?q=Page_Up
+See: https://docs.gtk.org/gdk3/?q=GDK_KEY_KP
+*/
 
 // Shortcuts
 typedef enum {
@@ -87,25 +94,25 @@ static struct {
 	unsigned key;
 	func id;
 } shortcut[] = {
-    { CTRL,        KEY(h),          goback             },
-    { CTRL,        KEY(j),          goforward          },
-    { CTRL,        KEY(r),          refresh            },
-    { CTRL,        KEY(R),          refresh_force      },
-    { CTRL,        KEY(H),          back_to_home       },
-    { CTRL,        KEY(equal),      zoomin             },
-    { CTRL,        KEY(minus),      zoomout            },
-    { CTRL,        KEY(0),          zoom_reset         },
-    { CTRL,        KEY(Page_Up),    prev_tab           },
-    { CTRL,        KEY(Page_Down),  next_tab           },
-    { CTRL,        KEY(t),          new_tab            },
-    { CTRL,        KEY(w),          close_tab          },
-    { 0x0,         KEY(F11),        toggle_fullscreen  },
-    { CTRL,        KEY(l),          show_searchbar     },
-    { CTRL,        KEY(semicolon),  hide_bar           },
-    { CTRL,        KEY(f),          show_finder        },
-    { CTRL,        KEY(n),          finder_next        },
-    { CTRL,        KEY(N),          finder_prev        },
-    { CTRL,        KEY(p),          prettify           }
+    { CTRL,        KEY(h),             goback             },
+    { CTRL,        KEY(j),             goforward          },
+    { CTRL,        KEY(r),             refresh            },
+    { CTRL,        KEY(R),             refresh_force      },
+    { CTRL,        KEY(H),             back_to_home       },
+    { CTRL,        KEY(equal),         zoomin             },
+    { CTRL,        KEY(minus),         zoomout            },
+    { CTRL,        KEY(0),             zoom_reset         },
+    { CTRL,        KEY(KP_Page_Up),    prev_tab           }, /* also try KEY(Page_Up) if this doesn't work on your machine */
+    { CTRL,        KEY(KP_Page_Down),  next_tab           }, /* ditto for KEY(Page_Down) */
+    { CTRL,        KEY(t),             new_tab            },
+    { CTRL,        KEY(w),             close_tab          },
+    { 0x0,         KEY(F11),           toggle_fullscreen  },
+    { CTRL,        KEY(l),             show_searchbar     },
+    { CTRL,        KEY(semicolon),     hide_bar           },
+    { CTRL,        KEY(f),             show_finder        },
+    { CTRL,        KEY(n),             finder_next        },
+    { CTRL,        KEY(N),             finder_prev        },
+    { CTRL,        KEY(p),             prettify           }
 };
 /* ^ For controls more akin to normal browsers */
 /* Reference for the key shorthand:
