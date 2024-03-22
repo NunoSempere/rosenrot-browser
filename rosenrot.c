@@ -1,7 +1,7 @@
+#include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
-#include <gdk/gdk.h>
 
 #include "config.h"
 #include "plugins/plugins.h"
@@ -28,13 +28,13 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 
 /* Load content*/
 
-void show_bar(GtkNotebook* notebook);
+void toggle_bar(GtkNotebook* notebook);
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (strlen(uri) == 0) {
         webkit_web_view_load_uri(view, "");
         bar.entry_mode = _SEARCH;
-        show_bar(notebook);
+        toggle_bar(notebook);
 
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
@@ -210,17 +210,17 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 }
 
 /* Top bar */
-void show_bar(GtkNotebook* notebook)
+void toggle_bar(GtkNotebook* notebook)
 {
-    if (bar.entry_mode == _SEARCH) {
+    switch (bar.entry_mode) {
+    case _SEARCH:
         const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
         gtk_entry_set_placeholder_text(bar.line, "Search");
         gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
         gtk_widget_show(GTK_WIDGET(bar.widget));
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-    } else if (bar.entry_mode == _HIDDEN) {
-        gtk_widget_hide(GTK_WIDGET(bar.widget));
-    } else {
+        break;
+    case _FIND:
         const char* search_text = webkit_find_controller_get_search_text(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 
@@ -230,6 +230,12 @@ void show_bar(GtkNotebook* notebook)
         gtk_entry_set_placeholder_text(bar.line, "Find");
         gtk_widget_show(GTK_WIDGET(bar.widget));
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+        break;
+    default:
+        // fallthrough
+    case _HIDDEN:
+        gtk_widget_hide(GTK_WIDGET(bar.widget));
+        break; // not needed now, but might reorder
     }
 }
 // Handle what happens when the user is on the bar and presses enter
@@ -332,12 +338,12 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
     case show_searchbar:
         bar.entry_mode = _SEARCH;
-        show_bar(notebook);
+        toggle_bar(notebook);
         break;
 
     case show_finder:
         bar.entry_mode = _FIND;
-        show_bar(notebook);
+        toggle_bar(notebook);
         break;
 
     case finder_next:
@@ -354,12 +360,12 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         notebook_create_new_tab(notebook, NULL);
         gtk_notebook_set_show_tabs(notebook, true);
         bar.entry_mode = _SEARCH;
-        show_bar(notebook);
+        toggle_bar(notebook);
         break;
 
     case hide_bar:
         bar.entry_mode = _HIDDEN;
-        show_bar(notebook);
+        toggle_bar(notebook);
         break;
 
     case prettify: {
