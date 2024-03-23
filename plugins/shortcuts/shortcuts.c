@@ -35,7 +35,6 @@ int shortcut_expand(const char* uri, char* output)
             "!blog",
             "!fnf",
             "!fnc",
-            "!h"
             "!hn",
             "!hnb"
             "!x",
