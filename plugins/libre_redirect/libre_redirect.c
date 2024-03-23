@@ -1,14 +1,13 @@
-#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "str_init.h"
-#include "str_replace_start.h"
+#include "../strings/strings.h"
 
 #define LIBRE_N 50
 
 /* Inspired by https://libredirect.github.io/, but in C. */
 
+// Use string manipulation over urls
 int libre_redirect(const char* uri, char* output)
 {
     int len_uri = strlen(uri);
@@ -49,18 +48,18 @@ int libre_redirect(const char* uri, char* output)
             str_init(output, len_output);
             int replace_check = str_replace_start(uri, annoying_sites[i],
                 alternatives[i], output);
-            switch(replace_check){
-                case 0: // no match found
-                    break;
-                case 1: // str_replace_start somehow failed
-                    printf("str_replace_start failed\n");
-                    return 1;
-                    break;
-                case 2: // match succeeded
-                    return 2;
-                    break;
-                default: 
-                    printf("Unreachable state");
+            switch (replace_check) {
+            case 0: // no match found
+                break;
+            case 1: // str_replace_start somehow failed
+                printf("str_replace_start failed\n");
+                return 1;
+                break;
+            case 2: // match succeeded
+                return 2;
+                break;
+            default:
+                printf("Unreachable state");
             }
         }
         strcpy(output, uri);

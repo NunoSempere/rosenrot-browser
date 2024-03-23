@@ -1,0 +1,61 @@
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
+#define DEBUG false
+
+// String manipulation
+void str_init(char* str, int n)
+{
+    // could also use <https://manpages.ubuntu.com/manpages/impish/man3/strinit.3pub.html>
+    for (int i = 0; i < n; i++)
+        str[i] = ' ';
+    str[n] = '\0';
+}
+int str_replace_start(const char* string, const char* target, const char* replacement, char* output)
+{
+    int l1 = strlen(string);
+    int l2 = strlen(target);
+    int l3 = strlen(replacement);
+    int l4 = strlen(output);
+
+    if (DEBUG) {
+        printf("string: %s, target: %s, replacement: %s, output: %s\n", string, target, replacement, output);
+        printf("%d,%d,%d,%d\n", l1, l2, l3, l4);
+    }
+
+    if ((l4 < (l1 - l2 + l3)) || l4 < l1) {
+        printf("Not enough memory in output string.\n");
+        return 1;
+    }
+    int match = true;
+    for (int i = 0; i < l2; i++) {
+        if (string[i] != target[i]) {
+            match = false;
+            break;
+        }
+    }
+    if (match) {
+        if (DEBUG) printf("Found match.\n");
+        for (int i = 0; i < l3; i++) {
+            output[i] = replacement[i];
+        }
+        int counter = l3;
+        for (int i = l2; i < l1; i++) {
+            output[counter] = string[i];
+            counter++;
+        }
+        output[counter] = '\0';
+        return 2; // success
+    } else {
+        if (DEBUG) printf("Did not find match.\n");
+        strcpy(output, string);
+    }
+
+    return 0;
+}
+/*
+See also:
+* <https://web.archive.org/web/20160201212501/coding.debuntu.org/c-implementing-str_replace-replace-all-occurrences-substring>
+* https://github.com/irl/la-cucina/blob/master/str_replace.c
+*/

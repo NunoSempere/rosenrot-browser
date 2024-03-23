@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../libre_redirect/str_init.h"
-#include "../libre_redirect/str_replace_start.h"
+#include "../strings/strings.h"
 
 #define SHORTCUT_N 41
 
