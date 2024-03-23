@@ -7,28 +7,18 @@
 
 #define LIBRE_N 50
 
-/* Uncomment for debug */
-/* #define DEBUG */
-
 /* Inspired by https://libredirect.github.io/, but in C. */
 
 int libre_redirect(const char* uri, char* output)
 {
-    int l1 = strlen(uri);
-    int l2 = strlen(output);
-    int len;
-    char tmp_uri[l2++];
-    char tmp_output[l2++];
+    int len_uri = strlen(uri);
+    int len_output = strlen(output);
+    char tmp_uri[len_output++];
 
-    if ((l2 - l1) < LIBRE_N) {
-#ifdef DEBUG
+    if ((len_output - len_uri) < LIBRE_N) {
         printf("Not enough memory\n");
-#endif
         return 1; // not enough memory.
     } else {
-        strcpy(tmp_uri, uri); // strcpy also copies the terminating '\0'
-        strcpy(tmp_output, output);
-
         char* annoying_sites[] = {
             "https://www.reddit.com",
             "https://www.youtube.com",
@@ -55,30 +45,27 @@ int libre_redirect(const char* uri, char* output)
             // "https://nitter.net"
         };
 
-        len = sizeof(annoying_sites) / sizeof(annoying_sites[0]);
-
+        int len = sizeof(annoying_sites) / sizeof(annoying_sites[0]);
         for (int i = 0; i < len; i++) {
+            strcpy(tmp_uri, uri);
+            str_init(output, len_output);
             int replace_check = str_replace_start(tmp_uri, annoying_sites[i],
                 alternatives[i], output);
-            if (replace_check == 2) {
-#ifdef DEBUG
-                printf("tmp_uri: %s\n", tmp_uri);
-                printf("output: %s\n", output);
-#endif
-                return 2;
-            } else if (replace_check == 1) {
-#ifdef DEBUG
-                printf("replace_check failed\n");
-#endif
-                return 1;
+            switch(replace_check){
+                case 0: // no match found
+                    break;
+                case 1: // str_replace_start somehow failed
+                    printf("str_replace_start failed\n");
+                    return 1;
+                    break;
+                case 2: // match succeeded
+                    return 2;
+                    break;
+                default: 
+                    printf("Unreachable state");
             }
-            strcpy(tmp_uri, output);
-            str_init(output, l2);
         }
-        strcpy(output, tmp_uri);
+        strcpy(output, uri);
     }
-#ifdef DEBUG
-    printf("No match found\n\n");
-#endif
     return 0;
 }
