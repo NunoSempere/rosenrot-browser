@@ -37,13 +37,12 @@ void load_uri(WebKitWebView* view, const char* uri)
         toggle_bar(notebook);
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
-    } else if(strstr(uri, ".com") || strstr(uri, ".org")){
+    } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
         char tmp[strlen("https://") + strlen(uri)];
         snprintf(tmp, sizeof(tmp), "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
-        
-    } 
-    else{
+
+    } else {
         // Check for shortcuts
         int l = SHORTCUT_N + strlen(uri) + 1;
         char uri_expanded[l];
@@ -218,14 +217,15 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 void toggle_bar(GtkNotebook* notebook)
 {
     switch (bar.entry_mode) {
-    case _SEARCH:
+    case _SEARCH: {
         const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
         gtk_entry_set_placeholder_text(bar.line, "Search");
         gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
         gtk_widget_show(GTK_WIDGET(bar.widget));
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
         break;
-    case _FIND:
+    }
+    case _FIND: {
         const char* search_text = webkit_find_controller_get_search_text(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 
@@ -236,6 +236,7 @@ void toggle_bar(GtkNotebook* notebook)
         gtk_widget_show(GTK_WIDGET(bar.widget));
         gtk_window_set_focus(window, GTK_WIDGET(bar.line));
         break;
+    }
     default:
         // fallthrough
     case _HIDDEN:
@@ -404,7 +405,7 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
         }
         printf("Keypress value: %d\n", event_keyval);
         printf("PageUp: %d %d\n", KEY(Page_Up), GDK_KEY_KP_Page_Up);
-        printf("PageDown: %d %d\n", KEY(Page_Down),GDK_KEY_KP_Page_Down);
+        printf("PageDown: %d %d\n", KEY(Page_Down), GDK_KEY_KP_Page_Down);
     }
 
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
