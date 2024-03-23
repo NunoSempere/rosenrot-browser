@@ -13,7 +13,6 @@ int libre_redirect(const char* uri, char* output)
 {
     int len_uri = strlen(uri);
     int len_output = strlen(output);
-    char tmp_uri[len_output++];
 
     if ((len_output - len_uri) < LIBRE_N) {
         printf("Not enough memory\n");
@@ -47,9 +46,8 @@ int libre_redirect(const char* uri, char* output)
 
         int len = sizeof(annoying_sites) / sizeof(annoying_sites[0]);
         for (int i = 0; i < len; i++) {
-            strcpy(tmp_uri, uri);
             str_init(output, len_output);
-            int replace_check = str_replace_start(tmp_uri, annoying_sites[i],
+            int replace_check = str_replace_start(uri, annoying_sites[i],
                 alternatives[i], output);
             switch(replace_check){
                 case 0: // no match found
