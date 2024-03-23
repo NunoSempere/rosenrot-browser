@@ -6,15 +6,13 @@
 #define LIBRE_N 50
 
 /* Inspired by https://libredirect.github.io/, but in C. */
-
-// Use string manipulation over urls
 int libre_redirect(const char* uri, char* output)
 {
     int len_uri = strlen(uri);
     int len_output = strlen(output);
 
     if ((len_output - len_uri) < LIBRE_N) {
-        printf("Not enough memory\n");
+        fprintf(stderr, "Not enough memory\n");
         return 1; // not enough memory.
     } else {
         char* annoying_sites[] = {
@@ -52,14 +50,14 @@ int libre_redirect(const char* uri, char* output)
                 case 0: // no match found
                     break;
                 case 1: // str_replace_start somehow failed
-                    printf("str_replace_start failed\n");
+                    fprintf(stderr, "str_replace_start failed\n");
                     return 1;
                     break;
                 case 2: // match succeeded
                     return 2;
                     break;
                 default:
-                    printf("Unreachable state");
+                    fprintf(stderr, "Unreachable state\n");
             }
         }
         strcpy(output, uri);
