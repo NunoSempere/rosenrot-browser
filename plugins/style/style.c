@@ -20,11 +20,3 @@ void read_style_js(char* string)
     fclose(fp);
 }
 
-/*
-int main(){
-    char* readability_js = malloc(STYLE_N+1);
-    read_readability_js(readability_js);
-    printf("%s", readability_js);
-    free(readability_js);
-}
-*/
