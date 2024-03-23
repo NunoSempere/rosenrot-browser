@@ -19,7 +19,7 @@ include plugins/plugins.mk
 # PLUGINS=./plugins/stand_in/stand_in.c
 
 ## Formatter
-STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true}" 
+STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
 FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 
 # Runtime files 

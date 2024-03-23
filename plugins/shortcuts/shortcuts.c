@@ -60,6 +60,6 @@ int shortcut_expand(const char* uri, char* output)
         }
         strcpy(output, uri);
     }
-    if(DEBUG) printf("No match found\n\n");
+    if (DEBUG) printf("No match found\n\n");
     return 0;
 }

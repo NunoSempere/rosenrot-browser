@@ -13,22 +13,22 @@ static struct {
     GtkHeaderBar* widget;
     GtkEntry* line;
     GtkEntryBuffer* line_text;
-    enum { _SEARCH,
-        _FIND,
-        _HIDDEN } entry_mode;
+    enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
 } bar;
 static int num_tabs = 0;
+
+// Forward declarations
+void toggle_bar(GtkNotebook* notebook);
+void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 
 /* Utils */
 WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 {
-    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
-        notebook, gtk_notebook_get_current_page(notebook)));
+    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook)));
 }
 
 /* Load content*/
 
-void toggle_bar(GtkNotebook* notebook);
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (strlen(uri) == 0) {
@@ -83,8 +83,7 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     GtkNotebook* notebook)
 {
     switch (load_event) {
-            /* see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
-             */
+        // see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
         case WEBKIT_LOAD_STARTED:
         case WEBKIT_LOAD_COMMITTED:
             set_custom_style(self);
@@ -105,7 +104,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
                 }
                 tab_title[max_length] = '\0';
             }
-
             gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
                 webpage_title == NULL ? "—" : tab_title);
             // gtk_widget_hide(GTK_WIDGET(bar));
@@ -114,10 +112,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
 }
 
 /* Create new tabs */
-void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
-// handle_signal_create_new_tab is bound to a signal inside notebook_create_new_tab
-// and itself calls notebook_create_new_tab
-// therefore we need to do a forward declaration for one of them.
 GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
@@ -156,8 +150,7 @@ WebKitWebView* create_new_webview()
             "like Gecko) Chrome/110.0.0.0 Safari/537.36");
         // See: <https://www.useragents.me/> for some common user agents
     }
-    web_context = webkit_web_context_new_with_website_data_manager(
-        webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
+    web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
     contentmanager = webkit_user_content_manager_new();
     cookiemanager = webkit_web_context_get_cookie_manager(web_context);
 
@@ -193,7 +186,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         webkit_web_view_set_zoom_level(view, ZOOM);
         num_tabs += 1;
     } else {
-        webkit_web_view_evaluate_javascript(notebook_get_webview(notebook), "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
+        webkit_web_view_evaluate_javascript(notebook_get_webview(notebook), "alert('Too many tabs, not opening a new one')",
+            -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
 }
 
@@ -221,8 +215,6 @@ void toggle_bar(GtkNotebook* notebook)
             gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
         }
-        default:
-            // fallthrough
         case _HIDDEN:
             gtk_widget_hide(GTK_WIDGET(bar.widget));
     }
@@ -231,8 +223,7 @@ void toggle_bar(GtkNotebook* notebook)
 void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 {
     if (bar.entry_mode == _SEARCH)
-        load_uri(notebook_get_webview(notebook),
-            gtk_entry_buffer_get_text(bar.line_text));
+        load_uri(notebook_get_webview(notebook), gtk_entry_buffer_get_text(bar.line_text));
     else if (bar.entry_mode == _FIND)
         webkit_find_controller_search(
             webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
@@ -317,7 +308,6 @@ int handle_shortcut(func id, GtkNotebook* notebook)
                 gtk_window_unfullscreen(window);
             else
                 gtk_window_fullscreen(window);
-
             is_fullscreen = !is_fullscreen;
             break;
 
@@ -331,12 +321,10 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             break;
 
         case finder_next:
-            webkit_find_controller_search_next(
-                webkit_web_view_get_find_controller(view));
+            webkit_find_controller_search_next(webkit_web_view_get_find_controller(view));
             break;
         case finder_prev:
-            webkit_find_controller_search_previous(
-                webkit_web_view_get_find_controller(view));
+            webkit_find_controller_search_previous(webkit_web_view_get_find_controller(view));
             break;
 
         case new_tab:

@@ -19,4 +19,3 @@ void read_style_js(char* string)
     string[i] = '\0';
     fclose(fp);
 }
-
