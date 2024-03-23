@@ -49,17 +49,17 @@ int libre_redirect(const char* uri, char* output)
             int replace_check = str_replace_start(uri, annoying_sites[i],
                 alternatives[i], output);
             switch (replace_check) {
-            case 0: // no match found
-                break;
-            case 1: // str_replace_start somehow failed
-                printf("str_replace_start failed\n");
-                return 1;
-                break;
-            case 2: // match succeeded
-                return 2;
-                break;
-            default:
-                printf("Unreachable state");
+                case 0: // no match found
+                    break;
+                case 1: // str_replace_start somehow failed
+                    printf("str_replace_start failed\n");
+                    return 1;
+                    break;
+                case 2: // match succeeded
+                    return 2;
+                    break;
+                default:
+                    printf("Unreachable state");
             }
         }
         strcpy(output, uri);
