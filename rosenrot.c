@@ -189,42 +189,42 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
             case KEY(h): // go back
                 webkit_web_view_go_back(view);
                 break;
-            case KEY(j): // go forward 
+            case KEY(j): // go forward
                 webkit_web_view_go_forward(view);
                 break;
-            case KEY(r): // reload 
+            case KEY(r): // reload
                 webkit_web_view_reload(view);
-                break;  
+                break;
             case KEY(R): // force reload
                 webkit_web_view_reload_bypass_cache(view);
                 break;
-            case KEY(H): // back to home 
+            case KEY(H): // back to home
                 load_uri(view, HOME);
-                break; 
-            case KEY(equal): // zoom in 
+                break;
+            case KEY(equal): // zoom in
                 webkit_web_view_set_zoom_level(view, (zoom += ZOOM_VAL));
                 break;
-            case KEY(minus): // zoom out 
+            case KEY(minus): // zoom out
                 webkit_web_view_set_zoom_level(view, (zoom -= ZOOM_VAL));
                 break;
-            case KEY(0): // restore zoom 
+            case KEY(0): // restore zoom
                 webkit_web_view_set_zoom_level(view, (zoom = ZOOM));
                 break;
-            case KEY(KP_Page_Up):{
+            case KEY(KP_Page_Up): {
                 int n = gtk_notebook_get_n_pages(notebook);
                 int k = gtk_notebook_get_current_page(notebook);
                 int l = (n + k - 1) % n;
                 gtk_notebook_set_current_page(notebook, l);
                 break;
-            } // previous tab 
-            case KEY(KP_Page_Down): { // next tab 
+            } // previous tab
+            case KEY(KP_Page_Down): { // next tab
                 int m = gtk_notebook_get_n_pages(notebook);
                 int i = gtk_notebook_get_current_page(notebook);
                 int j = (i + 1) % m;
                 gtk_notebook_set_current_page(notebook, j);
                 break;
             }
-            case KEY(w): // close tab 
+            case KEY(w): // close tab
                 gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
                 num_tabs -= 1;
                 if (gtk_notebook_get_n_pages(notebook) == 0) {
@@ -250,17 +250,17 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
                 gtk_window_set_focus(window, GTK_WIDGET(bar.line));
                 break;
             } break;
-            case KEY(n): // find next 
+            case KEY(n): // find next
                 webkit_find_controller_search_next(webkit_web_view_get_find_controller(view));
                 break;
-            case KEY(N): // find previous 
+            case KEY(N): // find previous
                 webkit_find_controller_search_previous(webkit_web_view_get_find_controller(view));
                 break;
-            case KEY(t): // new tab 
+            case KEY(t): // new tab
                 notebook_create_new_tab(notebook, NULL);
                 break;
         }
-    } else if(event_state == 0x0 && event_keyval == KEY(F11)){
+    } else if (event_state == 0x0 && event_keyval == KEY(F11)) {
         if (is_fullscreen)
             gtk_window_unfullscreen(window);
         else

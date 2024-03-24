@@ -38,6 +38,10 @@ depsdebian:
 STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
 FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 
+stats: 
+	cat rosenrot.c | wc -l
+	gcc -fpreprocessed -dD -E -P rosenrot.c  | wc -l
+
 format: $(SRC) 
 	$(FORMATTER) $(SRC) 
 
