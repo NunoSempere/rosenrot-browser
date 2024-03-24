@@ -29,59 +29,9 @@
 // GTK
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", 0, "gtk-enable-animations", 0
 #define KEY(x) GDK_KEY_##x
-
-// Shortcuts
-typedef enum {
-    goback,
-    goforward,
-    refresh,
-    refresh_force,
-    back_to_home,
-    toggle_fullscreen,
-    zoomin,
-    zoomout,
-    zoom_reset,
-    new_tab,
-    next_tab,
-    prev_tab,
-    close_tab,
-    show_searchbar,
-    show_finder,
-    finder_next,
-    finder_prev,
-    prettify,
-    hide_bar
-} func;
-
 #define SFT 1 << 0
 #define CTRL 1 << 2
 #define ALT 1 << 3
-
-static struct {
-    unsigned mod;
-    unsigned key;
-    func id;
-} shortcut[] = {
-    { CTRL, KEY(h), goback },
-    { CTRL, KEY(j), goforward },
-    { CTRL, KEY(r), refresh },
-    { CTRL, KEY(R), refresh_force },
-    { CTRL, KEY(H), back_to_home },
-    { CTRL, KEY(equal), zoomin },
-    { CTRL, KEY(minus), zoomout },
-    { CTRL, KEY(0), zoom_reset },
-    { CTRL, KEY(KP_Page_Up), prev_tab }, /* also try KEY(Page_Up) if this doesn't work on your machine */
-    { CTRL, KEY(KP_Page_Down), next_tab }, /* ditto for KEY(Page_Down) */
-    { CTRL, KEY(t), new_tab },
-    { CTRL, KEY(w), close_tab },
-    { 0x0, KEY(F11), toggle_fullscreen },
-    { CTRL, KEY(l), show_searchbar },
-    { CTRL, KEY(semicolon), hide_bar },
-    { CTRL, KEY(f), show_finder },
-    { CTRL, KEY(n), finder_next },
-    { CTRL, KEY(N), finder_prev },
-    { CTRL, KEY(p), prettify }
-};
 
 /* Global declarations */
 static GtkNotebook* notebook;
@@ -221,122 +171,103 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 }
 
 /* Handle shortcuts */
-int handle_shortcut(func id, GtkNotebook* notebook)
-{
-    static double zoom = ZOOM;
-    static bool is_fullscreen = 0;
-
-    WebKitWebView* view = notebook_get_webview(notebook);
-
-    switch (id) {
-        case goback:
-            webkit_web_view_go_back(view);
-            break;
-        case goforward:
-            webkit_web_view_go_forward(view);
-            break;
-
-        case refresh:
-            webkit_web_view_reload(view);
-            break;
-        case refresh_force:
-            webkit_web_view_reload_bypass_cache(view);
-            break;
-
-        case back_to_home:
-            load_uri(view, HOME);
-            break;
-
-        case zoomin:
-            webkit_web_view_set_zoom_level(view,
-                (zoom += ZOOM_VAL));
-            break;
-        case zoomout:
-            webkit_web_view_set_zoom_level(view,
-                (zoom -= ZOOM_VAL));
-            break;
-        case zoom_reset:
-            webkit_web_view_set_zoom_level(view,
-                (zoom = ZOOM));
-            break;
-
-        case prev_tab:; // declarations aren't statements
-            // <https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement>
-            int n = gtk_notebook_get_n_pages(notebook);
-            int k = gtk_notebook_get_current_page(notebook);
-            int l = (n + k - 1) % n;
-            gtk_notebook_set_current_page(notebook, l);
-            break;
-        case next_tab:;
-            int m = gtk_notebook_get_n_pages(notebook);
-            int i = gtk_notebook_get_current_page(notebook);
-            int j = (i + 1) % m;
-            gtk_notebook_set_current_page(notebook, j);
-            break;
-        case close_tab:
-            gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
-            num_tabs -= 1;
-            if (gtk_notebook_get_n_pages(notebook) == 0) {
-                exit(0);
-            }
-            break;
-
-        case toggle_fullscreen:
-            if (is_fullscreen)
-                gtk_window_unfullscreen(window);
-            else
-                gtk_window_fullscreen(window);
-            is_fullscreen = !is_fullscreen;
-            break;
-
-        case show_searchbar: {
-            bar.entry_mode = _SEARCH;
-            const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
-            gtk_entry_set_placeholder_text(bar.line, "Search");
-            gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
-            gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-            break;
-        }
-        case show_finder: {
-
-            bar.entry_mode = _FIND;
-            const char* search_text = webkit_find_controller_get_search_text(webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
-            if (search_text != NULL) gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
-
-            gtk_entry_set_placeholder_text(bar.line, "Find");
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-            break;
-        }
-
-        case finder_next:
-            webkit_find_controller_search_next(webkit_web_view_get_find_controller(view));
-            break;
-        case finder_prev:
-            webkit_find_controller_search_previous(webkit_web_view_get_find_controller(view));
-            break;
-
-        case new_tab:
-            notebook_create_new_tab(notebook, NULL);
-            break;
-    }
-
-    return 1;
-}
-// Listen to key presses and call shortcuts if needed.
 int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 {
-    (void)self;
+    // (void)self;
 
     guint event_keyval = 0;
     gdk_event_get_keyval(event, &event_keyval);
     GdkModifierType event_state = 0;
     gdk_event_get_state(event, &event_state);
 
-    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
-        if ((event_state & shortcut[i].mod || shortcut[i].mod == 0x0) && event_keyval == shortcut[i].key)
-            return handle_shortcut(shortcut[i].id, notebook);
-    // This API is deprecated in GTK4 :(
+    static double zoom = ZOOM;
+    static bool is_fullscreen = 0;
+
+    if (event_state & CTRL) {
+        WebKitWebView* view = notebook_get_webview(notebook);
+        switch (event_keyval) {
+            case KEY(h): // go back
+                webkit_web_view_go_back(view);
+                break;
+            case KEY(j): // go forward 
+                webkit_web_view_go_forward(view);
+                break;
+            case KEY(r): // reload 
+                webkit_web_view_reload(view);
+                break;  
+            case KEY(R): // force reload
+                webkit_web_view_reload_bypass_cache(view);
+                break;
+            case KEY(H): // back to home 
+                load_uri(view, HOME);
+                break; 
+            case KEY(equal): // zoom in 
+                webkit_web_view_set_zoom_level(view, (zoom += ZOOM_VAL));
+                break;
+            case KEY(minus): // zoom out 
+                webkit_web_view_set_zoom_level(view, (zoom -= ZOOM_VAL));
+                break;
+            case KEY(0): // restore zoom 
+                webkit_web_view_set_zoom_level(view, (zoom = ZOOM));
+                break;
+            case KEY(KP_Page_Up):{
+                int n = gtk_notebook_get_n_pages(notebook);
+                int k = gtk_notebook_get_current_page(notebook);
+                int l = (n + k - 1) % n;
+                gtk_notebook_set_current_page(notebook, l);
+                break;
+            } // previous tab 
+            case KEY(KP_Page_Down): { // next tab 
+                int m = gtk_notebook_get_n_pages(notebook);
+                int i = gtk_notebook_get_current_page(notebook);
+                int j = (i + 1) % m;
+                gtk_notebook_set_current_page(notebook, j);
+                break;
+            }
+            case KEY(w): // close tab 
+                gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
+                num_tabs -= 1;
+                if (gtk_notebook_get_n_pages(notebook) == 0) {
+                    exit(0);
+                }
+                break;
+            case KEY(l): // show search bar
+            case KEY(semicolon): { // fallthrough; same
+                bar.entry_mode = _SEARCH;
+                const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
+                gtk_entry_set_placeholder_text(bar.line, "Search");
+                gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
+                gtk_widget_show(GTK_WIDGET(bar.widget));
+                gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+                break;
+            }
+            case KEY(f): { // find
+                bar.entry_mode = _FIND;
+                const char* search_text = webkit_find_controller_get_search_text(webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
+                if (search_text != NULL) gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
+
+                gtk_entry_set_placeholder_text(bar.line, "Find");
+                gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+                break;
+            } break;
+            case KEY(n): // find next 
+                webkit_find_controller_search_next(webkit_web_view_get_find_controller(view));
+                break;
+            case KEY(N): // find previous 
+                webkit_find_controller_search_previous(webkit_web_view_get_find_controller(view));
+                break;
+            case KEY(t): // new tab 
+                notebook_create_new_tab(notebook, NULL);
+                break;
+        }
+    } else if(event_state == 0x0 && event_keyval == KEY(F11)){
+        if (is_fullscreen)
+            gtk_window_unfullscreen(window);
+        else
+            gtk_window_fullscreen(window);
+        is_fullscreen = !is_fullscreen;
+    }
+
     return 0;
 }
 
