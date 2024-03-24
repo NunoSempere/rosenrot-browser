@@ -1,5 +1,4 @@
 #include <gdk/gdk.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
@@ -18,9 +17,9 @@
 
 // Webkit settings
 // See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html
-#define WEBKIT_DEFAULT_SETTINGS                                                       \
-    "enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
-        "enable-smooth-scrolling", false,                                             \
+#define WEBKIT_DEFAULT_SETTINGS                                                 \
+    "enable-back-forward-navigation-gestures", 1, "enable-developer-extras", 1, \
+        "enable-smooth-scrolling", 0,                                           \
         "default-charset", "utf-8"
 
 /* CACHE */
@@ -28,7 +27,7 @@
 #define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
 
 // GTK
-#define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+#define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", 0, "gtk-enable-animations", 0
 #define KEY(x) GDK_KEY_##x
 
 // Shortcuts
@@ -125,11 +124,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     GtkNotebook* notebook)
 {
     switch (load_event) {
-        // see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
-        case WEBKIT_LOAD_STARTED:
-        case WEBKIT_LOAD_COMMITTED:
-        case WEBKIT_LOAD_REDIRECTED:
-            break;
         case WEBKIT_LOAD_FINISHED: {
             /* Add gtk tab title */
             const char* webpage_title = webkit_web_view_get_title(self);
@@ -159,7 +153,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
         notebook_create_new_tab(notebook, uri);
-        gtk_notebook_set_show_tabs(notebook, true);
+        gtk_notebook_set_show_tabs(notebook, 1);
     } else {
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
@@ -200,7 +194,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
-        gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
+        gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), 1);
         gtk_widget_show_all(GTK_WIDGET(window));
         load_uri(view, (uri) ? uri : HOME);
 
@@ -356,8 +350,8 @@ int main(int argc, char** argv)
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_set_show_tabs(notebook, false);
-    gtk_notebook_set_show_border(notebook, false);
+    gtk_notebook_set_show_tabs(notebook, 0);
+    gtk_notebook_set_show_border(notebook, 0);
 
     // Window
     window = GTK_WINDOW(gtk_window_new(0));
@@ -383,7 +377,7 @@ int main(int argc, char** argv)
 
     /* Show to user */
     gtk_widget_show_all(GTK_WIDGET(window));
-    gtk_notebook_set_show_tabs(notebook, true);
+    gtk_notebook_set_show_tabs(notebook, 1);
 
     /* Deal with more tabs */
     if (argc > 2) {
