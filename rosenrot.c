@@ -9,7 +9,7 @@
 #define HEIGHT 1080
 #define BAR_SIZE 1000
 #define SEARCH "https://lite.duckduckgo.com/html/?q=%s"
-#define HOME "https://lite.duckduckgo.com/html" 
+#define HOME "https://lite.duckduckgo.com/html"
 
 // Minimal niceties
 #define ZOOM 1 /* Starting zoom level.*/
@@ -17,71 +17,71 @@
 #define MAX_NUM_TABS 8
 
 // Webkit settings
-// See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
-#define WEBKIT_DEFAULT_SETTINGS \
-	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
-	"enable-smooth-scrolling", false, \
-    "default-charset", "utf-8"
+// See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html
+#define WEBKIT_DEFAULT_SETTINGS                                                       \
+    "enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
+        "enable-smooth-scrolling", false,                                             \
+        "default-charset", "utf-8"
 
 /* CACHE */
 #define DATA_DIR "/home/nuno/.cache/rosenrot"
 #define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
 
-// GTK 
+// GTK
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
 #define KEY(x) GDK_KEY_##x
 
 // Shortcuts
 typedef enum {
-	goback,
-	goforward,
-	refresh,
-	refresh_force,
-	back_to_home,
-	toggle_fullscreen,
-	zoomin,
-	zoomout,
-	zoom_reset,
-	new_tab,
-	next_tab,
-	prev_tab,
-	close_tab,
-	show_searchbar,
-	show_finder,
-	finder_next,
-	finder_prev,
-  prettify,
-  hide_bar
+    goback,
+    goforward,
+    refresh,
+    refresh_force,
+    back_to_home,
+    toggle_fullscreen,
+    zoomin,
+    zoomout,
+    zoom_reset,
+    new_tab,
+    next_tab,
+    prev_tab,
+    close_tab,
+    show_searchbar,
+    show_finder,
+    finder_next,
+    finder_prev,
+    prettify,
+    hide_bar
 } func;
 
-#define SFT  1 << 0
+#define SFT 1 << 0
 #define CTRL 1 << 2
-#define ALT  1 << 3
+#define ALT 1 << 3
 
 static struct {
-	unsigned mod;
-	unsigned key;
-	func id;
+    unsigned mod;
+    unsigned key;
+    func id;
 } shortcut[] = {
-    { CTRL,        KEY(h),             goback             },
-    { CTRL,        KEY(j),             goforward          },
-    { CTRL,        KEY(r),             refresh            },
-    { CTRL,        KEY(R),             refresh_force      },
-    { CTRL,        KEY(H),             back_to_home       },
-    { CTRL,        KEY(equal),         zoomin             },
-    { CTRL,        KEY(minus),         zoomout            },
-    { CTRL,        KEY(0),             zoom_reset         },
-    { CTRL,        KEY(KP_Page_Up),    prev_tab           }, /* also try KEY(Page_Up) if this doesn't work on your machine */
-    { CTRL,        KEY(KP_Page_Down),  next_tab           }, /* ditto for KEY(Page_Down) */
-    { CTRL,        KEY(t),             new_tab            },
-    { CTRL,        KEY(w),             close_tab          },
-    { 0x0,         KEY(F11),           toggle_fullscreen  },
-    { CTRL,        KEY(l),             show_searchbar     },
-    { CTRL,        KEY(semicolon),     hide_bar           },
-    { CTRL,        KEY(f),             show_finder        },
-    { CTRL,        KEY(n),             finder_next        },
-    { CTRL,        KEY(N),             finder_prev        },
-    { CTRL,        KEY(p),             prettify           }
+    { CTRL, KEY(h), goback },
+    { CTRL, KEY(j), goforward },
+    { CTRL, KEY(r), refresh },
+    { CTRL, KEY(R), refresh_force },
+    { CTRL, KEY(H), back_to_home },
+    { CTRL, KEY(equal), zoomin },
+    { CTRL, KEY(minus), zoomout },
+    { CTRL, KEY(0), zoom_reset },
+    { CTRL, KEY(KP_Page_Up), prev_tab }, /* also try KEY(Page_Up) if this doesn't work on your machine */
+    { CTRL, KEY(KP_Page_Down), next_tab }, /* ditto for KEY(Page_Down) */
+    { CTRL, KEY(t), new_tab },
+    { CTRL, KEY(w), close_tab },
+    { 0x0, KEY(F11), toggle_fullscreen },
+    { CTRL, KEY(l), show_searchbar },
+    { CTRL, KEY(semicolon), hide_bar },
+    { CTRL, KEY(f), show_finder },
+    { CTRL, KEY(n), finder_next },
+    { CTRL, KEY(N), finder_prev },
+    { CTRL, KEY(p), prettify }
 };
 
 /* Global declarations */
@@ -225,7 +225,6 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
             gtk_entry_buffer_get_text(bar.line_text),
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
-
 }
 
 /* Handle shortcuts */
@@ -284,7 +283,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         case close_tab:
             gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             num_tabs -= 1;
-            if(gtk_notebook_get_n_pages(notebook) == 0){
+            if (gtk_notebook_get_n_pages(notebook) == 0) {
                 exit(0);
             }
             break;
@@ -310,7 +309,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
             bar.entry_mode = _FIND;
             const char* search_text = webkit_find_controller_get_search_text(webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
-            if (search_text != NULL)gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
+            if (search_text != NULL) gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
 
             gtk_entry_set_placeholder_text(bar.line, "Find");
             gtk_window_set_focus(window, GTK_WIDGET(bar.line));
