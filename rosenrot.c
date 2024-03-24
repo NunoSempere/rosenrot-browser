@@ -1,10 +1,88 @@
 #include <gdk/gdk.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
 
-#include "config.h"
-#include "plugins/plugins.h"
+// User config
+#define WIDTH 1920 // 960 for half-width, 1920 for full width
+#define HEIGHT 1080
+#define BAR_SIZE 1000
+#define SEARCH "https://lite.duckduckgo.com/html/?q=%s"
+#define HOME "https://lite.duckduckgo.com/html" 
+
+// Minimal niceties
+#define ZOOM 1 /* Starting zoom level.*/
+#define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
+#define MAX_NUM_TABS 8
+
+// Webkit settings
+// See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
+#define WEBKIT_DEFAULT_SETTINGS \
+	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
+	"enable-smooth-scrolling", false, \
+    "default-charset", "utf-8"
+
+/* CACHE */
+#define DATA_DIR "/home/nuno/.cache/rosenrot"
+#define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
+
+// GTK 
+#define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+#define KEY(x) GDK_KEY_##x
+
+// Shortcuts
+typedef enum {
+	goback,
+	goforward,
+	refresh,
+	refresh_force,
+	back_to_home,
+	toggle_fullscreen,
+	zoomin,
+	zoomout,
+	zoom_reset,
+	new_tab,
+	next_tab,
+	prev_tab,
+	close_tab,
+	show_searchbar,
+	show_finder,
+	finder_next,
+	finder_prev,
+  prettify,
+  hide_bar
+} func;
+
+#define SFT  1 << 0
+#define CTRL 1 << 2
+#define ALT  1 << 3
+
+static struct {
+	unsigned mod;
+	unsigned key;
+	func id;
+} shortcut[] = {
+    { CTRL,        KEY(h),             goback             },
+    { CTRL,        KEY(j),             goforward          },
+    { CTRL,        KEY(r),             refresh            },
+    { CTRL,        KEY(R),             refresh_force      },
+    { CTRL,        KEY(H),             back_to_home       },
+    { CTRL,        KEY(equal),         zoomin             },
+    { CTRL,        KEY(minus),         zoomout            },
+    { CTRL,        KEY(0),             zoom_reset         },
+    { CTRL,        KEY(KP_Page_Up),    prev_tab           }, /* also try KEY(Page_Up) if this doesn't work on your machine */
+    { CTRL,        KEY(KP_Page_Down),  next_tab           }, /* ditto for KEY(Page_Down) */
+    { CTRL,        KEY(t),             new_tab            },
+    { CTRL,        KEY(w),             close_tab          },
+    { 0x0,         KEY(F11),           toggle_fullscreen  },
+    { CTRL,        KEY(l),             show_searchbar     },
+    { CTRL,        KEY(semicolon),     hide_bar           },
+    { CTRL,        KEY(f),             show_finder        },
+    { CTRL,        KEY(n),             finder_next        },
+    { CTRL,        KEY(N),             finder_prev        },
+    { CTRL,        KEY(p),             prettify           }
+};
 
 /* Global declarations */
 static GtkNotebook* notebook;
@@ -13,12 +91,13 @@ static struct {
     GtkHeaderBar* widget;
     GtkEntry* line;
     GtkEntryBuffer* line_text;
-    enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
+    enum { _SEARCH,
+        _FIND,
+        _HIDDEN } entry_mode;
 } bar;
 static int num_tabs = 0;
 
 // Forward declarations
-void toggle_bar(GtkNotebook* notebook);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 
 /* Utils */
@@ -33,52 +112,15 @@ void load_uri(WebKitWebView* view, const char* uri)
 {
     if (strlen(uri) == 0) {
         webkit_web_view_load_uri(view, "");
-        bar.entry_mode = _SEARCH;
-        toggle_bar(notebook);
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
-    } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
-        char tmp[strlen("https://") + strlen(uri)];
-        snprintf(tmp, sizeof(tmp), "https://%s", uri);
-        webkit_web_view_load_uri(view, tmp);
     } else {
-        // Check for shortcuts
-        int l = SHORTCUT_N + strlen(uri) + 1;
-        char uri_expanded[l];
-        str_init(uri_expanded, l);
-        int check = shortcut_expand(uri, uri_expanded);
-        if (check == 2) {
-            webkit_web_view_load_uri(view, uri_expanded);
-        } else {
-            // Feed into search engine.
-            char tmp[strlen(uri) + strlen(SEARCH)];
-            snprintf(tmp, sizeof(tmp), SEARCH, uri);
-            webkit_web_view_load_uri(view, tmp);
-        }
+        char tmp[strlen(uri) + strlen(SEARCH)];
+        snprintf(tmp, sizeof(tmp), SEARCH, uri);
+        webkit_web_view_load_uri(view, tmp);
     }
 }
 
-/* Deal with new load or changed load */
-void redirect_if_annoying(WebKitWebView* view, const char* uri)
-{
-    if (LIBRE_REDIRECT_ENABLED) {
-        int l = LIBRE_N + strlen(uri) + 1;
-        char uri_filtered[l];
-        str_init(uri_filtered, l);
-
-        int check = libre_redirect(uri, uri_filtered);
-        if (check == 2) webkit_web_view_load_uri(view, uri_filtered);
-    }
-}
-void set_custom_style(WebKitWebView* view)
-{
-    if (CUSTOM_STYLE_ENABLED) {
-        char* style_js = malloc(STYLE_N + 1);
-        read_style_js(style_js);
-        webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
-        free(style_js);
-    }
-}
 void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     GtkNotebook* notebook)
 {
@@ -86,9 +128,7 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
         // see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
         case WEBKIT_LOAD_STARTED:
         case WEBKIT_LOAD_COMMITTED:
-            set_custom_style(self);
         case WEBKIT_LOAD_REDIRECTED:
-            redirect_if_annoying(self, webkit_web_view_get_uri(self));
             break;
         case WEBKIT_LOAD_FINISHED: {
             /* Add gtk tab title */
@@ -106,7 +146,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
             }
             gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
                 webpage_title == NULL ? "—" : tab_title);
-            // gtk_widget_hide(GTK_WIDGET(bar));
         }
     }
 }
@@ -119,7 +158,6 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
-        printf("Creating new window: %s\n", uri);
         notebook_create_new_tab(notebook, uri);
         gtk_notebook_set_show_tabs(notebook, true);
     } else {
@@ -143,13 +181,6 @@ WebKitWebView* create_new_webview()
     WebKitUserContentManager* contentmanager;
 
     settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
-    if (CUSTOM_USER_AGENT) {
-        webkit_settings_set_user_agent(
-            settings,
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/110.0.0.0 Safari/537.36");
-        // See: <https://www.useragents.me/> for some common user agents
-    }
     web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
     contentmanager = webkit_user_content_manager_new();
     cookiemanager = webkit_web_context_get_cookie_manager(web_context);
@@ -157,11 +188,6 @@ WebKitWebView* create_new_webview()
     webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
 
     webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
-
-    if (g_file_get_contents("~/.config/rose/style.css", &style, NULL, NULL)) {
-        webkit_user_content_manager_add_style_sheet(
-            contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
-    }
 
     return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context", web_context, "user-content-manager", contentmanager, NULL);
 }
@@ -176,10 +202,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_show_all(GTK_WIDGET(window));
-        gtk_widget_hide(GTK_WIDGET(bar.widget));
         load_uri(view, (uri) ? uri : HOME);
-
-        set_custom_style(view);
 
         gtk_notebook_set_current_page(notebook, n);
         gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
@@ -191,34 +214,6 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     }
 }
 
-/* Top bar */
-void toggle_bar(GtkNotebook* notebook)
-{
-    switch (bar.entry_mode) {
-        case _SEARCH: {
-            const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
-            gtk_entry_set_placeholder_text(bar.line, "Search");
-            gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
-            gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-            break;
-        }
-        case _FIND: {
-            const char* search_text = webkit_find_controller_get_search_text(
-                webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
-
-            if (search_text != NULL)
-                gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
-
-            gtk_entry_set_placeholder_text(bar.line, "Find");
-            gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-            break;
-        }
-        case _HIDDEN:
-            gtk_widget_hide(GTK_WIDGET(bar.widget));
-    }
-}
 // Handle what happens when the user is on the bar and presses enter
 void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 {
@@ -231,11 +226,9 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
 
-    gtk_widget_hide(GTK_WIDGET(bar.widget));
 }
 
 /* Handle shortcuts */
-// Act when a particular shortcut is detected
 int handle_shortcut(func id, GtkNotebook* notebook)
 {
     static double zoom = ZOOM;
@@ -291,16 +284,9 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         case close_tab:
             gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             num_tabs -= 1;
-
-            switch (gtk_notebook_get_n_pages(notebook)) {
-                case 0:
-                    exit(0);
-                    break;
-                case 1:
-                    gtk_notebook_set_show_tabs(notebook, false);
-                    break;
+            if(gtk_notebook_get_n_pages(notebook) == 0){
+                exit(0);
             }
-
             break;
 
         case toggle_fullscreen:
@@ -311,14 +297,25 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             is_fullscreen = !is_fullscreen;
             break;
 
-        case show_searchbar:
+        case show_searchbar: {
             bar.entry_mode = _SEARCH;
-            toggle_bar(notebook);
+            const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
+            gtk_entry_set_placeholder_text(bar.line, "Search");
+            gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
+            gtk_widget_show(GTK_WIDGET(bar.widget));
+            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
-        case show_finder:
+        }
+        case show_finder: {
+
             bar.entry_mode = _FIND;
-            toggle_bar(notebook);
+            const char* search_text = webkit_find_controller_get_search_text(webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
+            if (search_text != NULL)gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
+
+            gtk_entry_set_placeholder_text(bar.line, "Find");
+            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
+        }
 
         case finder_next:
             webkit_find_controller_search_next(webkit_web_view_get_find_controller(view));
@@ -329,25 +326,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
         case new_tab:
             notebook_create_new_tab(notebook, NULL);
-            gtk_notebook_set_show_tabs(notebook, true);
-            bar.entry_mode = _SEARCH;
-            toggle_bar(notebook);
             break;
-
-        case hide_bar:
-            bar.entry_mode = _HIDDEN;
-            toggle_bar(notebook);
-            break;
-
-        case prettify: {
-            if (READABILITY_ENABLED) {
-                char* readability_js = malloc(READABILITY_N + 1);
-                read_readability_js(readability_js);
-                webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
-                free(readability_js);
-            }
-            break;
-        }
     }
 
     return 1;
@@ -362,28 +341,9 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     GdkModifierType event_state = 0;
     gdk_event_get_state(event, &event_state);
 
-    int debug_shortcuts = 0;
-    if (debug_shortcuts) {
-        printf("Keypress state: %d\n", event_state);
-        if (event_state & GDK_CONTROL_MASK) {
-            printf("Keypress state is: CONTROL\n");
-        }
-        printf("Keypress value: %d\n", event_keyval);
-        printf("PageUp: %d %d\n", KEY(Page_Up), GDK_KEY_KP_Page_Up);
-        printf("PageDown: %d %d\n", KEY(Page_Down), GDK_KEY_KP_Page_Down);
-    }
-
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
         if ((event_state & shortcut[i].mod || shortcut[i].mod == 0x0) && event_keyval == shortcut[i].key)
             return handle_shortcut(shortcut[i].id, notebook);
-    /*
-    If I wanted to bind button presses, like the extra button in the mouse,
-    I would have to bind the button-press-event signal instead.
-    Some links in case I go down that road:
-    - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
-    - <https://docs.gtk.org/gdk3/union.Event.html>
-    - https://docs.gtk.org/gdk3/struct.EventButton.html
-    */
     // This API is deprecated in GTK4 :(
     return 0;
 }
@@ -393,9 +353,6 @@ int main(int argc, char** argv)
     /* Initialize GTK in general */
     gtk_init(NULL, NULL); // <https://docs.gtk.org/gtk3/func.init.html>
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // <https://docs.gtk.org/gobject/method.Object.set.html>
-    GtkCssProvider* css = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css", NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);
 
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
@@ -427,11 +384,10 @@ int main(int argc, char** argv)
 
     /* Show to user */
     gtk_widget_show_all(GTK_WIDGET(window));
-    if (argc != 0) gtk_widget_hide(GTK_WIDGET(bar.widget));
+    gtk_notebook_set_show_tabs(notebook, true);
 
     /* Deal with more tabs */
     if (argc > 2) {
-        gtk_notebook_set_show_tabs(notebook, true);
         for (int i = 2; i < argc; i++) {
             notebook_create_new_tab(notebook, argv[i]);
         }

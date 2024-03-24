@@ -8,13 +8,12 @@ LIBS=`pkg-config --libs ${DEPS}`
 
 # Code
 SRC=rosenrot.c
-CONFIG=config.h
 
-## Formatter
-STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
-FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
+## Runtime files
+MAINTAINER_CACHE_DIR=/home/nuno/.cache/rosenrot
+USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 
-build: $(SRC) $(CONFIG) user_cache
+build: $(SRC)  user_cache
 	$(CC) $(INCS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 
 user_cache:
@@ -28,6 +27,19 @@ user_cache:
 install: rosenrot
 	cp -f rosenrot /usr/bin
 
+## Additional niceties
+
+### Formatter
+STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
+FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
+
+format: $(SRC) 
+	$(FORMATTER) $(SRC) 
+
+lint: 
+	clang-tidy $(SRC) -- -Wall $(INCS) -o rosenrot $(LIBS)
+
+### Cleanup functions
 uninstall: 
 	rm /usr/bin/rosenrot
 	rm $(USER_CACHE_DIR)
@@ -36,8 +48,3 @@ clean:
 	rm rosenrot
 	rm $(USER_CACHE_DIR)
 
-format: $(SRC) $(PLUGINS)
-	$(FORMATTER) $(SRC) $(PLUGINS) $(rosenrot.h)
-
-lint: 
-	clang-tidy $(SRC) -- -Wall $(INCS) -o rosenrot $(LIBS)
