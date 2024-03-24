@@ -97,7 +97,7 @@ Of general interest:
 - Static variables keep their value between invocations.
 - By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.
 - The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /opt/rosenrot/style.css, and that file isn't updated until make install.
-- The [min](https://git.nunosempere.com/open.source/rosenrot/src/branch/min) branch contains a minimalistic version of rosenrot, in one c file with 390 lines. It might be of interest to developers and those seeking to understand the code.
+- The [min](https://git.nunosempere.com/open.source/rosenrot/src/branch/min) branch contains a minimalistic version of rosenrot, in one c file with 320 lines (256 without comments and extra newlines). It might be of interest to developers and those seeking to understand the code.
 
 The "architecture" of the application looks as follows:
 
