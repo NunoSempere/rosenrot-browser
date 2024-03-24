@@ -18,7 +18,7 @@
 #define SEARCH "https://search.brave.com/search?q=%s"
 // #define SEARCH "https://search.nunosempere.com/search?q=%s"
 // #define SEARCH "https://lite.duckduckgo.com/html/?q=%s" 
-#define HOME "" 
+#define HOME "https://search.brave.com/search?q=%s" 
 // ^ Could also be a website ("https://search.nunosempere.com"), or a file ("file:///opt/rose/homepage.png")
 // #define HOME "https://search.nunosempere.com/"
 // #define HOME "file:///opt/rosenrot/rose.png" 
