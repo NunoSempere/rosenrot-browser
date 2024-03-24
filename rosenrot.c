@@ -9,16 +9,17 @@
 /* Global declarations */
 static GtkNotebook* notebook;
 static GtkWindow* window;
+typedef enum { _SEARCH, _FIND, _HIDDEN } Bar_entry_mode;
 static struct {
     GtkHeaderBar* widget;
     GtkEntry* line;
     GtkEntryBuffer* line_text;
-    enum { _SEARCH, _FIND, _HIDDEN } entry_mode;
+    Bar_entry_mode entry_mode;
 } bar;
 static int num_tabs = 0;
 
 // Forward declarations
-void toggle_bar(GtkNotebook* notebook);
+void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 
 /* Utils */
@@ -33,8 +34,7 @@ void load_uri(WebKitWebView* view, const char* uri)
 {
     if (strlen(uri) == 0) {
         webkit_web_view_load_uri(view, "");
-        bar.entry_mode = _SEARCH;
-        toggle_bar(notebook);
+        toggle_bar(notebook, _SEARCH);
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
     } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
@@ -192,8 +192,9 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 }
 
 /* Top bar */
-void toggle_bar(GtkNotebook* notebook)
+void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 {
+    bar.entry_mode = mode;
     switch (bar.entry_mode) {
         case _SEARCH: {
             const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
@@ -219,6 +220,7 @@ void toggle_bar(GtkNotebook* notebook)
             gtk_widget_hide(GTK_WIDGET(bar.widget));
     }
 }
+
 // Handle what happens when the user is on the bar and presses enter
 void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 {
@@ -312,12 +314,10 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             break;
 
         case show_searchbar:
-            bar.entry_mode = _SEARCH;
-            toggle_bar(notebook);
+            toggle_bar(notebook, _SEARCH);
             break;
         case show_finder:
-            bar.entry_mode = _FIND;
-            toggle_bar(notebook);
+            toggle_bar(notebook, _FIND);
             break;
 
         case finder_next:
@@ -330,13 +330,11 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         case new_tab:
             notebook_create_new_tab(notebook, NULL);
             gtk_notebook_set_show_tabs(notebook, true);
-            bar.entry_mode = _SEARCH;
-            toggle_bar(notebook);
+            toggle_bar(notebook, _SEARCH);
             break;
 
         case hide_bar:
-            bar.entry_mode = _HIDDEN;
-            toggle_bar(notebook);
+            toggle_bar(notebook, _HIDDEN);
             break;
 
         case prettify: {
@@ -362,15 +360,9 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     GdkModifierType event_state = 0;
     gdk_event_get_state(event, &event_state);
 
-    int debug_shortcuts = 0;
-    if (debug_shortcuts) {
+    if (0) {
         printf("Keypress state: %d\n", event_state);
-        if (event_state & GDK_CONTROL_MASK) {
-            printf("Keypress state is: CONTROL\n");
-        }
         printf("Keypress value: %d\n", event_keyval);
-        printf("PageUp: %d %d\n", KEY(Page_Up), GDK_KEY_KP_Page_Up);
-        printf("PageDown: %d %d\n", KEY(Page_Down), GDK_KEY_KP_Page_Down);
     }
 
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)

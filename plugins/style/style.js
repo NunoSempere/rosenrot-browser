@@ -2,6 +2,7 @@
 
 // Main part of the code: switch on the domain and select the corresponding style
 var styles = null;
+console.log(document.domain)
 switch (document.domain) {
   case "forum.effectivealtruism.org":
     styles = `
@@ -81,6 +82,8 @@ switch (document.domain) {
 	    .native-ad-container,
 	    .native-sidebar-ad,
 	    .premium-banner-outer,
+	    .promotedlink,
+	    .promoted
 	    {
 		    display: none !important;
 	    }
@@ -152,7 +155,6 @@ switch (document.domain) {
       /* No change of colors in hover */
       *:hover {
         /* background-color: white !important; */
-        background-color: !important;
         transition: none !important;
       }*/
       /*
@@ -283,4 +285,4 @@ if (document.domain == "twitter.com") {
   hideVideoPlayerGrandparent();
 }
 
-document.body.style.visibility = "visible";
+// document.body.style.visibility = "visible";

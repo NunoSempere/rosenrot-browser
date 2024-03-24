@@ -17,6 +17,7 @@ CONFIG=config.h
 # Plugins
 include plugins/plugins.mk
 # PLUGINS=./plugins/stand_in/stand_in.c
+ADBLOCK='-L/usr/lib/wyebrowser/adblock.so' # optional adblocking; depends on https://github.com/jun7/wyebadblock
 
 ## Formatter
 STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
