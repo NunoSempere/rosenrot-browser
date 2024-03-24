@@ -1,5 +1,6 @@
 # C compiler
-CC=gcc # alternatives: tcc, clang, zig cc 
+# CC=gcc # alternatives: tcc, clang, zig cc 
+CC=tcc
 
 # Dependencies
 DEPS='webkit2gtk-4.1'
@@ -26,6 +27,10 @@ user_cache:
 
 install: rosenrot
 	cp -f rosenrot /usr/bin
+
+depsdebian:
+	sudo apt install tcc make
+	sudo apt install libwebkit2gtk-4.1-dev
 
 ## Additional niceties
 

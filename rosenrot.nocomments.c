@@ -3,34 +3,22 @@
 #include <string.h>
 #include <webkit2/webkit2.h>
 
-// User config
-#define WIDTH 1920 // 960 for half-width, 1920 for full width
+#define WIDTH 1920 
 #define HEIGHT 1080
 #define BAR_SIZE 1000
 #define SEARCH "https://lite.duckduckgo.com/html/?q=%s"
 #define HOME "https://lite.duckduckgo.com/html"
-
-// Minimal niceties
 #define ZOOM 1 /* Starting zoom level.*/
 #define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
 #define MAX_NUM_TABS 8
-
-// Webkit settings
-// See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html
 #define WEBKIT_DEFAULT_SETTINGS                                                 \
     "enable-back-forward-navigation-gestures", 1, "enable-developer-extras", 1, \
         "enable-smooth-scrolling", 0,                                           \
         "default-charset", "utf-8"
-
-/* CACHE */
 #define DATA_DIR "/home/nuno/.cache/rosenrot"
 #define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
-
-// GTK
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", 0, "gtk-enable-animations", 0
 #define KEY(x) GDK_KEY_##x
-
-// Shortcuts
 typedef enum {
     goback,
     goforward,
@@ -83,7 +71,6 @@ static struct {
     { CTRL, KEY(p), prettify }
 };
 
-/* Global declarations */
 static GtkNotebook* notebook;
 static GtkWindow* window;
 static struct {
@@ -96,16 +83,12 @@ static struct {
 } bar;
 static int num_tabs = 0;
 
-// Forward declarations
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 
-/* Utils */
 WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 {
     return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook)));
 }
-
-/* Load content*/
 
 void load_uri(WebKitWebView* view, const char* uri)
 {
@@ -144,7 +127,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     }
 }
 
-/* Create new tabs */
 GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
@@ -158,14 +140,8 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
     return NULL;
-    /*
-     WebKitGTK documentation recommends returning the new webview.
-     I imagine that this might allow e.g., to go back in a new tab
-     or generally to keep track of history.
-     However, this would require either modifying notebook_create_new_tab
-     or duplicating its contents, for unclear gain.
-   */
 }
+
 WebKitWebView* create_new_webview()
 {
     char* style;
@@ -184,6 +160,7 @@ WebKitWebView* create_new_webview()
 
     return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context", web_context, "user-content-manager", contentmanager, NULL);
 }
+
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
@@ -207,7 +184,6 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     }
 }
 
-// Handle what happens when the user is on the bar and presses enter
 void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 {
     if (bar.entry_mode == _SEARCH)
@@ -323,7 +299,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
     return 1;
 }
-// Listen to key presses and call shortcuts if needed.
+
 int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 {
     (void)self;
@@ -336,30 +312,24 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++)
         if ((event_state & shortcut[i].mod || shortcut[i].mod == 0x0) && event_keyval == shortcut[i].key)
             return handle_shortcut(shortcut[i].id, notebook);
-    // This API is deprecated in GTK4 :(
     return 0;
 }
 
 int main(int argc, char** argv)
 {
-    /* Initialize GTK in general */
     gtk_init(NULL, NULL); // <https://docs.gtk.org/gtk3/func.init.html>
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // <https://docs.gtk.org/gobject/method.Object.set.html>
 
-    /* Initialize GTK objects. These are declared as static globals at the top of this file */
-    // Notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_show_tabs(notebook, 0);
     gtk_notebook_set_show_border(notebook, 0);
 
-    // Window
     window = GTK_WINDOW(gtk_window_new(0));
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
     gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
 
-    // Bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
@@ -370,15 +340,12 @@ int main(int argc, char** argv)
     gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
-    /* Load first tab */
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
-    /* Show to user */
     gtk_widget_show_all(GTK_WIDGET(window));
     gtk_notebook_set_show_tabs(notebook, 1);
 
-    /* Deal with more tabs */
     if (argc > 2) {
         for (int i = 2; i < argc; i++) {
             notebook_create_new_tab(notebook, argv[i]);
