@@ -18,7 +18,7 @@ static struct {
 } bar;
 static int num_tabs = 0;
 
-// Forward declarations
+/* Forward declarations */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 
@@ -29,7 +29,6 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 }
 
 /* Load content*/
-
 void load_uri(WebKitWebView* view, const char* uri)
 {
     if (strlen(uri) == 0) {
@@ -83,7 +82,7 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     GtkNotebook* notebook)
 {
     switch (load_event) {
-        // see <https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html>
+        // https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html
         case WEBKIT_LOAD_STARTED:
         case WEBKIT_LOAD_COMMITTED:
             set_custom_style(self);
@@ -106,7 +105,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
             }
             gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
                 webpage_title == NULL ? "—" : tab_title);
-            // gtk_widget_hide(GTK_WIDGET(bar));
         }
     }
 }
@@ -147,8 +145,8 @@ WebKitWebView* create_new_webview()
         webkit_settings_set_user_agent(
             settings,
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/110.0.0.0 Safari/537.36");
-        // See: <https://www.useragents.me/> for some common user agents
+            "like Gecko) Chrome/120.0.0.0 Safari/537.3");
+        // https://www.useragents.me
     }
     web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
     contentmanager = webkit_user_content_manager_new();
@@ -158,7 +156,7 @@ WebKitWebView* create_new_webview()
 
     webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 
-    if (g_file_get_contents("~/.config/rose/style.css", &style, NULL, NULL)) {
+    if (g_file_get_contents("~/opt/rosenrot/style.css", &style, NULL, NULL)) {
         webkit_user_content_manager_add_style_sheet(
             contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
     }
@@ -183,7 +181,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 
         gtk_notebook_set_current_page(notebook, n);
         gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
-        webkit_web_view_set_zoom_level(view, ZOOM);
+        webkit_web_view_set_zoom_level(view, ZOOM_START_LEVEL);
         num_tabs += 1;
     } else {
         webkit_web_view_evaluate_javascript(notebook_get_webview(notebook), "alert('Too many tabs, not opening a new one')",
@@ -240,7 +238,7 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 // Act when a particular shortcut is detected
 int handle_shortcut(func id, GtkNotebook* notebook)
 {
-    static double zoom = ZOOM;
+    static double zoom = ZOOM_START_LEVEL;
     static bool is_fullscreen = 0;
 
     WebKitWebView* view = notebook_get_webview(notebook);
@@ -266,19 +264,19 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
         case zoomin:
             webkit_web_view_set_zoom_level(view,
-                (zoom += ZOOM_VAL));
+                (zoom += ZOOM_STEPSIZE));
             break;
         case zoomout:
             webkit_web_view_set_zoom_level(view,
-                (zoom -= ZOOM_VAL));
+                (zoom -= ZOOM_STEPSIZE));
             break;
         case zoom_reset:
             webkit_web_view_set_zoom_level(view,
-                (zoom = ZOOM));
+                (zoom = ZOOM_START_LEVEL));
             break;
 
         case prev_tab:; // declarations aren't statements
-            // <https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement>
+            // https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
             int n = gtk_notebook_get_n_pages(notebook);
             int k = gtk_notebook_get_current_page(notebook);
             int l = (n + k - 1) % n;
@@ -372,8 +370,8 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     If I wanted to bind button presses, like the extra button in the mouse,
     I would have to bind the button-press-event signal instead.
     Some links in case I go down that road:
-    - <https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html>
-    - <https://docs.gtk.org/gdk3/union.Event.html>
+    - https://docs.gtk.org/gtk3/signal.Widget.button-press-event.html
+    - https://docs.gtk.org/gdk3/union.Event.html
     - https://docs.gtk.org/gdk3/struct.EventButton.html
     */
     // This API is deprecated in GTK4 :(
@@ -383,8 +381,8 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 int main(int argc, char** argv)
 {
     /* Initialize GTK in general */
-    gtk_init(NULL, NULL); // <https://docs.gtk.org/gtk3/func.init.html>
-    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // <https://docs.gtk.org/gobject/method.Object.set.html>
+    gtk_init(NULL, NULL); // https://docs.gtk.org/gtk3/func.init.html
+    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css", NULL);
     gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);

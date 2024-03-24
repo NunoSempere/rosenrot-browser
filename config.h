@@ -1,25 +1,17 @@
 #include <stdbool.h>
-#include <gdk/gdk.h>
-// Previously: #include <gdk/gdkkeysyms.h>
-// But GTK3 discourages including the individual headers
-// In GTK4, the location also changes to <gdk/gdkenums.h>
+#include <gdk/gdk.h> // <gdk/gdkenums.h>, <gdk/gdkkeysyms.h>
 
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
 #define HEIGHT 1080
-#define BAR_SIZE 1000
+#define BAR_SIZE 960
 
 // More user config
-#define ZOOM 1.6 /* Starting zoom level.*/
-#define ZOOM_VAL .1 /* Zooming value in zoomin/zoomout functions */
-#define MAX_NUM_TABS 8 // set to 0 or false if you want unlimited tabs, or look at the relevant rose.c code.
-#define SEARCH "https://search.brave.com/search?q=%s"
-// #define SEARCH "https://search.nunosempere.com/search?q=%s"
-// #define SEARCH "https://lite.duckduckgo.com/html/?q=%s" 
-#define HOME "https://search.brave.com/search" 
-// ^ Could also be a website ("https://search.nunosempere.com"), or a file ("file:///opt/rose/homepage.png")
-// #define HOME "https://search.nunosempere.com/"
-// #define HOME "file:///opt/rosenrot/rose.png" 
+#define ZOOM_START_LEVEL 1.6 
+#define ZOOM_STEPSIZE .1 
+#define MAX_NUM_TABS 8 // 0/false for unlimited tabs
+#define SEARCH "https://search.brave.com/search?q=%s" // "https://search.nunosempere.com/search?q=%s", "https://lite.duckduckgo.com/html/?q=%s" 
+#define HOME "https://search.brave.com/search"  // "file:///opt/rose/homepage.png", ""
 
 // Plugins
 #define LIBRE_REDIRECT_ENABLED true
@@ -29,35 +21,33 @@
 /*
 To disable plugins:
 1. set their corresponding variable to false
-2. you could also look into this file at commit afe93518a for an approach using stand-in code.
-3. recompile 
+2. recompile 
 
 To remove plugins completely;
-1. Remove the corresponding code in the rosenrot.c by looking for the variables above.
+1. Remove the corresponding code in rosenrot.c by looking for the variables above.
 2. Remove PLUGIN and $(PLUGIN) from the makefile
 3. Recompile
+
+You could also look into commit afe93518a for an approach using stand-in code.
 */
 
 // Webkit settings
-// See: https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
+// https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
 #define WEBKIT_DEFAULT_SETTINGS \
 	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
 	"enable-smooth-scrolling", false, \
     "default-charset", "utf-8"
-/* CACHE */
 #define DATA_DIR "/home/nuno/.cache/rosenrot"
 #define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
 
 // GTK 
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+// https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkkeysyms.h
 #define KEY(x) GDK_KEY_##x
-/*
-There are two different constants for Page_Up/Page_Down:
-This could possibly have something to so with having Page_Down/Page_Up
-as part of a keypad with/without NumLock
-See: https://docs.gtk.org/gdk3/?q=Page_Up
-See: https://docs.gtk.org/gdk3/?q=GDK_KEY_KP
-*/
+// https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkenums.h
+#define SFT  1 << 0 
+#define CTRL 1 << 2
+#define ALT  1 << 3
 
 // Shortcuts
 typedef enum {
@@ -82,10 +72,6 @@ typedef enum {
   hide_bar
 } func;
 
-#define SFT  1 << 0
-#define CTRL 1 << 2
-#define ALT  1 << 3
-// reference: <https://github.com/GNOME/gtk/blob/7ea7d5c3906ccd231b04654101bb742f157d82f6/gdk/gdkenums.h#L140>
 
 static struct {
 	unsigned mod;
@@ -112,9 +98,6 @@ static struct {
     { CTRL,        KEY(N),             finder_prev        },
     { CTRL,        KEY(p),             prettify           }
 };
-/* ^ For controls more akin to normal browsers */
-/* Reference for the key shorthand:
- * <https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkkeysyms.h> */
 
 /* Old controls: {
     { CTRL,	       KEY(h),     goback            },
@@ -137,4 +120,3 @@ static struct {
     { CTRL,        KEY(p),     prettify          }
 };
 */
-
