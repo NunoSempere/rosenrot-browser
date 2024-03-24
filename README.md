@@ -96,13 +96,14 @@ Of general interest:
 - I just found out that you can inspect a GTK application with the GTK explorer if you set a certain command-line variable. Try this with `make inspect`.
 - Static variables keep their value between invocations.
 - By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.
-- The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /usr/share/themes/rose/style.css, and that file isn't updated until make install.
+- The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /opt/rosenrot/style.css, and that file isn't updated until make install.
+- The [min](https://git.nunosempere.com/open.source/rosenrot/src/branch/min) branch contains a minimalistic version of rosenrot, in one c file with 390 lines. It might be of interest to developers and those seeking to understand the code.
 
 The "architecture" of the application looks as follows:
 
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/0-architecture.png)
 
-## webkit2gtk-4.0 vs webkit2gtk-4.1 vs webkit2gtk-6.0
+### webkit2gtk-4.0 vs webkit2gtk-4.1 vs webkit2gtk-6.0
 
 See [this blog post](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api-for-gtk-4-is-now-stable/) for details. webkit2gtk-4.0  is deprecated, webkit2gtk-4.1 is the current [stable](https://webkitgtk.org/reference/webkit2gtk/stable/index.html) release and uses GTK3. webkit2gtk-6.0 is the current [unstable](https://webkitgtk.org/reference/webkitgtk/unstable/index.html) release, and uses GTK4.
 
@@ -110,7 +111,7 @@ Migration instructions for migration to webkit2gtk-6 and GTK4 can be seen [here]
 
 Rosenrot is currently on the stable webkit2gtk-4.1 release using GTK3, and has removed deprecated webkit apis. It has plans to eventually migrate to webkit2gtk-6.0 eventually but not soon, because the GTK4 rewrite seems onerous.
 
-## Ubuntu 20.04
+### Ubuntu 20.04
 
 A previous version of this repository was based on Ubuntu 20.04. You can still see documentation for that distribution [here](https://git.nunosempere.com/open.source/rosenrot/src/commit/8a1e0be30df52d5a21109297fd5bbc20efec1b3b), particularly a video installing rosenrot in a fresh Ubuntu 20.04 virtual machine [here](https://video.nunosempere.com/w/t3oAvJLPHTSAMViQ6zbwTV). However, that uses the webkit2gtk-4.0 library. Instead, I recommend adapting the Debian 12 instructions.
 
