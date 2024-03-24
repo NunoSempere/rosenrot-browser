@@ -4,6 +4,7 @@ WARNINGS=-Wall
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
 DEBUG= # -g
+STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies
 DEPS='webkit2gtk-4.1'
@@ -29,7 +30,7 @@ USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 RUNTIME_FILES_DIR=/opt/rosenrot/
 
 build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
+	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 
 constants:
 	@echo "# Computing constants"
