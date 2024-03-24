@@ -54,6 +54,14 @@ switch (document.domain) {
       }
     `;
     break;
+  case "search.brave.com":
+    styles = `
+      .download-button,
+      a[href^="https://brave.com/download/"] {
+        display: none !important; 
+      }
+    `;
+    break;
   case "search.nunosempere.com":
     styles = `
     /* 
