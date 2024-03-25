@@ -86,8 +86,10 @@ static struct {
     { CTRL,        KEY(equal),         zoomin             },
     { CTRL,        KEY(minus),         zoomout            },
     { CTRL,        KEY(0),             zoom_reset         },
-    { CTRL,        KEY(KP_Page_Up),    prev_tab           }, /* also try KEY(Page_Up) if this doesn't work on your machine */
-    { CTRL,        KEY(KP_Page_Down),  next_tab           }, /* ditto for KEY(Page_Down) */
+    { CTRL,        KEY(KP_Page_Up),    prev_tab           }, 
+    { CTRL,        KEY(KP_Page_Down),  next_tab           }, 
+    { CTRL,        KEY(Page_Up),       prev_tab           }, // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
+    { CTRL,        KEY(Page_Down),     next_tab           }, 
     { CTRL,        KEY(t),             new_tab            },
     { CTRL,        KEY(w),             close_tab          },
     { 0x0,         KEY(F11),           toggle_fullscreen  },

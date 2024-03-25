@@ -1,6 +1,6 @@
 # To do
 
-- [ ] Settle on a C standard (C11?), and use safer string handling functions provided by it.
+- [ ] Move to a later C standard (C11?) and use safer string handling functions provided by it.
   - The thing is, I kinda feel attached to C89-C99
 - [ ] Consider
   - See make lint for purported insecurities
@@ -18,6 +18,7 @@
 
 # Previously done
 
+- [x] Check that this compiles with the c99 standard
 - [x] Add minimalist version of rosenrot to its own branch
 - [x] Fix PageUp/PageDown shortcuts.
 - ~~[ ] Set [`webkit_web_context_set_sandbox_enabled`](<https://webkitgtk.org/reference/webkit2gtk/2.36.8/WebKitWebContext.html#webkit-web-context-set-sandbox-enabled>), as recommended [here](<https://blogs.gnome.org/mcatanzaro/2022/11/04/stop-using-qtwebkit/>)~~. Irrelevant with upgrade to libsoup3.
