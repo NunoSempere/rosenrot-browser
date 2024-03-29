@@ -17,6 +17,7 @@ int libre_redirect(const char* uri, char* output)
     } else {
         char* annoying_sites[] = {
             "https://www.reddit.com",
+            "https://vitalik.ca",
             "https://www.youtube.com",
             "https://google.com",
             "https://medium.com",
@@ -29,7 +30,10 @@ int libre_redirect(const char* uri, char* output)
         };
 
         char* alternatives[] = {
-            "https://old.reddit.com", // "https://teddit.nunosempere.com",
+            "https://redlib.cow.rip", 
+            // previously: "https://old.reddit.com", "https://teddit.nunosempere.com", 
+            // https://github.com/redlib-org/redlib-instances/blob/main/instances.md
+            "https://vitalik.eth.limo",
             "https://invidious.private.coffee",
             "https://search.nunosempere.com",
             "https://scribe.rip",
