@@ -37,8 +37,8 @@ void load_uri(WebKitWebView* view, const char* uri)
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
     } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
-        char tmp[strlen("https://") + strlen(uri)];
-        snprintf(tmp, sizeof(tmp), "https://%s", uri);
+        char tmp[strlen("https://") + strlen(uri) + 1];
+        snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
     } else {
         // Check for shortcuts
