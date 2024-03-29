@@ -160,16 +160,15 @@ switch (document.domain) {
         display: none !important;
       }
 
-      /* No change of colors in hover */
+      /* 
+      No change of colors in hover: seemed like a good idea
+      but it fucks up going back and forth
       *:hover {
-        /* background-color: white !important; */
+        background-color: white !important; 
+        background-color: inherit !important; 
         transition: none !important;
-      }*/
-      /*
-      *:hover {
-        background-color: inherit !important;
-        transition: none !important;
-      }*/
+      }
+      */
       /* Hide go to top button */
       [aria-label^="New posts are available. Push the period key to go to the them."]{
 		    display: none;
