@@ -252,6 +252,12 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             webkit_web_view_go_forward(view);
             break;
 
+        case toggle_custom_style: /* Ctrl s + Ctrl Shift R to reload */
+            if (custom_style_enabled)
+                custom_style_enabled = 0;
+            else
+                custom_style_enabled = 1;
+            // break; passthrough
         case refresh:
             webkit_web_view_reload(view);
             break;
@@ -309,12 +315,6 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             else
                 gtk_window_fullscreen(window);
             is_fullscreen = !is_fullscreen;
-            break;
-        case toggle_custom_style: /* Ctrl s + Ctrl Shift R to reload */
-            if (custom_style_enabled)
-                custom_style_enabled = 0;
-            else
-                custom_style_enabled = 1;
             break;
         case show_searchbar:
             toggle_bar(notebook, _SEARCH);
