@@ -32,7 +32,7 @@ function Readability(doc, options) {
     options = arguments[2];
   } else if (!doc || !doc.documentElement) {
     throw new Error(
-      "First argument to Readability constructor should be a document object."
+      "First argument to Readability constructor should be a document object.",
     );
   }
   options = options || {};
@@ -53,7 +53,7 @@ function Readability(doc, options) {
     options.nbTopCandidates || this.DEFAULT_N_TOP_CANDIDATES;
   this._charThreshold = options.charThreshold || this.DEFAULT_CHAR_THRESHOLD;
   this._classesToPreserve = this.CLASSES_TO_PRESERVE.concat(
-    options.classesToPreserve || []
+    options.classesToPreserve || [],
   );
   this._keepClasses = !!options.keepClasses;
   this._serializer =
@@ -405,7 +405,7 @@ Readability.prototype = {
       tagNames.map(function (tag) {
         var collection = node.getElementsByTagName(tag);
         return Array.isArray(collection) ? collection : Array.from(collection);
-      })
+      }),
     );
   },
 
@@ -517,7 +517,7 @@ Readability.prototype = {
           this.REGEXPS.srcsetUrl,
           function (_, p1, p2, p3) {
             return toAbsoluteURI(p1) + (p2 || "") + p3;
-          }
+          },
         );
 
         media.setAttribute("srcset", newSrcset);
@@ -545,7 +545,7 @@ Readability.prototype = {
           for (var i = 0; i < node.attributes.length; i++) {
             child.setAttribute(
               node.attributes[i].name,
-              node.attributes[i].value
+              node.attributes[i].value,
             );
           }
           node.parentNode.replaceChild(child, node);
@@ -574,7 +574,7 @@ Readability.prototype = {
       // If they had an element with id "title" in their HTML
       if (typeof curTitle !== "string")
         curTitle = origTitle = this._getInnerText(
-          doc.getElementsByTagName("title")[0]
+          doc.getElementsByTagName("title")[0],
         );
     } catch (e) {
       /* ignore exceptions setting the title. */
@@ -599,7 +599,7 @@ Readability.prototype = {
       // could assume it's the full title.
       var headings = this._concatNodeLists(
         doc.getElementsByTagName("h1"),
-        doc.getElementsByTagName("h2")
+        doc.getElementsByTagName("h2"),
       );
       var trimmedTitle = curTitle.trim();
       var match = this._someNode(headings, function (heading) {
@@ -755,7 +755,7 @@ Readability.prototype = {
       try {
         replacement.setAttribute(
           node.attributes[i].name,
-          node.attributes[i].value
+          node.attributes[i].value,
         );
       } catch (ex) {
         /* it's possible for setAttribute() to throw if the attribute name
@@ -825,7 +825,7 @@ Readability.prototype = {
     // replace H1 with H2 as H1 should be only title that is displayed separately
     this._replaceNodeTags(
       this._getAllNodesWithTag(articleContent, ["h1"]),
-      "h2"
+      "h2",
     );
 
     // Remove extra paragraphs
@@ -840,7 +840,7 @@ Readability.prototype = {
         var totalCount = imgCount + embedCount + objectCount + iframeCount;
 
         return totalCount === 0 && !this._getInnerText(paragraph, false);
-      }
+      },
     );
 
     this._forEachNode(
@@ -848,7 +848,7 @@ Readability.prototype = {
       function (br) {
         var next = this._nextNode(br.nextSibling);
         if (next && next.tagName == "P") br.parentNode.removeChild(br);
-      }
+      },
     );
 
     // Remove single-cell tables
@@ -866,12 +866,12 @@ Readability.prototype = {
               cell,
               this._everyNode(cell.childNodes, this._isPhrasingContent)
                 ? "P"
-                : "DIV"
+                : "DIV",
             );
             table.parentNode.replaceChild(cell, table);
           }
         }
-      }
+      },
     );
   },
 
@@ -1032,7 +1032,7 @@ Readability.prototype = {
     while (true) {
       this.log("Starting grabArticle loop");
       var stripUnlikelyCandidates = this._flagIsActive(
-        this.FLAG_STRIP_UNLIKELYS
+        this.FLAG_STRIP_UNLIKELYS,
       );
 
       // First, node prepping. Trash nodes that look cruddy (like ones with the
@@ -1066,7 +1066,7 @@ Readability.prototype = {
           this.log(
             "Removing header: ",
             node.textContent.trim(),
-            this._articleTitle.trim()
+            this._articleTitle.trim(),
           );
           shouldRemoveTitleHeader = false;
           node = this._removeAndGetNext(node);
@@ -1093,7 +1093,7 @@ Readability.prototype = {
               "Removing content with role " +
                 node.getAttribute("role") +
                 " - " +
-                matchString
+                matchString,
             );
             node = this._removeAndGetNext(node);
             continue;
@@ -1285,7 +1285,7 @@ Readability.prototype = {
             0.75
           ) {
             alternativeCandidateAncestors.push(
-              this._getNodeAncestors(topCandidates[i])
+              this._getNodeAncestors(topCandidates[i]),
             );
           }
         }
@@ -1302,8 +1302,8 @@ Readability.prototype = {
             ) {
               listsContainingThisAncestor += Number(
                 alternativeCandidateAncestors[ancestorIndex].includes(
-                  parentOfTopCandidate
-                )
+                  parentOfTopCandidate,
+                ),
               );
             }
             if (listsContainingThisAncestor >= MINIMUM_TOPCANDIDATES) {
@@ -1367,7 +1367,7 @@ Readability.prototype = {
 
       var siblingScoreThreshold = Math.max(
         10,
-        topCandidate.readability.contentScore * 0.2
+        topCandidate.readability.contentScore * 0.2,
       );
       // Keep potential top candidate's parent node to try to get text direction of it later.
       parentOfTopCandidate = topCandidate.parentNode;
@@ -1382,11 +1382,11 @@ Readability.prototype = {
           sibling,
           sibling.readability
             ? "with score " + sibling.readability.contentScore
-            : ""
+            : "",
         );
         this.log(
           "Sibling has score",
-          sibling.readability ? sibling.readability.contentScore : "Unknown"
+          sibling.readability ? sibling.readability.contentScore : "Unknown",
         );
 
         if (sibling === topCandidate) {
@@ -1529,7 +1529,7 @@ Readability.prototype = {
       if (parseSuccessful) {
         // Find out text direction from ancestors of final top candidate.
         var ancestors = [parentOfTopCandidate, topCandidate].concat(
-          this._getNodeAncestors(parentOfTopCandidate)
+          this._getNodeAncestors(parentOfTopCandidate),
         );
         this._someNode(ancestors, function (ancestor) {
           if (!ancestor.tagName) return false;
@@ -1582,7 +1582,7 @@ Readability.prototype = {
         function (_, hex, numStr) {
           var num = parseInt(hex || numStr, hex ? 16 : 10);
           return String.fromCharCode(num);
-        }
+        },
       );
   },
 
@@ -1605,7 +1605,7 @@ Readability.prototype = {
           // Strip CDATA markers if present
           var content = jsonLdElement.textContent.replace(
             /^\s*<!\[CDATA\[|\]\]>\s*$/g,
-            ""
+            "",
           );
           var parsed = JSON.parse(content);
           if (
@@ -1898,7 +1898,7 @@ Readability.prototype = {
         scriptNode.nodeValue = "";
         scriptNode.removeAttribute("src");
         return true;
-      }
+      },
     );
     this._removeNodes(this._getAllNodesWithTag(doc, ["noscript"]));
   },
@@ -2310,7 +2310,7 @@ Readability.prototype = {
             }
           }
         }
-      }
+      },
     );
   },
 
@@ -2323,7 +2323,7 @@ Readability.prototype = {
     var children = this._getAllNodesWithTag(e, tags);
     this._forEachNode(
       children,
-      (child) => (childrenLength += this._getInnerText(child, true).length)
+      (child) => (childrenLength += this._getInnerText(child, true).length),
     );
     return childrenLength / textLength;
   },
@@ -2354,7 +2354,7 @@ Readability.prototype = {
         var listNodes = this._getAllNodesWithTag(node, ["ul", "ol"]);
         this._forEachNode(
           listNodes,
-          (list) => (listLength += this._getInnerText(list).length)
+          (list) => (listLength += this._getInnerText(list).length),
         );
         isList = listLength / this._getInnerText(node).length > 0.9;
       }
@@ -2554,7 +2554,7 @@ Readability.prototype = {
       var numTags = this._doc.getElementsByTagName("*").length;
       if (numTags > this._maxElemsToParse) {
         throw new Error(
-          "Aborting parsing document; " + numTags + " elements found"
+          "Aborting parsing document; " + numTags + " elements found",
         );
       }
     }

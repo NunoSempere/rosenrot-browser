@@ -2,7 +2,7 @@
 
 // Main part of the code: switch on the domain and select the corresponding style
 var styles = null;
-console.log(document.domain)
+console.log(document.domain);
 switch (document.domain) {
   case "forum.effectivealtruism.org":
     styles = `

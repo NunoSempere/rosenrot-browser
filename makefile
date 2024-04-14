@@ -22,7 +22,8 @@ ADBLOCK='-L/usr/lib/wyebrowser/adblock.so' # optional adblocking; depends on htt
 
 ## Formatter
 STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
-FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
+FORMATTER_C=clang-format -i -style=$(STYLE_BLUEPRINT)
+FORMATTER_JS=npx prettier -w 
 
 # Runtime files 
 MAINTAINER_CACHE_DIR=/home/nuno/.cache/rosenrot
@@ -68,7 +69,9 @@ clean:
 	rm $(USER_CACHE_DIR)
 
 format: $(SRC) $(PLUGINS)
-	$(FORMATTER) $(SRC) $(PLUGINS) $(rosenrot.h)
+	$(FORMATTER_C) $(SRC) $(PLUGINS) $(rosenrot.h)
+	$(FORMATTER_JS) plugins/readability/readability.js
+	$(FORMATTER_JS) plugins/style/style.js
 
 lint: 
 	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3 $(INCS) -o rosenrot $(LIBS)
