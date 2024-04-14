@@ -17,6 +17,7 @@ static struct {
     Bar_entry_mode entry_mode;
 } bar;
 static int num_tabs = 0;
+static int custom_style_enabled = 1;
 
 /* Forward declarations */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
@@ -71,7 +72,7 @@ void redirect_if_annoying(WebKitWebView* view, const char* uri)
 }
 void set_custom_style(WebKitWebView* view)
 {
-    if (CUSTOM_STYLE_ENABLED) {
+    if (custom_style_enabled) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
         webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
@@ -302,7 +303,6 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             }
 
             break;
-
         case toggle_fullscreen:
             if (is_fullscreen)
                 gtk_window_unfullscreen(window);
@@ -310,7 +310,12 @@ int handle_shortcut(func id, GtkNotebook* notebook)
                 gtk_window_fullscreen(window);
             is_fullscreen = !is_fullscreen;
             break;
-
+        case toggle_custom_style: /* Ctrl s + Ctrl Shift R to reload */
+            if (custom_style_enabled)
+                custom_style_enabled = 0;
+            else
+                custom_style_enabled = 1;
+            break;
         case show_searchbar:
             toggle_bar(notebook, _SEARCH);
             break;

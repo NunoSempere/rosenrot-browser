@@ -16,7 +16,6 @@
 // Plugins
 #define LIBRE_REDIRECT_ENABLED true
 #define READABILITY_ENABLED true
-#define CUSTOM_STYLE_ENABLED true
 #define CUSTOM_USER_AGENT false
 /*
 To disable plugins:
@@ -57,6 +56,7 @@ typedef enum {
 	refresh_force,
 	back_to_home,
 	toggle_fullscreen,
+	toggle_custom_style,
 	zoomin,
 	zoomout,
 	zoom_reset,
@@ -78,27 +78,28 @@ static struct {
 	unsigned key;
 	func id;
 } shortcut[] = {
-    { CTRL,        KEY(h),             goback             },
-    { CTRL,        KEY(j),             goforward          },
-    { CTRL,        KEY(r),             refresh            },
-    { CTRL,        KEY(R),             refresh_force      },
-    { CTRL,        KEY(H),             back_to_home       },
-    { CTRL,        KEY(equal),         zoomin             },
-    { CTRL,        KEY(minus),         zoomout            },
-    { CTRL,        KEY(0),             zoom_reset         },
-    { CTRL,        KEY(KP_Page_Up),    prev_tab           }, 
-    { CTRL,        KEY(KP_Page_Down),  next_tab           }, 
-    { CTRL,        KEY(Page_Up),       prev_tab           }, // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
-    { CTRL,        KEY(Page_Down),     next_tab           }, 
-    { CTRL,        KEY(t),             new_tab            },
-    { CTRL,        KEY(w),             close_tab          },
-    { 0x0,         KEY(F11),           toggle_fullscreen  },
-    { CTRL,        KEY(l),             show_searchbar     },
-    { CTRL,        KEY(semicolon),     hide_bar           },
-    { CTRL,        KEY(f),             show_finder        },
-    { CTRL,        KEY(n),             finder_next        },
-    { CTRL,        KEY(N),             finder_prev        },
-    { CTRL,        KEY(p),             prettify           }
+    { CTRL,        KEY(h),             goback               },
+    { CTRL,        KEY(j),             goforward            },
+    { CTRL,        KEY(r),             refresh              },
+    { CTRL,        KEY(R),             refresh_force        },
+    { CTRL,        KEY(H),             back_to_home         },
+    { CTRL,        KEY(equal),         zoomin               },
+    { CTRL,        KEY(minus),         zoomout              },
+    { CTRL,        KEY(0),             zoom_reset           },
+    { CTRL,        KEY(KP_Page_Up),    prev_tab             }, 
+    { CTRL,        KEY(KP_Page_Down),  next_tab             }, 
+    { CTRL,        KEY(Page_Up),       prev_tab             }, // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
+    { CTRL,        KEY(Page_Down),     next_tab             }, 
+    { CTRL,        KEY(t),             new_tab              },
+    { CTRL,        KEY(w),             close_tab            },
+    { 0x0,         KEY(F11),           toggle_fullscreen    },
+    { CTRL,        KEY(S),             toggle_custom_style  },
+    { CTRL,        KEY(l),             show_searchbar       },
+    { CTRL,        KEY(semicolon),     hide_bar             },
+    { CTRL,        KEY(f),             show_finder          },
+    { CTRL,        KEY(n),             finder_next          },
+    { CTRL,        KEY(N),             finder_prev          },
+    { CTRL,        KEY(p),             prettify             }
 };
 
 /* Old controls: {

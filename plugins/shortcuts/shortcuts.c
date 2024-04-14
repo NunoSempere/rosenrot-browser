@@ -23,8 +23,9 @@ int shortcut_expand(const char* uri, char* output)
             "!fnf",
             "!fnc",
             "!hn",
-            "!hnb"
-            "!x",
+            "!hnb",
+            "!ww",
+            "!x"
         };
 
         char* expansions[] = {
@@ -34,7 +35,8 @@ int shortcut_expand(const char* uri, char* output)
             "https://forum.nunosempere.com/comments",
             "https://news.ycombinator.com",
             "https://news.ycombinator.com/best",
-            "https://twitter.com",
+            "https://web.whatsapp.com",
+            "https://twitter.com"
         };
 
         // len = sizeof(shortcuts) / sizeof(shortcuts[0]);
