@@ -1,5 +1,5 @@
 #pragma once
 
-#define READABILITY_N 88067 + 1000
+#define READABILITY_N 88097 + 1000
 
 void read_readability_js(char* string);
