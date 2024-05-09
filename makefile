@@ -32,8 +32,10 @@ RUNTIME_FILES_DIR=/opt/rosenrot/
 
 build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
+	@echo
 
 constants:
+	@echo
 	@echo "# Computing constants"
 	cd plugins/readability/ && sh recompute_READABILITY_N.sh
 	cd plugins/style && sh recompute_STYLE_N.sh 
@@ -43,11 +45,12 @@ user_cache:
 	@if [ `id -u` -eq 0 ]; then echo "can't run make user_cache with sudo, because USER_CACHE_DIR would be /home/root/.cache"; return 1; fi
 	@echo "# Create user cache"
 	mkdir -p $(USER_CACHE_DIR)
-	find . -type f -not -path "*.git*" -not -path "*makefile*" -exec \
-		sed -i "s|$(MAINTAINER_CACHE_DIR)|$(USER_CACHE_DIR)|g" {} +
+	find . -type f -not -path "*.git*" -not -path "*makefile*" \
+	  -exec sed -i "s|$(MAINTAINER_CACHE_DIR)|$(USER_CACHE_DIR)|g" {} +
 	@echo
 
 runtime_files:
+	@echo
 	sudo mkdir -p /opt/rosenrot/
 	sudo cp style.css /opt/rosenrot/
 	sudo cp -r images/flower-imgs /opt/rosenrot/
@@ -57,6 +60,7 @@ runtime_files:
 install: rosenrot runtime_files
 	cp -f rosenrot /usr/bin
 	cp rosenrot-mklink /usr/bin
+	@echo
 
 uninstall: 
 	rm -r /opt/rosenrot
