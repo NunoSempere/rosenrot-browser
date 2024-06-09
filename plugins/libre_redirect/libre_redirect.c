@@ -25,6 +25,7 @@ int libre_redirect(const char* uri, char* output)
             "https://www.bloomberg.com",
             "https://www.royalroad.com",
             "https://genius.com",
+            // "https://twitter.com"
             // "https://archive.org",
             // "https://twitter.com"
         };
@@ -34,13 +35,14 @@ int libre_redirect(const char* uri, char* output)
             // previously: "https://old.reddit.com", "https://teddit.nunosempere.com",
             // https://github.com/redlib-org/redlib-instances/blob/main/instances.md
             "https://vitalik.eth.limo",
-            "https://iv.melmac.space/",
+            "https://invidious.nerdvpn.de",
             "https://search.nunosempere.com",
             "https://scribe.rip",
             "https://translate.riverside.rocks",
             "https://archive.ph/https://www.bloomberg.com",
             "https://royalread.nunosempere.com",
             "https://dumb.vern.cc",
+            "https://example.com"
             // "https://wayback.nunosempere.com",
             // "https://nitter.net"
         };
