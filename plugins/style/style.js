@@ -252,7 +252,7 @@ window.alert = (message) => {
 };
 
 // Extra: hide video players on twitter
-if (document.domain == "twitter.com") {
+if (document.domain == "twitter.com" || document.domain == "x.com") {
   // Function to hide the grandparent of video players
   // takes 0.014ms to run, so performance is not the concern here.
   // timed with console.time, console.timeEnd
