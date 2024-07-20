@@ -387,19 +387,12 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 int main(int argc, char** argv)
 {
     /* Initialize GTK in general */
-    #if GTK_NUM == 3
-        gtk_init(NULL, NULL); // https://docs.gtk.org/gtk3/func.init.html
-    #elif GTK_NUM == 4
-        gtk_init()
+    gtk_init()
     #endif
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css", NULL);
-    #if GTK_NUM == 3
-        gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
-    #elif GTK_NUM == 4
-        gtk_style_context_add_provider_for_display(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
-    #endif
+    gtk_style_context_add_provider_for_display(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
 
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
@@ -408,16 +401,13 @@ int main(int argc, char** argv)
     gtk_notebook_set_show_border(notebook, false);
 
     // Window
-    window = GTK_WINDOW(gtk_window_new(0));
+    window = GTK_WINDOW(gtk_window_new());
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 
-    #if GTK_NUM == 3
-        gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook)); /* deprecated in GTK */
-    #elif GTK_NUM == 4
-        gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
-    #endif
+    gtk_window_set_child(window, GTK_WIDGET(notebook));
+    // gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
 
     // Bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
@@ -427,11 +417,7 @@ int main(int argc, char** argv)
     g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
-    #if GTK_NUM == 3
-        gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
-    #elif GTK_NUM == 4
         gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
-    #endif
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
     /* Load first tab */
@@ -450,8 +436,6 @@ int main(int argc, char** argv)
         }
     }
 
-    gtk_main(); /* deprecated in GKT4: https://docs.gtk.org/gtk4/migrating-3to4.html#stop-using-gtk_main-and-related-apis */
-    //
     while (g_list_model_get_n_items (gtk_window_get_toplevels ()) > 0)
       g_main_context_iteration (NULL, TRUE);
 }
