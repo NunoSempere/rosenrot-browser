@@ -42,6 +42,7 @@ You could also look into commit afe93518a for an approach using stand-in code.
     "default-charset", "utf-8"
 #define DATA_DIR "/home/nuno/.cache/rosenrot"
 #define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
+#define NETWORK_SESSION_OPTS DATA_DIR, DATA_DIR
 
 // GTK 
 #define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false

@@ -138,8 +138,9 @@ WebKitWebView* create_new_webview()
 {
     char* style;
     WebKitSettings* settings;
-    WebKitWebContext* web_context;
+    // WebKitWebContext* web_context;
     WebKitCookieManager* cookiemanager;
+    WebKitNetworkSession* network_session; // new
     WebKitUserContentManager* contentmanager;
 
     settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
@@ -150,9 +151,10 @@ WebKitWebView* create_new_webview()
             "like Gecko) Chrome/120.0.0.0 Safari/537.3");
         // https://www.useragents.me
     }
-    web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
+    network_session = webkit_network_session_new(DATA_DIR, DATA_DIR);
+    // web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
     contentmanager = webkit_user_content_manager_new();
-    cookiemanager = webkit_web_context_get_cookie_manager(web_context);
+    cookiemanager = webkit_network_session_get_cookie_manager(network_session);
 
     webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
 
@@ -163,7 +165,7 @@ WebKitWebView* create_new_webview()
             contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
     }
 
-    return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context", web_context, "user-content-manager", contentmanager, NULL);
+    return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, NULL);
 }
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
