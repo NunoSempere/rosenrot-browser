@@ -392,7 +392,7 @@ int main(int argc, char** argv)
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css", NULL);
-    gtk_style_context_add_provider_for_display(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
 
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
