@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #if GKG_NUM == 3
     #include <webkit2/webkit2.h>
 #elif GKG_NUM == 4
     #include <webkit/webkit.h>
 #endif
-
-
-#include "config.h"
 #include "plugins/plugins.h"
 
 /* Global declarations */

@@ -2,7 +2,7 @@
 #include <gdk/gdk.h> // <gdk/gdkenums.h>, <gdk/gdkkeysyms.h>
 
 // GKG 3 or GKG 4
-# define GKG_NUM 4
+# define GKG_NUM 3
 
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width

@@ -7,8 +7,8 @@ DEBUG= # -g
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies
-# DEPS='webkit2gtk-4.1'
-DEPS='webkitgtk-6.0'
+DEPS='webkit2gtk-4.1'
+# DEPS='webkitgtk-6.0'
 INCS=`pkg-config --cflags ${DEPS}`
 LIBS=`pkg-config --libs ${DEPS}`
 
