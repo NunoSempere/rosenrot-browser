@@ -361,10 +361,9 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
 {
     (void)self;
 
-    guint event_keyval = 0;
-    gdk_event_get_keyval(event, &event_keyval);
-    GdkModifierType event_state = 0;
-    gdk_event_get_state(event, &event_state);
+    guint event_keyval = gdk_key_event_get_keyval(event);
+    GdkModifierType event_state = gdk_event_get_modifier_state(event);
+    /* https://docs.gtk.org/gdk4/keys.html, https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkevents.h  */ 
 
     if (0) {
         printf("Keypress state: %d\n", event_state);
