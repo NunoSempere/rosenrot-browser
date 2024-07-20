@@ -6,14 +6,19 @@ OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be 
 DEBUG= # -g
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
-# Dependencies
-DEPS='webkit2gtk-4.1'
-# DEPS='webkitgtk-6.0'
-INCS=`pkg-config --cflags ${DEPS}`
-LIBS=`pkg-config --libs ${DEPS}`
+# Dependencies for WebkitGTK4/GTK3
+SRC_3=rosenrot3.c
+DEPS_3='webkit2gtk-4.1'
+INCS_3=`pkg-config --cflags ${DEPS_3}`
+LIBS_3=`pkg-config --libs ${DEPS_3}`
 
-# Code
-SRC=rosenrot.c
+# Dependencies for WebkitGTK6/GTK4
+SRC_4=rosenrot4.c
+DEPS_4='webkitgtk-6.0'
+INCS_4=`pkg-config --cflags ${DEPS_4}`
+LIBS_4=`pkg-config --libs ${DEPS_4}`
+
+# User config
 CONFIG=config.h
 
 # Plugins
@@ -34,10 +39,14 @@ RUNTIME_FILES_DIR=/opt/rosenrot/
 # Start 3 to 4 transition 
 # https://docs.gtk.org/gtk4/migrating-3to4.html
 # https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md
-# DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
-build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
+build: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
+	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)
+	@echo
+
+build4: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
+	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	@echo
 
 constants:
