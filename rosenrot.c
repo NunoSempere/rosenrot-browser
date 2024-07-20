@@ -3,9 +3,9 @@
 #include <string.h>
 
 #include "config.h"
-#if GKG_NUM == 3
+#if GTK_NUM == 3
     #include <webkit2/webkit2.h>
-#elif GKG_NUM == 4
+#elif GTK_NUM == 4
     #include <webkit/webkit.h>
 #endif
 #include "plugins/plugins.h"
@@ -408,9 +408,9 @@ int main(int argc, char** argv)
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
-    #if GKG_NUM == 3
-        gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook)); /* deprecated in GKG */
-    #elif GKG_NUM == 4
+    #if GTK_NUM == 3
+        gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook)); /* deprecated in GTK */
+    #elif GTK_NUM == 4
         gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
     #endif
 
