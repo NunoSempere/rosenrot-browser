@@ -365,7 +365,7 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     GdkModifierType event_state = gdk_event_get_modifier_state(event);
     /* https://docs.gtk.org/gdk4/keys.html, https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkevents.h  */ 
 
-    if (0) {
+    if (1) {
         printf("Keypress state: %d\n", event_state);
         printf("Keypress value: %d\n", event_keyval);
     }
@@ -403,7 +403,10 @@ int main(int argc, char** argv)
     // Window
     window = GTK_WINDOW(gtk_window_new());
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
-    g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
+
+	GtkEventController *event_controller = gtk_event_controller_key_new();
+	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
+	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 
     gtk_window_set_child(window, GTK_WIDGET(notebook));
