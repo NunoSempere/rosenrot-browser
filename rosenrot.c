@@ -1,7 +1,13 @@
 #include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
-#include <webkit2/webkit2.h>
+
+#if GKG_NUM == 3
+    #include <webkit2/webkit2.h>
+#elif GKG_NUM == 4
+    #include <webkit/webkit.h>
+#endif
+
 
 #include "config.h"
 #include "plugins/plugins.h"
@@ -380,7 +386,7 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     - https://docs.gtk.org/gdk3/union.Event.html
     - https://docs.gtk.org/gdk3/struct.EventButton.html
     */
-    // This API is deprecated in GTK4 :(
+    // This API is deprecated in GTK4 :(.
     return 0;
 }
 
@@ -391,7 +397,7 @@ int main(int argc, char** argv)
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css", NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
 
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
@@ -404,7 +410,11 @@ int main(int argc, char** argv)
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
     g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
-    gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
+    #if GKG_NUM == 3
+        gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook)); /* deprecated in GKG */
+    #elif GKG_NUM == 4
+        gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
+    #endif
 
     // Bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
@@ -433,5 +443,5 @@ int main(int argc, char** argv)
         }
     }
 
-    gtk_main();
+    gtk_main(); /* deprecated in GKT4: https://docs.gtk.org/gtk4/migrating-3to4.html#stop-using-gtk_main-and-related-apis */
 }

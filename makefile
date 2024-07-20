@@ -7,7 +7,8 @@ DEBUG= # -g
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies
-DEPS='webkit2gtk-4.1'
+# DEPS='webkit2gtk-4.1'
+DEPS='webkitgtk-6.0'
 INCS=`pkg-config --cflags ${DEPS}`
 LIBS=`pkg-config --libs ${DEPS}`
 
@@ -30,8 +31,13 @@ MAINTAINER_CACHE_DIR=/home/nuno/.cache/rosenrot
 USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 RUNTIME_FILES_DIR=/opt/rosenrot/
 
+# Start 3 to 4 transition 
+# https://docs.gtk.org/gtk4/migrating-3to4.html
+# https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md
+# DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+
 build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
+	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
 	@echo
 
 constants:
