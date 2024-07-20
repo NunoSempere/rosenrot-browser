@@ -91,6 +91,7 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
             redirect_if_annoying(self, webkit_web_view_get_uri(self));
             break;
         case WEBKIT_LOAD_FINISHED: {
+            set_custom_style(self);
             /* Add gtk tab title */
             const char* webpage_title = webkit_web_view_get_title(self);
             const int max_length = 25;

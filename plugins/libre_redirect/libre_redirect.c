@@ -35,7 +35,7 @@ int libre_redirect(const char* uri, char* output)
             // previously: "https://old.reddit.com", "https://teddit.nunosempere.com",
             // https://github.com/redlib-org/redlib-instances/blob/main/instances.md
             "https://vitalik.eth.limo",
-            "https://invidious.nerdvpn.de",
+            "https://invidious.private.coffee",
             "https://search.nunosempere.com",
             "https://scribe.rip",
             "https://translate.riverside.rocks",

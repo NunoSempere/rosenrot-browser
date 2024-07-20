@@ -4,7 +4,7 @@
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
 // #define HEIGHT 1080
-#define HEIGHT 1000
+#define HEIGHT 990
 #define BAR_SIZE 960
 
 // More user config

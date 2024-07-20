@@ -1,8 +1,10 @@
 // Inspired by the Stylus app: <https://addons.mozilla.org/en-GB/firefox/addon/styl-us/>
 
+// NOTE: This file is moved to /opt/rosenrot, so editing it here doesn't have direct effects on the runtime!!
+
 // Main part of the code: switch on the domain and select the corresponding style
 var styles = null;
-console.log(document.domain);
+// console.log(document.domain);
 switch (document.domain) {
   case "forum.effectivealtruism.org":
     styles = `
@@ -98,6 +100,7 @@ switch (document.domain) {
 	  `;
     break;
   case "twitter.com":
+  case "x.com":
     styles = `
 	    /* hide promoted tweets */
 	    :has(meta[property="og:site_name"][content="Twitter"])
@@ -114,7 +117,7 @@ switch (document.domain) {
         display: none !important;
       }
 	    [data-testid^="sidebarColumn"] {
-		    display: none;
+		    display: none !important;
 	    }
 
 	    /* Hide DMs v2 */
@@ -181,6 +184,7 @@ switch (document.domain) {
     `;
     break;
   default:
+    console.log(`Domain: ${document.domain}`)
     console.log("No custom style");
 }
 
