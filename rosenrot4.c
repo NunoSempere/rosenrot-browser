@@ -177,8 +177,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
-        gtk_widget_show_all(GTK_WIDGET(window));
-        gtk_widget_hide(GTK_WIDGET(bar.widget));
+        gtk_widget_set_visible(GTK_WIDGET(window), 1);
+        gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
         load_uri(view, (uri) ? uri : HOME);
 
         set_custom_style(view);
@@ -426,8 +426,8 @@ int main(int argc, char** argv)
     notebook_create_new_tab(notebook, first_uri);
 
     /* Show to user */
-    gtk_widget_show_all(GTK_WIDGET(window));
-    if (argc != 0) gtk_widget_hide(GTK_WIDGET(bar.widget));
+    gtk_widget_set_visible(GTK_WIDGET(window), 1);
+    if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
     /* Deal with more tabs */
     if (argc > 2) {
