@@ -10,12 +10,12 @@ Rosenrot is a small browser forked from an earlier version of [rose](https://git
 
 ### Installation and usage
 
-You can see detailed instructions [here](./user-scripts/debian-12/install-with-dependencies.sh), for Debian 12 in particular—though they should generalize easily to other distributions. 
+You can see detailed instructions [here](./user-scripts/debian-12/), for Debian 12 in particular—though they should generalize easily to other distributions. 
 
 The general steps are to install dependencies, and then
 
 ```
-make build
+make build # by default using webkitgtk6/gtk4; see also build3
 make install # or sudo make install
 rose
 ```
@@ -44,6 +44,7 @@ You can also create a rose.desktop file so that it will show up in your desktop 
   - Custom style: Override the css of predetermined websites
   - Max number of tabs (by default 8), configurable.
   - Stand in plugin: Mimick function definitions which do nothing for the above plugins so that they can be quickly removed
+- For now, both GTK3 and GTK4-based versions—eventually only the GTK4 version will remain
 
 You can see some screenshots in the [images](./images) folder.
 
@@ -66,14 +67,14 @@ Here are projects with their own rendering engines which could appeal to users o
 
 - [lynx](https://lynx.invisible-island.net/) (links, elinks), [w3m](https://w3m.sourceforge.net/): command line browsers.
 - [dillo](https://github.com/dillo-browser/dillo/). Has its own rendering engine, and no javascript.
-- [Ladybird](https://github.com/SerenityOS/serenity/tree/master/Ladybird). SerenityOS. Uses its own html and javascript engine. Compiling it on a mainstream Linux distribution, and documenting instructions could be an interesting project, but the few times I've tried that I've failed.
+- [Ladybird](https://github.com/LadybirdBrowser/ladybird). Initially from the InitialSerenityOS, it later became its own project. Uses its own html and javascript engine. Compiling it on a mainstream linux distribution is now doable.
 - [servo](https://github.com/servo/servo). Firefox/Mozilla. An in-development browser engine written in Rust, meant to replace Gecko. Could be extremely cool once it is ready, but it has been many years in development.
 
 ### Relationship with [rose](https://github.com/mini-rose/rose)
 
 - Rose is a small browser based on webkit2gtk. Previously, it described itself as aiming to be a "basement for creating your own browser using [the] gtk and webkit libraries". It has since diverged into a more featureful small browser with lua bindings, and rebased its history. You can see the original, minimal version [here](https://github.com/NunoSempere/rosenrot-browser/blob/a45d1c70f58586fed97df70650e5d066b73d0a0d/rose.c).
-- The current version offers compilation with both GTK3 and GTK4, and an up to date version of webkit.
-- Rosenrot is my (@NunoSempere's) fork from that earlier minimal rose. It has accumulated quality of life features and, honestly, cruft, that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
+- Rosenrot is my (@NunoSempere's) fork from that earlier minimal rose, the GTK 3 version. It has accumulated quality of life features and, honestly, cruft, that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
+- rose updated to allow compilation with an up-to-date version of both GTK3 and GTK4 earlier, though rosenrot now offers this as well.
 - Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
 
 ### Comparison with [surf](https://git.suckless.org/surf/file/surf.c.html)
@@ -85,9 +86,8 @@ Here are projects with their own rendering engines which could appeal to users o
 - Anecdotically, surf feels slower, though I haven't tested this rigorously.
 - surf has a larger community, with patches and modifications.
 - surf is more opinionated, but also less amateurish.
-- Like rosenrot until very recently, it [uses](https://git.suckless.org/surf/file/config.mk.html#l15) an obsolete & deprecated version of [webkit](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api-for-gtk-4-is-now-stable/)
-- My recommendation would be to use rosenrot, and if you find some feature missing, either look how surf does it and import it to rose, or move to surf.
-  - But then again, I've built rosenrot to cater to my own tastes, so I'd say that.
+- Like rosenrot until not so long ago, it [uses](https://git.suckless.org/surf/file/config.mk.html#l15) an obsolete & deprecated version of [webkit](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api-for-gtk-4-is-now-stable/) (2.40, with GTK3)
+- My recommendation would be to use rosenrot, and if you find some feature missing, either look how surf does it and import it to rose, or move to surf. But then again, I've built rosenrot to cater to my own tastes, so I'd say that.
 
 ## Folk wisdom
 
@@ -109,7 +109,7 @@ See [this blog post](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api
 
 Migration instructions for migration to webkit2gtk-6 and GTK4 can be seen [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md) and [here](https://docs.gtk.org/gtk4/migrating-3to4.html).
 
-Rosenrot is currently on the stable webkit2gtk-4.1 release using GTK3, and has removed deprecated webkit apis. It has plans to eventually migrate to webkit2gtk-6.0 eventually but not soon, because the GTK4 rewrite seems onerous.
+Rosenrot currently supports both the stable webkit2gtk-4.1/GTK3 release, and a newer release using webkit2gtk-6.0/GTK4. Eventually the later will become the only version. Readers might want to look through the history to see a bit about the updating process.
 
 ### Ubuntu 20.04
 

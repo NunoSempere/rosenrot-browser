@@ -8,14 +8,8 @@
   - [ ] This time, use something other than Whatsapp as an example syslink.
 - [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
   - See whether it even exists at all
-- [ ] Upgrade to GTK-4 / Webkitgtk 6.0? Will take a fair amount of time, since GTK4 redesigns the application model somewhat.
-  - Instructions for webkit-6.0 [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md)
-  - Instructions for GTK-4 [here](https://docs.gtk.org/gtk4/migrating-3to4.html)
-  - [ ] Prepare for GTK-3 to GTK-4 transition
-    - [ ] Understand wtf is going on with signals and events: <https://docs.gtk.org/gtk4/migrating-3to4.html#stop-using-gtkwidget-event-signals>. <https://github.com/mini-rose/rose-browser/blob/288bf060d095c4895946669ae50d14193168b69c/src/window.c#L42>
-    - [ ] Stop using direct access to GdkEvent structs
-  - [ ] Remove webkit2gtk-4.1 and download webkit2gtk-6.0
-  - [ ] Attempt to compile
+- [ ] Finish cleaning up GTK4 version
+- [ ] Think about best way of having GTK4 version alongside
 
 # Previously done
 
@@ -59,4 +53,17 @@
   - Useful for opening links in new tab when clicking on them and selecting that option
   - And for actually opening links with the href new_tab option.
   - Links: [1](<https://docs.gtk.org/gobject/func.signal_connect.html>), [2](<https://webkitgtk.org/reference/webkit2gtk/2.37.90/signal.AutomationSession.create-web-view.html>), [3](<https://webkitgtk.org/reference/webkit2gtk/2.26.0/WebKitWebView.html#WebKitWebView-create>), [4](<https://stackoverflow.com/questions/40180757/webkit2gtk-get-new-window-link>)
-
+- [x] Upgrade to GTK-4 / Webkitgtk 6.0? Will take a fair amount of time, since GTK4 redesigns the application model somewhat.
+  - Instructions for webkit-6.0 [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md)
+  - Instructions for GTK-4 [here](https://docs.gtk.org/gtk4/migrating-3to4.html)
+  - [x] Prepare for GTK-3 to GTK-4 transition
+    - [x] Understand wtf is going on with signals and events: <https://docs.gtk.org/gtk4/migrating-3to4.html#stop-using-gtkwidget-event-signals>. <https://github.com/mini-rose/rose-browser/blob/288bf060d095c4895946669ae50d14193168b69c/src/window.c#L42>
+    - [x] Stop using direct access to GdkEvent structs
+  - [ ] ~~Remove webkit2gtk-4.1 and download webkit2gtk-6.0~~ => Actually just use both
+  - [x] Attempt to compile
+- Notes for others:
+  - Searching github
+  - Creating a minimal version, e.g., having only one signal going on
+  - Looking at how https://github.com/mini-rose/rose-browser/ does things
+  - Printf statements
+  - GTK ressources: https://docs.gtk.org/gtk4, https://docs.gtk.org/gobject/, https://docs.gtk.org/gdk4/

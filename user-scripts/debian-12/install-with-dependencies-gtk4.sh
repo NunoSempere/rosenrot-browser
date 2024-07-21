@@ -1,8 +1,6 @@
 # Key dependencies
-sudo apt install git vim gcc make
-sudo apt install libwebkit2gtk-4.1-dev
-# sudo apt install libwebkitgtk-6.0-dev
-# sudo apt install libgtk-4-dev
+sudo apt install libwebkitgtk-6.0-dev
+sudo apt install libgtk-4-dev
 
 # Optional adblock
 git clone https://github.com/jun7/wyebadblock
@@ -18,7 +16,7 @@ wget https://easylist.to/easylist/easylist.txt
 cd -
 
 cd ../..
-make build # or just make
+make build4 
 sudo make install 
 
 cd  - 

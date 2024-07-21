@@ -399,7 +399,7 @@ int main(int argc, char** argv)
     gtk_init();
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
+    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style-gtk4.css");
     gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     // Create the main window

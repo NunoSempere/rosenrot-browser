@@ -3,7 +3,7 @@ CC=gcc # alternatives: tcc, clang, zig cc
 WARNINGS=-Wall
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
-DEBUG=
+DEBUG=#-g
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies for WebkitGTK4/GTK3
@@ -17,7 +17,7 @@ SRC_4=rosenrot4.c
 DEPS_4='webkitgtk-6.0'
 INCS_4=`pkg-config --cflags ${DEPS_4}` `pkg-config --cflags gtk4`
 LIBS_4=`pkg-config --libs ${DEPS_4}` `pkg-config --libs gtk4`
-# DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 # User config
 CONFIG=config.h
@@ -37,20 +37,36 @@ MAINTAINER_CACHE_DIR=/home/nuno/.cache/rosenrot
 USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 RUNTIME_FILES_DIR=/opt/rosenrot/
 
-# Start 3 to 4 transition 
-# https://docs.gtk.org/gtk4/migrating-3to4.html
-# https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md
-
-build: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
+build3: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)
 	@echo
 
-build4: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
+build: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	@echo
 
-diagnose:
-	G_ENABLE_DIAGNOSTIC=1 ./rosenrot
+format: $(SRC_3) $(SRC_4) $(PLUGINS)
+	$(FORMATTER_C) $(SRC_3) $(PLUGINS) $(config.h)
+	$(FORMATTER_C) $(SRC_4_greenfield) $(PLUGINS) $(config.h)
+	$(FORMATTER_JS) plugins/readability/readability.js
+	$(FORMATTER_JS) plugins/style/style.js
+
+# Installation
+
+install: rosenrot runtime_files
+	cp -f rosenrot /usr/bin
+	cp rosenrot-mklink /usr/bin
+	@echo
+
+uninstall: 
+	rm -r /opt/rosenrot
+	rm /usr/bin/rosenrot
+	rm /usr/bin/rosenrot-mklink
+	rm $(USER_CACHE_DIR)
+
+clean:
+	rm rosenrot
+	rm $(USER_CACHE_DIR)
 
 constants:
 	@echo
@@ -70,45 +86,25 @@ user_cache:
 runtime_files:
 	@echo
 	sudo mkdir -p /opt/rosenrot/
-	sudo cp style-gtk3.css /opt/rosenrot/style.css
+	sudo cp styles-gtk/style-gtk3.css /opt/rosenrot/
+	sudo cp styles-gtk/style-gtk4.css /opt/rosenrot/
 	sudo cp -r images/flower-imgs /opt/rosenrot/
 	sudo cp plugins/style/style.js /opt/rosenrot/
 	sudo cp plugins/readability/readability.js /opt/rosenrot/
 
-install: rosenrot runtime_files
-	cp -f rosenrot /usr/bin
-	cp rosenrot-mklink /usr/bin
-	@echo
-
-uninstall: 
-	rm -r /opt/rosenrot
-	rm /usr/bin/rosenrot
-	rm /usr/bin/rosenrot-mklink
-	rm $(USER_CACHE_DIR)
-
-clean:
-	rm rosenrot
-	rm $(USER_CACHE_DIR)
-
-format: $(SRC) $(PLUGINS)
-	$(FORMATTER_C) $(SRC) $(PLUGINS) $(rosenrot.h)
-	$(FORMATTER_C) $(SRC_4) $(PLUGINS) $(rosenrot.h)
-	$(FORMATTER_C) $(SRC_4_greenfield) $(PLUGINS) $(rosenrot.h)
-	$(FORMATTER_JS) plugins/readability/readability.js
-	$(FORMATTER_JS) plugins/style/style.js
+# More misc recipes
 
 lint: 
 	clang-tidy $(SRC) $(PLUGINS) -- -Wall -O3 $(INCS) -o rosenrot $(LIBS)
-## A few more commands:
 
 fast: $(SRC) $(PLUGINS) $(CONFIG)
 	rm -f *.gcda
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	@echo "Now use the browser for a while to gather some profiling data"
 	sleep 2
 	./rosenrot
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS) $(PLUGINS) $(SRC) -o rosenrot $(LIBS) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	rm -f *.gcda
 
 inspect: rosenrot 
@@ -123,5 +119,3 @@ view-gtk3-version:
 twitter:
 	sudo mkdir -p /usr/bin/rosenrot-browser
 	sudo cp rosenrot /usr/bin/rosenrot-browser/twitter 
-
-# COMPILETIME_DEPRECATION_WARNINGS=#-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED # turns out that webkit2gtk-4.1 is using some deprecated stuff, lol
