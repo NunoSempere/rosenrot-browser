@@ -59,52 +59,60 @@ void load_uri(WebKitWebView* view, const char* uri)
     }
 }
 
-/* Top bar */
-void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
+/* Deal with new load or changed load */
+void redirect_if_annoying(WebKitWebView* view, const char* uri)
 {
-    bar.entry_mode = mode;
-    switch (bar.entry_mode) {
-        case _SEARCH: {
-            const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
-            gtk_entry_set_placeholder_text(bar.line, "Search");
-            gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
-            gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-            break;
-        }
-        case _FIND: {
-            const char* search_text = webkit_find_controller_get_search_text(
-                webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
+    if (LIBRE_REDIRECT_ENABLED) {
+        int l = LIBRE_N + strlen(uri) + 1;
+        char uri_filtered[l];
+        str_init(uri_filtered, l);
 
-            if (search_text != NULL)
-                gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
-
-            gtk_entry_set_placeholder_text(bar.line, "Find");
-            gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
-            break;
-        }
-        case _HIDDEN:
-            gtk_widget_hide(GTK_WIDGET(bar.widget));
+        int check = libre_redirect(uri, uri_filtered);
+        if (check == 2) webkit_web_view_load_uri(view, uri_filtered);
+    }
+}
+void set_custom_style(WebKitWebView* view)
+{
+    if (custom_style_enabled) {
+        char* style_js = malloc(STYLE_N + 1);
+        read_style_js(style_js);
+        webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
+        free(style_js);
     }
 }
 
-// Handle what happens when the user is on the bar and presses enter
-void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
+
+void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
+    GtkNotebook* notebook)
 {
-    if (bar.entry_mode == _SEARCH)
-        load_uri(notebook_get_webview(notebook), gtk_entry_buffer_get_text(bar.line_text));
-    else if (bar.entry_mode == _FIND)
-        webkit_find_controller_search(
-            webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
-            gtk_entry_buffer_get_text(bar.line_text),
-            WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
-            G_MAXUINT);
-
-    gtk_widget_hide(GTK_WIDGET(bar.widget));
+    switch (load_event) {
+        // https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html
+        case WEBKIT_LOAD_STARTED:
+        case WEBKIT_LOAD_COMMITTED:
+            set_custom_style(self);
+        case WEBKIT_LOAD_REDIRECTED:
+            redirect_if_annoying(self, webkit_web_view_get_uri(self));
+            break;
+        case WEBKIT_LOAD_FINISHED: {
+            set_custom_style(self);
+            /* Add gtk tab title */
+            const char* webpage_title = webkit_web_view_get_title(self);
+            const int max_length = 25;
+            char tab_title[max_length + 1];
+            if (webpage_title != NULL) {
+                for (int i = 0; i < (max_length); i++) {
+                    tab_title[i] = webpage_title[i];
+                    if (webpage_title[i] == '\0') {
+                        break;
+                    }
+                }
+                tab_title[max_length] = '\0';
+            }
+            gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
+                webpage_title == NULL ? "—" : tab_title);
+        }
+    }
 }
-
-
 
 /* Create new tabs */
 WebKitWebView* create_new_webview()
@@ -167,8 +175,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         WebKitWebView* view = create_new_webview();
 
-        // g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
-        // g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
+        g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
+        g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
@@ -185,31 +193,172 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     }
 }
 
-/* Listen to keypresses */
-
-static int handle_signal_keypress(GtkEventControllerKey* event_controller, int keyval, int keycode,
-    GdkModifierType state, GtkNotebook* notebook)
+/* Top bar */
+void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 {
+    bar.entry_mode = mode;
+    switch (bar.entry_mode) {
+        case _SEARCH: {
+            const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
+            gtk_entry_set_placeholder_text(bar.line, "Search");
+            gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
+            gtk_widget_show(GTK_WIDGET(bar.widget));
+            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+            break;
+        }
+        case _FIND: {
+            const char* search_text = webkit_find_controller_get_search_text(
+                webkit_web_view_get_find_controller(notebook_get_webview(notebook)));
 
-    printf("New keypress!\n");
-    /*
-    if (1) {
-        printf("Keypress state: %d\n", state);
-        printf("Keypress value: %d\n", keyval);
+            if (search_text != NULL)
+                gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
+
+            gtk_entry_set_placeholder_text(bar.line, "Find");
+            gtk_widget_show(GTK_WIDGET(bar.widget));
+            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+            break;
+        }
+        case _HIDDEN:
+            gtk_widget_hide(GTK_WIDGET(bar.widget));
     }
+}
 
-    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
-        if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
-            return handle_shortcut(shortcut[i].id, notebook);
+// Handle what happens when the user is on the bar and presses enter
+void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
+{
+    if (bar.entry_mode == _SEARCH)
+        load_uri(notebook_get_webview(notebook), gtk_entry_buffer_get_text(bar.line_text));
+    else if (bar.entry_mode == _FIND)
+        webkit_find_controller_search(
+            webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
+            gtk_entry_buffer_get_text(bar.line_text),
+            WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
+            G_MAXUINT);
+
+    gtk_widget_hide(GTK_WIDGET(bar.widget));
+}
+
+/* Handle shortcuts */
+int handle_shortcut(func id, GtkNotebook* notebook)
+{
+    static double zoom = ZOOM_START_LEVEL;
+    static bool is_fullscreen = 0;
+
+    WebKitWebView* view = notebook_get_webview(notebook);
+
+    switch (id) {
+        case goback:
+            webkit_web_view_go_back(view);
+            break;
+        case goforward:
+            webkit_web_view_go_forward(view);
+            break;
+
+        case toggle_custom_style: /* Ctrl s + Ctrl Shift R to reload */
+            if (custom_style_enabled)
+                custom_style_enabled = 0;
+            else
+                custom_style_enabled = 1;
+            // break; passthrough
+        case refresh:
+            webkit_web_view_reload(view);
+            break;
+        case refresh_force:
+            webkit_web_view_reload_bypass_cache(view);
+            break;
+
+        case back_to_home:
+            load_uri(view, HOME);
+            break;
+
+        case zoomin:
+            webkit_web_view_set_zoom_level(view,
+                (zoom += ZOOM_STEPSIZE));
+            break;
+        case zoomout:
+            webkit_web_view_set_zoom_level(view,
+                (zoom -= ZOOM_STEPSIZE));
+            break;
+        case zoom_reset:
+            webkit_web_view_set_zoom_level(view,
+                (zoom = ZOOM_START_LEVEL));
+            break;
+
+        case prev_tab:; // declarations aren't statements
+            // https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
+            int n = gtk_notebook_get_n_pages(notebook);
+            int k = gtk_notebook_get_current_page(notebook);
+            int l = (n + k - 1) % n;
+            gtk_notebook_set_current_page(notebook, l);
+            break;
+        case next_tab:;
+            int m = gtk_notebook_get_n_pages(notebook);
+            int i = gtk_notebook_get_current_page(notebook);
+            int j = (i + 1) % m;
+            gtk_notebook_set_current_page(notebook, j);
+            break;
+        case close_tab:
+            gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
+            num_tabs -= 1;
+
+            switch (gtk_notebook_get_n_pages(notebook)) {
+                case 0:
+                    exit(0);
+                    break;
+                case 1:
+                    gtk_notebook_set_show_tabs(notebook, false);
+                    break;
+            }
+
+            break;
+        case toggle_fullscreen:
+            if (is_fullscreen)
+                gtk_window_unfullscreen(window);
+            else
+                gtk_window_fullscreen(window);
+            is_fullscreen = !is_fullscreen;
+            break;
+        case show_searchbar:
+            toggle_bar(notebook, _SEARCH);
+            break;
+        case show_finder:
+            toggle_bar(notebook, _FIND);
+            break;
+
+        case finder_next:
+            webkit_find_controller_search_next(webkit_web_view_get_find_controller(view));
+            break;
+        case finder_prev:
+            webkit_find_controller_search_previous(webkit_web_view_get_find_controller(view));
+            break;
+
+        case new_tab:
+            notebook_create_new_tab(notebook, NULL);
+            gtk_notebook_set_show_tabs(notebook, true);
+            toggle_bar(notebook, _SEARCH);
+            break;
+
+        case hide_bar:
+            toggle_bar(notebook, _HIDDEN);
+            break;
+
+        case prettify: {
+            if (READABILITY_ENABLED) {
+                char* readability_js = malloc(READABILITY_N + 1);
+                read_readability_js(readability_js);
+                webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
+                free(readability_js);
+            }
+            break;
         }
     }
 
-*/
-    return 0;
+    return 1;
 }
 
-static gboolean
-event_key_pressed_cb(GtkWidget* drawing_area,
+/* Listen to keypresses */
+
+static gboolean handle_signal_keypress(GtkWidget* drawing_area,
     guint keyval,
     guint keycode,
     GdkModifierType state,
@@ -223,8 +372,8 @@ event_key_pressed_cb(GtkWidget* drawing_area,
     }
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
         if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
-            printf("New shortcut: %d\n", shortcut[i].id);
-            // return handle_shortcut(shortcut[i].id, notebook);
+            // printf("New shortcut: %d\n", shortcut[i].id);
+            return handle_shortcut(shortcut[i].id, notebook);
         }
     }
     return 0;
@@ -265,7 +414,7 @@ int main(int argc, char** argv)
     GtkEventController* event_controller;
     event_controller = gtk_event_controller_key_new();
 
-    g_signal_connect_object(event_controller, "key-pressed", G_CALLBACK(event_key_pressed_cb), window, G_CONNECT_DEFAULT);
+    g_signal_connect_object(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), window, G_CONNECT_DEFAULT);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
 
     // Show the application window
