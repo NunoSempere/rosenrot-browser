@@ -9,12 +9,13 @@
 #define NULLCHECK(x)                                   \
     do {                                               \
         if (x == NULL) {                               \
-            printf("\nNull found");                    \
+            printf("\nNULL check not passed");         \
             printf("@ %s (%d): ", __FILE__, __LINE__); \
             exit(0);                                   \
         }                                              \
     } while (0)
 
+/* Global variables */
 static GtkNotebook* notebook;
 static GtkWindow* window;
 typedef enum { _SEARCH,
@@ -36,7 +37,7 @@ static int handle_signal_keypress(void* self, int keyval, int keycode,
     GdkModifierType state, void* controller);
 
 /* Utils */
-WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
+WebKitWebView* notebook_get_webview(GtkNotebook* notebook) /* TODO: Think through whether to pass global variables or not */ 
 {
     WebKitWebView* view = WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook)));
     NULLCHECK(view);
@@ -44,34 +45,36 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 }
 
 /* Load content */
-
 void load_uri(WebKitWebView* view, const char* uri)
 {
-
     NULLCHECK(view);
-    if (strlen(uri) == 0) {
+
+    bool is_empty_uri = (strlen(uri) == 0);
+    bool has_direct_uri_prefix = (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:"));
+    bool has_common_domain_extension = (strstr(uri, ".com") || strstr(uri, ".org"));
+    bool has_shorcut;
+
+    int l = SHORTCUT_N + strlen(uri) + 1;
+    char uri_expanded[l];
+    str_init(uri_expanded, l);
+    int check = shortcut_expand(uri, uri_expanded);
+    has_shortcut = (check == 2);
+
+    if (is_empty_uri) {
         webkit_web_view_load_uri(view, "");
         toggle_bar(notebook, _SEARCH);
-    } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
+    } else if (has_direct_uri_prefix){
         webkit_web_view_load_uri(view, uri);
-    } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
+    } else if (has_common_domain_extension){
         char tmp[strlen("https://") + strlen(uri) + 1];
         snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
+    } else if (has_shorcut){
+        webkit_web_view_load_uri(view, uri_expanded);
     } else {
-        // Check for shortcuts
-        int l = SHORTCUT_N + strlen(uri) + 1;
-        char uri_expanded[l];
-        str_init(uri_expanded, l);
-        int check = shortcut_expand(uri, uri_expanded);
-        if (check == 2) { /* Should use an enum here */
-            webkit_web_view_load_uri(view, uri_expanded);
-        } else {
-            // Feed into search engine.
-            char tmp[strlen(uri) + strlen(SEARCH)];
-            snprintf(tmp, sizeof(tmp), SEARCH, uri);
-            webkit_web_view_load_uri(view, tmp);
-        }
+        char tmp[strlen(uri) + strlen(SEARCH)];
+        snprintf(tmp, sizeof(tmp), SEARCH, uri);
+        webkit_web_view_load_uri(view, tmp);
     }
 }
 
@@ -133,14 +136,13 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
 /* New tabs */
 WebKitWebView* create_new_webview()
 {
-
     WebKitSettings* settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
     if (CUSTOM_USER_AGENT) {
         webkit_settings_set_user_agent(
             settings,
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
             "like Gecko) Chrome/120.0.0.0 Safari/537.3");
-        // https://www.useragents.me
+            // https://www.useragents.me
     }
     WebKitNetworkSession* network_session = webkit_network_session_new(DATA_DIR, DATA_DIR);
     WebKitUserContentManager* contentmanager = webkit_user_content_manager_new();
@@ -176,20 +178,6 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     return GTK_WIDGET(self); // NULL;
 }
 
-void notebook_create_new_tab_mini(GtkNotebook* notebook, const char* uri)
-{
-    WebKitWebView* view = create_new_webview();
-
-    int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
-    gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
-    gtk_widget_set_visible(GTK_WIDGET(window), 1);
-    gtk_widget_hide(GTK_WIDGET(bar.widget));
-    webkit_web_view_load_uri(view, (uri) ? uri : HOME);
-
-    gtk_notebook_set_current_page(notebook, n);
-    gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
-}
-
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     NULLCHECK(notebook);
@@ -198,23 +186,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         NULLCHECK(view);
 
         g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
-        // I suspect there is something wonky going on here
-        // YEP, there is a problem here
-        // todo: fix
-        /* GtkEventController* event_controller_load_changed;
-        event_controller_load_changed = gtk_event_controller_key_new();
-        g_signal_connect_object(event_controller_load_changed, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook, G_CONNECT_DEFAULT);
-        gtk_widget_add_controller(GTK_WIDGET(view), event_controller_load_changed);
-        */
-
         g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
-        // I suspect there is something wonky going on here
-        /*
-        GtkEventController* event_controller_create_new_tab;
-        event_controller_create_new_tab = gtk_event_controller_key_new();
-        g_signal_connect_object(event_controller_create_new_tab, "create", G_CALLBACK(handle_signal_create_new_tab), notebook, G_CONNECT_DEFAULT);
-        gtk_widget_add_controller(GTK_WIDGET(view), event_controller_create_new_tab);
-        */
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
@@ -231,7 +203,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         webkit_web_view_set_zoom_level(view, ZOOM_START_LEVEL);
         num_tabs += 1;
     } else {
-        // To do: show js message
+        webkit_web_view_evaluate_javascript(notebook_get_webview(notebook), "alert('Too many tabs, not opening a new one')",
+            -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
 }
 
@@ -268,10 +241,10 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 }
 
 // Handle what happens when the user is on the bar and presses enter
-void handle_signal_bar_press_enter(void* data)
+void handle_signal_bar_press_enter(void* data) /* consider passing notebook as the data here? */
 {
-    WebKitWebView* view = notebook_get_webview(notebook);
     NULLCHECK(notebook);
+    WebKitWebView* view = notebook_get_webview(notebook);
     NULLCHECK(view);
     if (bar.entry_mode == _SEARCH)
         load_uri(view, gtk_entry_buffer_get_text(bar.line_text));
@@ -286,24 +259,6 @@ void handle_signal_bar_press_enter(void* data)
 }
 
 /* Handle shortcuts */
-int handle_shortcut_mini(func id)
-{
-
-    WebKitWebView* view = notebook_get_webview(notebook);
-    NULLCHECK(notebook);
-    NULLCHECK(view);
-
-    switch (id) {
-        case show_searchbar:
-            toggle_bar(notebook, _SEARCH);
-            break;
-        case hide_bar:
-            toggle_bar(notebook, _HIDDEN);
-            break;
-    }
-
-    return 1;
-}
 
 int handle_shortcut(func id)
 {
@@ -430,12 +385,9 @@ int handle_shortcut(func id)
 static int handle_signal_keypress(void* self, int keyval, int keycode,
     GdkModifierType state, void* controller)
 {
-    // (void) self, (void) keycode, (void) controller;
 
-    // fprintf(stdout, "New keypress!\n");
-    printf("New keypress\n");
-
-    if (1) {
+    if (0) {
+        printf("New keypress\n");
         printf("Keypress state: %d\n", state);
         printf("Keypress value: %d\n", keyval);
     }
@@ -483,7 +435,7 @@ int main(int argc, char** argv)
     g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
 
-    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL); // consider passing the notebook here? Unclear what to do with global variables.
     g_signal_connect(GTK_WIDGET(window), "destroy", G_CALLBACK(exit), notebook);
 
     // Show the application window
