@@ -8,7 +8,7 @@
 
 /* Global declarations */
 static GtkNotebook* notebook;
-static GtkWindow* window;
+static GtkWidget* window;
 typedef enum { _SEARCH, _FIND, _HIDDEN } Bar_entry_mode;
 static struct {
     GtkHeaderBar* widget;
