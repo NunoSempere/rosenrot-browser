@@ -1,9 +1,9 @@
-#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
 #include <webkit/webkit.h>
+#include "config.h"
 #include "plugins/plugins.h"
 
 /* Global declarations */
@@ -425,11 +425,9 @@ int main(int argc, char** argv)
     window = GTK_WINDOW(gtk_window_new());
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
 
-    /*
-    GtkEventController *event_controller = gtk_event_controller_key_new();
-	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
-	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(rose_keypress_event), notebook);
-	*/
+    // GtkEventController *event_controller = gtk_event_controller_key_new();
+	// gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
+	// g_signal_connect(event_controller, "key-pressed", G_CALLBACK(rose_keypress_event), notebook);
 
 	// gtk_widget_add_controller(GTK_WIDGET(notebook), event_controller);
 
@@ -441,8 +439,8 @@ int main(int argc, char** argv)
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
     */
 
-     // gtk_window_set_child(window, GTK_WIDGET(notebook));
-    // gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
+    gtk_window_set_child(window, GTK_WIDGET(notebook));
+    // gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook));
 
     // Bar
     /*

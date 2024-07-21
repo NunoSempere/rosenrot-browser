@@ -3,7 +3,7 @@ CC=gcc # alternatives: tcc, clang, zig cc
 WARNINGS=-Wall
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
-DEBUG= # -g
+DEBUG=#
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies for WebkitGTK4/GTK3
@@ -48,6 +48,9 @@ build: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
 build4: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	@echo
+
+diagnose:
+	G_ENABLE_DIAGNOSTIC=1 ./rosenrot
 
 constants:
 	@echo
