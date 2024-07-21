@@ -137,17 +137,16 @@ static int handle_signal_keypress(GtkEventControllerKey* event_controller, int k
     return 0;
 }
 
-
 static gboolean
-event_key_pressed_cb (GtkWidget             *drawing_area,
-                      guint                  keyval,
-                      guint                  keycode,
-                      GdkModifierType        state,
-                      GtkEventControllerKey *event_controller)
+event_key_pressed_cb(GtkWidget* drawing_area,
+    guint keyval,
+    guint keycode,
+    GdkModifierType state,
+    GtkEventControllerKey* event_controller)
 {
-    
+
     fprintf(stdout, "New keypress!\n");
-  return 0;
+    return 0;
 }
 
 int main(int argc, char** argv)
@@ -172,14 +171,13 @@ int main(int argc, char** argv)
 
     // Listen to signals
 
-  GtkEventController *event_controller;
-      event_controller = gtk_event_controller_key_new ();
+    GtkEventController* event_controller;
+    event_controller = gtk_event_controller_key_new();
 
-      g_signal_connect_object (event_controller, "key-pressed",
-                               G_CALLBACK (event_key_pressed_cb),
-                               window, G_CONNECT_SWAPPED);
-      gtk_widget_add_controller (GTK_WIDGET (window), event_controller);
-
+    g_signal_connect_object(event_controller, "key-pressed",
+        G_CALLBACK(event_key_pressed_cb),
+        window);
+    gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
 
     // Show the application window
     gtk_window_present(GTK_WINDOW(window));
@@ -188,7 +186,7 @@ int main(int argc, char** argv)
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
-fprintf(stdout, "Hello world!");
+    fprintf(stdout, "Hello world!");
 
     // Enter the main event loop, and wait for user interaction
     while (!0)
