@@ -1,9 +1,7 @@
-// #include <gdk/gdk.h>
+#include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
 
-// #include "/usr/include/gtk-4.0/gdk/gdk.h"
-#include "/usr/include/gtk-4.0/gtk/gtk.h"
 #include "config.h"
 #include <webkit/webkit.h>
 #include "plugins/plugins.h"
@@ -412,10 +410,10 @@ int main(int argc, char** argv)
 {
     /* Initialize GTK in general */
     gtk_init();
-    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
-    GtkCssProvider* css = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
-    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
+    // g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
+    // GtkCssProvider* css = gtk_css_provider_new();
+    // gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
+    // gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
 
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
     // Notebook
@@ -443,10 +441,11 @@ int main(int argc, char** argv)
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
     */
 
-    gtk_window_set_child(window, GTK_WIDGET(notebook));
+     // gtk_window_set_child(window, GTK_WIDGET(notebook));
     // gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
 
     // Bar
+    /*
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
@@ -456,14 +455,15 @@ int main(int argc, char** argv)
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
         gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
+    */
 
     /* Load first tab */
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
     /* Show to user */
-    gtk_widget_set_visible(GTK_WIDGET(window), 1);
-    if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+    // gtk_widget_set_visible(GTK_WIDGET(window), 1);
+    // if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
     /* Deal with more tabs */
     if (argc > 2) {
