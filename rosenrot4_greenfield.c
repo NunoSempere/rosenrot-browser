@@ -52,7 +52,7 @@ void load_uri(WebKitWebView* view, const char* uri)
         toggle_bar(notebook, _SEARCH);
     } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
         webkit_web_view_load_uri(view, uri);
-    } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
+    } /* else if (strstr(uri, ".com") || strstr(uri, ".org")) {
         char tmp[strlen("https://") + strlen(uri) + 1];
         snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
@@ -71,6 +71,7 @@ void load_uri(WebKitWebView* view, const char* uri)
             webkit_web_view_load_uri(view, tmp);
         }
     }
+    */
 }
 
 void set_custom_style(WebKitWebView* view)
@@ -228,8 +229,7 @@ void handle_signal_bar_press_enter(void* data)
         load_uri(view, gtk_entry_buffer_get_text(bar.line_text));
     else if (bar.entry_mode == _FIND)
         webkit_find_controller_search(
-            view,
-            webkit_web_view_get_find_controller(),
+            webkit_web_view_get_find_controller(view),
             gtk_entry_buffer_get_text(bar.line_text),
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
