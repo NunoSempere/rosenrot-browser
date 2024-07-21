@@ -184,7 +184,7 @@ switch (document.domain) {
     `;
     break;
   default:
-    console.log(`Domain: ${document.domain}`)
+    console.log(`Domain: ${document.domain}`);
     console.log("No custom style");
 }
 

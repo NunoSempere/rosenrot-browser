@@ -103,6 +103,8 @@ clean:
 
 format: $(SRC) $(PLUGINS)
 	$(FORMATTER_C) $(SRC) $(PLUGINS) $(rosenrot.h)
+	$(FORMATTER_C) $(SRC_4) $(PLUGINS) $(rosenrot.h)
+	$(FORMATTER_C) $(SRC_4_greenfield) $(PLUGINS) $(rosenrot.h)
 	$(FORMATTER_JS) plugins/readability/readability.js
 	$(FORMATTER_JS) plugins/style/style.js
 
