@@ -20,6 +20,9 @@ static struct {
 static int num_tabs = 0;
 static int custom_style_enabled = 1;
 
+/* Event controllers */
+GtkEventController* event_controller_keypress;
+
 /* Forward declarations */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
@@ -175,8 +178,24 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         WebKitWebView* view = create_new_webview();
 
-        g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
+        // g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
+        // I suspect there is something wonky going on here
+        // YEP, there is a problem here
+        // todo: fix
+        /* GtkEventController* event_controller_load_changed;
+        event_controller_load_changed = gtk_event_controller_key_new();
+        g_signal_connect_object(event_controller_load_changed, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook, G_CONNECT_DEFAULT);
+        gtk_widget_add_controller(GTK_WIDGET(view), event_controller_load_changed);
+        */
+
         g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
+        // I suspect there is something wonky going on here
+        /*
+        GtkEventController* event_controller_create_new_tab;
+        event_controller_create_new_tab = gtk_event_controller_key_new();
+        g_signal_connect_object(event_controller_create_new_tab, "create", G_CALLBACK(handle_signal_create_new_tab), notebook, G_CONNECT_DEFAULT);
+        gtk_widget_add_controller(GTK_WIDGET(view), event_controller_create_new_tab);
+        */
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
@@ -364,7 +383,7 @@ static gboolean handle_signal_keypress(GtkWidget* drawing_area,
     guint keyval,
     guint keycode,
     GdkModifierType state,
-    GtkEventControllerKey* event_controller)
+    GtkEventControllerKey* event_controller_keypress)
 {
 
     fprintf(stdout, "New keypress!\n");
@@ -386,9 +405,9 @@ int main(int argc, char** argv)
     /* Initialize GTK in general */
     gtk_init();
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
-    // GtkCssProvider* css = gtk_css_provider_new();
-    // gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
-    // gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 0); /* might change with GTK4/webkitgtk6.0 */
+    GtkCssProvider* css = gtk_css_provider_new();
+    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 0); /* might change with GTK4/webkitgtk6.0 */
     printf("%d", GTK_STYLE_PROVIDER_PRIORITY_USER);
     printf("%d", GTK_STYLE_PROVIDER_PRIORITY_FALLBACK);
 
@@ -407,20 +426,24 @@ int main(int argc, char** argv)
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
     gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
-    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
-        gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
+    gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
     // Listen to signals
 
-    GtkEventController* event_controller;
-    event_controller = gtk_event_controller_key_new();
+    // g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
+    event_controller_keypress = gtk_event_controller_key_new();
+    g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), window, G_CONNECT_DEFAULT);
+    gtk_widget_add_controller(GTK_WIDGET(window), event_controller_keypress);
 
-    g_signal_connect_object(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), window, G_CONNECT_DEFAULT);
-    gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
-    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
+    // I suspect there is something wonky going on here
+    // GtkEventController* event_controller_bar_press_enter;
+    // event_controller_bar_press_enter = gtk_event_controller_key_new();
+    // g_signal_connect_object(event_controller_bar_press_enter, "key-pressed", G_CALLBACK(handle_signal_bar_press_enter), notebook, G_CONNECT_DEFAULT);
+    // gtk_widget_add_controller(GTK_WIDGET(bar.line), event_controller_bar_press_enter);
 
     // Show the application window
     gtk_window_present(window);

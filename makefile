@@ -3,7 +3,7 @@ CC=gcc # alternatives: tcc, clang, zig cc
 WARNINGS=-Wall
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
-DEBUG=#
+DEBUG=
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies for WebkitGTK4/GTK3
@@ -81,7 +81,7 @@ user_cache:
 runtime_files:
 	@echo
 	sudo mkdir -p /opt/rosenrot/
-	sudo cp style.css /opt/rosenrot/
+	sudo cp style-gtk4.css /opt/rosenrot/style.css
 	sudo cp -r images/flower-imgs /opt/rosenrot/
 	sudo cp plugins/style/style.js /opt/rosenrot/
 	sudo cp plugins/readability/readability.js /opt/rosenrot/
