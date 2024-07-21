@@ -1,5 +1,7 @@
 #include <stdbool.h>
-#include <gdk/gdk.h> // <gdk/gdkenums.h>, <gdk/gdkkeysyms.h>
+// #include <gdk/gdk.h> // <gdk/gdkenums.h>, <gdk/gdkkeysyms.h>
+// #include <gtk/gtk.h>
+#include "/usr/include/gtk-4.0/gtk/gtk.h"
 
 // GKG 3 or GKG 4
 # define GTK_NUM 4

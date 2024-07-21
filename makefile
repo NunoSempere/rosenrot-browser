@@ -15,8 +15,9 @@ LIBS_3=`pkg-config --libs ${DEPS_3}`
 # Dependencies for WebkitGTK6/GTK4
 SRC_4=rosenrot4.c
 DEPS_4='webkitgtk-6.0'
-INCS_4=`pkg-config --cflags ${DEPS_4}`
-LIBS_4=`pkg-config --libs ${DEPS_4}`
+INCS_4=`pkg-config --cflags ${DEPS_4}` `pkg-config --cflags gtk4`
+LIBS_4=`pkg-config --libs ${DEPS_4}` `pkg-config --libs gtk4`
+# DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 # User config
 CONFIG=config.h
@@ -39,7 +40,6 @@ RUNTIME_FILES_DIR=/opt/rosenrot/
 # Start 3 to 4 transition 
 # https://docs.gtk.org/gtk4/migrating-3to4.html
 # https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md
-DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 build: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)

@@ -1,7 +1,9 @@
-#include <gdk/gdk.h>
+// #include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
 
+// #include "/usr/include/gtk-4.0/gdk/gdk.h"
+#include "/usr/include/gtk-4.0/gtk/gtk.h"
 #include "config.h"
 #include <webkit/webkit.h>
 #include "plugins/plugins.h"
@@ -172,8 +174,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         WebKitWebView* view = create_new_webview();
 
-        g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
-        g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
+        // g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
+        // g_signal_connect(view, "create", G_CALLBACK(handle_signal_create_new_tab), notebook);
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
@@ -385,6 +387,27 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     return 0;
 }
 
+static int rose_keypress_event(GtkEventControllerKey *event_controller, int keyval, int keycode,
+							   GdkModifierType state, GtkNotebook* notebook)
+{
+
+    printf("New keypress!\n");
+    /*
+    if (1) {
+        printf("Keypress state: %d\n", state);
+        printf("Keypress value: %d\n", keyval);
+    }
+
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
+        if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
+            return handle_shortcut(shortcut[i].id, notebook);
+        }
+    }
+
+*/
+	return 0;
+}
+
 int main(int argc, char** argv)
 {
     /* Initialize GTK in general */
@@ -404,10 +427,21 @@ int main(int argc, char** argv)
     window = GTK_WINDOW(gtk_window_new());
     gtk_window_set_default_size(window, WIDTH, HEIGHT);
 
+    /*
+    GtkEventController *event_controller = gtk_event_controller_key_new();
+	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
+	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(rose_keypress_event), notebook);
+	*/
+
+	// gtk_widget_add_controller(GTK_WIDGET(notebook), event_controller);
+
+    /*
 	GtkEventController *event_controller = gtk_event_controller_key_new();
-	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
+	// g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
+	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), notebook);
 	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
+    */
 
     gtk_window_set_child(window, GTK_WIDGET(notebook));
     // gtk_window_set_child(GTK_CONTAINER(window), GTK_WIDGET(notebook))
@@ -417,7 +451,7 @@ int main(int argc, char** argv)
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
     gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
-    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
+    // g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
         gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
