@@ -340,6 +340,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             break;
 
         case hide_bar:
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
             toggle_bar(notebook, _HIDDEN);
             break;
 
@@ -385,9 +386,9 @@ int main(int argc, char** argv)
     /* Initialize GTK in general */
     gtk_init();
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
-    GtkCssProvider* css = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
-    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 0); /* might change with GTK4/webkitgtk6.0 */
+    // GtkCssProvider* css = gtk_css_provider_new();
+    // gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
+    // gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 0); /* might change with GTK4/webkitgtk6.0 */
     printf("%d", GTK_STYLE_PROVIDER_PRIORITY_USER);
     printf("%d", GTK_STYLE_PROVIDER_PRIORITY_FALLBACK);
 

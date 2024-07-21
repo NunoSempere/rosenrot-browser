@@ -113,7 +113,7 @@ static struct {
     { CTRL,        KEY(w),             close_tab            },
 
     { CTRL,        KEY(l),             show_searchbar       },
-    { CTRL,        KEY(u),             hide_bar             }, // previously: KEY(semicolon)
+    { CTRL,        KEY(o),             hide_bar             }, // previously: KEY(semicolon)
     { CTRL,        KEY(f),             show_finder          },
     { CTRL,        KEY(n),             finder_next          },
     { CTRL,        KEY(N),             finder_prev          },
