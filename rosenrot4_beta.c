@@ -264,6 +264,8 @@ int main(int argc, char** argv)
     // g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), notebook, G_CONNECT_DEFAULT);
     // gtk_widget_add_controller(GTK_WIDGET(notebook), event_controller_keypress);
 
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL);
+
     // Show the application window
     gtk_window_present(window);
 
