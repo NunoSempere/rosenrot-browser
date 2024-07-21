@@ -37,12 +37,12 @@ MAINTAINER_CACHE_DIR=/home/nuno/.cache/rosenrot
 USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 RUNTIME_FILES_DIR=/opt/rosenrot/
 
-build3: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)
-	@echo
-
 build: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
+	@echo
+
+build3: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
+	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)
 	@echo
 
 format: $(SRC_3) $(SRC_4) $(PLUGINS)

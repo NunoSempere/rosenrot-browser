@@ -1,6 +1,6 @@
 # Rosenrot
 
-Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose). It has some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and detailed installation instructions for Debian 12.
+Rosenrot is a small browser forked from an earlier version of [rose](https://github.com/mini-rose/rose). It has some additional quality of life improvements tailored to my (@NunoSempere) tastes and setup, and detailed installation instructions for Debian 12. Because of the ease of hackability, the minimalism, the unobstrusiveness, it gives me a more comfortable way of navigating the web than normal browsers.
 
 ![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/3-init.png)
 
@@ -74,7 +74,7 @@ Here are projects with their own rendering engines which could appeal to users o
 
 - Rose is a small browser based on webkit2gtk. Previously, it described itself as aiming to be a "basement for creating your own browser using [the] gtk and webkit libraries". It has since diverged into a more featureful small browser with lua bindings, and rebased its history. You can see the original, minimal version [here](https://github.com/NunoSempere/rosenrot-browser/blob/a45d1c70f58586fed97df70650e5d066b73d0a0d/rose.c).
 - Rosenrot is my (@NunoSempere's) fork from that earlier minimal rose, the GTK 3 version. It has accumulated quality of life features and, honestly, cruft, that I like, like a "readability" plugin that simplifies annoying websites like [Matt Levine's Money Stuff newsletter](https://www.bloomberg.com/opinion/articles/2022-10-18/matt-levine-s-money-stuff-credit-suisse-was-a-reverse-meme-stock). It also incorporates ad-blocking.
-- rose updated to allow compilation with an up-to-date version of both GTK3 and GTK4 earlier, though rosenrot now offers this as well.
+- rose updated to allow compilation with an up-to-date version of webkit on both GTK3 and GTK4 earlier, though rosenrot now offers this as well.
 - Rosenrot is also a song by the German hardcore rock band [Rammstein](https://www.youtube.com/watch?v=af59U2BRRAU).
 
 ### Comparison with [surf](https://git.suckless.org/surf/file/surf.c.html)
@@ -95,8 +95,8 @@ Of general interest:
 
 - I just found out that you can inspect a GTK application with the GTK explorer if you set a certain command-line variable. Try this with `make inspect`.
 - Static variables keep their value between invocations.
-- By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style.css.
-- The style.css usage isn't updated until installation. This is because by default rose uses the theme located in /opt/rosenrot/style.css, and that file isn't updated until make install.
+- By default the searchbar is pretty gigantic. I've made this so because I'm a bit myopic, but also work with my laptop in a laptop stand. Anyways, if you are a more normal person you can change this in the style/style-gtk4.css style/style-gtk3.css files.
+- The gtk style usage isn't updated until installation. This is because by default rose uses the theme located in /opt/rosenrot/style-gtk3/4.css, and that file isn't updated until make install.
 - The [min](https://git.nunosempere.com/open.source/rosenrot/src/branch/min) branch contains a minimalistic version of rosenrot, in one c file with 320 lines (256 without comments and extra newlines). It might be of interest to developers and those seeking to understand the code.
 
 The "architecture" of the application looks as follows:
@@ -109,7 +109,7 @@ See [this blog post](https://blogs.gnome.org/mcatanzaro/2023/03/21/webkitgtk-api
 
 Migration instructions for migration to webkit2gtk-6 and GTK4 can be seen [here](https://github.com/WebKit/WebKit/blob/ed1422596dce5ff012e64a38faf402ac1674fc7e/Source/WebKit/gtk/migrating-to-webkitgtk-6.0.md) and [here](https://docs.gtk.org/gtk4/migrating-3to4.html).
 
-Rosenrot currently supports both the stable webkit2gtk-4.1/GTK3 release, and a newer release using webkit2gtk-6.0/GTK4. Eventually the later will become the only version. Readers might want to look through the history to see a bit about the updating process.
+Rosenrot currently supports both the stable webkit2gtk-4.1/GTK3 release, and a newer release using webkit2gtk-6.0/GTK4. Eventually the later will become the only version. Readers might want to look through the history to see a bit about the updating process; commits related to the transition are tagged with the "GTK4: " label.
 
 ### Ubuntu 20.04
 

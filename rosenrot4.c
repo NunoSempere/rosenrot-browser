@@ -93,7 +93,7 @@ void set_custom_style(WebKitWebView* view)
     if (custom_style_enabled) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
-        // webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
+        webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
         free(style_js);
     }
 }
