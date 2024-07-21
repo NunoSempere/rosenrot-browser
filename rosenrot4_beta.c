@@ -90,10 +90,26 @@ void set_custom_style(WebKitWebView* view)
 WebKitWebView* create_new_webview()
 {
 
-    WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, NULL);
+    WebKitSettings* settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
+    if (CUSTOM_USER_AGENT) {
+        webkit_settings_set_user_agent(
+            settings,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+            "like Gecko) Chrome/120.0.0.0 Safari/537.3");
+        // https://www.useragents.me
+    }
+    WebKitNetworkSession* network_session = webkit_network_session_new(DATA_DIR, DATA_DIR);
+    WebKitUserContentManager* contentmanager = webkit_user_content_manager_new();
+    WebKitCookieManager* cookiemanager = webkit_network_session_get_cookie_manager(network_session);
+    webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
+    webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
+
+    WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, NULL);
+
 	GtkEventController *event_controller = gtk_event_controller_key_new();
 	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
 	gtk_widget_add_controller(GTK_WIDGET(view), event_controller);
+
     NOTNULL(view);
     return view;
 }
