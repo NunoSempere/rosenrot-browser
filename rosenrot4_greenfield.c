@@ -254,7 +254,7 @@ int main(int argc, char** argv)
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
     gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
-    // g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
         gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
