@@ -20,8 +20,17 @@ static struct {
 static int num_tabs = 0;
 static int custom_style_enabled = 1;
 
+#define NOTNULL(x)                                       \
+    do {                                                 \
+        if (x == NULL) {                                 \
+            printf("\nNull found");                      \
+            printf("@ %s (%d): ", __FILE__, __LINE__);   \
+            exit(0);                                     \
+        }                                                \
+    } while (0)
+
+
 /* Event controllers */
-GtkEventController* event_controller_keypress;
 
 /* Forward declarations */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
@@ -36,6 +45,8 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 /* Load content */
 void load_uri(WebKitWebView* view, const char* uri)
 {
+
+    NOTNULL(view);
     if (strlen(uri) == 0) {
         webkit_web_view_load_uri(view, "");
         toggle_bar(notebook, _SEARCH);
@@ -62,58 +73,14 @@ void load_uri(WebKitWebView* view, const char* uri)
     }
 }
 
-/* Deal with new load or changed load */
-void redirect_if_annoying(WebKitWebView* view, const char* uri)
-{
-    if (LIBRE_REDIRECT_ENABLED) {
-        int l = LIBRE_N + strlen(uri) + 1;
-        char uri_filtered[l];
-        str_init(uri_filtered, l);
-
-        int check = libre_redirect(uri, uri_filtered);
-        if (check == 2) webkit_web_view_load_uri(view, uri_filtered);
-    }
-}
 void set_custom_style(WebKitWebView* view)
 {
+    NOTNULL(view);
     if (custom_style_enabled) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
         webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
         free(style_js);
-    }
-}
-
-
-void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
-    GtkNotebook* notebook)
-{
-    switch (load_event) {
-        // https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html
-        case WEBKIT_LOAD_STARTED:
-        case WEBKIT_LOAD_COMMITTED:
-            set_custom_style(self);
-        case WEBKIT_LOAD_REDIRECTED:
-            redirect_if_annoying(self, webkit_web_view_get_uri(self));
-            break;
-        case WEBKIT_LOAD_FINISHED: {
-            set_custom_style(self);
-            /* Add gtk tab title */
-            const char* webpage_title = webkit_web_view_get_title(self);
-            const int max_length = 25;
-            char tab_title[max_length + 1];
-            if (webpage_title != NULL) {
-                for (int i = 0; i < (max_length); i++) {
-                    tab_title[i] = webpage_title[i];
-                    if (webpage_title[i] == '\0') {
-                        break;
-                    }
-                }
-                tab_title[max_length] = '\0';
-            }
-            gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
-                webpage_title == NULL ? "—" : tab_title);
-        }
     }
 }
 
@@ -154,6 +121,8 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
 {
+    NOTNULL(self);
+    NOTNULL(notebook);
     if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
@@ -163,7 +132,7 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     } else {
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
-    return NULL;
+    return GTK_WIDGET(self); // NULL;
     /*
      WebKitGTK documentation recommends returning the new webview.
      I imagine that this might allow e.g., to go back in a new tab
@@ -175,8 +144,10 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
 
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
+    NOTNULL(notebook);
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         WebKitWebView* view = create_new_webview();
+        NOTNULL(view);
 
         // g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
         // I suspect there is something wonky going on here
@@ -199,6 +170,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
+        NOTNULL(window);
+        NOTNULL(bar.widget);
         gtk_widget_set_visible(GTK_WIDGET(window), 1);
         gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
         load_uri(view, (uri) ? uri : HOME);
@@ -216,6 +189,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 /* Top bar */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 {
+    NOTNULL(notebook);
+    NOTNULL(window);
     bar.entry_mode = mode;
     switch (bar.entry_mode) {
         case _SEARCH: {
@@ -244,13 +219,17 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 }
 
 // Handle what happens when the user is on the bar and presses enter
-void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
+void handle_signal_bar_press_enter(void* data)
 {
+    WebKitWebView* view = notebook_get_webview(notebook);
+    NOTNULL(notebook);
+    NOTNULL(view);
     if (bar.entry_mode == _SEARCH)
-        load_uri(notebook_get_webview(notebook), gtk_entry_buffer_get_text(bar.line_text));
+        load_uri(view, gtk_entry_buffer_get_text(bar.line_text));
     else if (bar.entry_mode == _FIND)
         webkit_find_controller_search(
-            webkit_web_view_get_find_controller(notebook_get_webview(notebook)),
+            view,
+            webkit_web_view_get_find_controller(),
             gtk_entry_buffer_get_text(bar.line_text),
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
@@ -259,12 +238,14 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
 }
 
 /* Handle shortcuts */
-int handle_shortcut(func id, GtkNotebook* notebook)
+int handle_shortcut(func id)
 {
     static double zoom = ZOOM_START_LEVEL;
     static bool is_fullscreen = 0;
 
     WebKitWebView* view = notebook_get_webview(notebook);
+    NOTNULL(notebook);
+    NOTNULL(view);
 
     switch (id) {
         case goback:
@@ -379,7 +360,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
 /* Listen to keypresses */
 
-static gboolean handle_signal_keypress(GtkWidget* drawing_area,
+static gboolean handle_signal_keypress(GtkWidget* w,
     guint keyval,
     guint keycode,
     GdkModifierType state,
@@ -394,7 +375,7 @@ static gboolean handle_signal_keypress(GtkWidget* drawing_area,
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
         if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
             // printf("New shortcut: %d\n", shortcut[i].id);
-            return handle_shortcut(shortcut[i].id, notebook);
+            return handle_shortcut(shortcut[i].id);
         }
     }
     return 0;
@@ -434,7 +415,8 @@ int main(int argc, char** argv)
     // Listen to signals
 
     // g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
-    event_controller_keypress = gtk_event_controller_key_new();
+
+    GtkEventController* event_controller_keypress = gtk_event_controller_key_new();
     g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), window, G_CONNECT_DEFAULT);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller_keypress);
 
@@ -464,7 +446,8 @@ int main(int argc, char** argv)
     }
 
     // Enter the main event loop, and wait for user interaction
-    while (!0)
+    printf("\nEntering main loop");
+    while (g_list_model_get_n_items(gtk_window_get_toplevels()) > 0)
         g_main_context_iteration(NULL, TRUE);
 
     return 0;
