@@ -75,6 +75,18 @@ void load_uri(WebKitWebView* view, const char* uri)
     }
 }
 
+/* Deal with new load or changed load */
+void redirect_if_annoying(WebKitWebView* view, const char* uri)
+{
+    if (LIBRE_REDIRECT_ENABLED) {
+        int l = LIBRE_N + strlen(uri) + 1;
+        char uri_filtered[l];
+        str_init(uri_filtered, l);
+
+        int check = libre_redirect(uri, uri_filtered);
+        if (check == 2) webkit_web_view_load_uri(view, uri_filtered);
+    }
+}
 void set_custom_style(WebKitWebView* view)
 {
     NULLCHECK(view);
@@ -85,6 +97,40 @@ void set_custom_style(WebKitWebView* view)
         free(style_js);
     }
 }
+
+void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
+    GtkNotebook* notebook)
+{
+    switch (load_event) {
+        // https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html
+        case WEBKIT_LOAD_STARTED:
+        case WEBKIT_LOAD_COMMITTED:
+            set_custom_style(self);
+        case WEBKIT_LOAD_REDIRECTED:
+            redirect_if_annoying(self, webkit_web_view_get_uri(self));
+            break;
+        case WEBKIT_LOAD_FINISHED: {
+            set_custom_style(self);
+            /* Add gtk tab title */
+            const char* webpage_title = webkit_web_view_get_title(self);
+            const int max_length = 25;
+            char tab_title[max_length + 1];
+            if (webpage_title != NULL) {
+                for (int i = 0; i < (max_length); i++) {
+                    tab_title[i] = webpage_title[i];
+                    if (webpage_title[i] == '\0') {
+                        break;
+                    }
+                }
+                tab_title[max_length] = '\0';
+            }
+            gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(self),
+                webpage_title == NULL ? "—" : tab_title);
+        }
+    }
+}
+
+
 
 /* New tabs */
 WebKitWebView* create_new_webview()
@@ -154,7 +200,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         WebKitWebView* view = create_new_webview();
         NULLCHECK(view);
 
-        // g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
+        g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
         // I suspect there is something wonky going on here
         // YEP, there is a problem here
         // todo: fix
@@ -425,7 +471,7 @@ int main(int argc, char** argv)
 
     // Set up notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_set_show_tabs(notebook, true);
+    gtk_notebook_set_show_tabs(notebook, false);
     gtk_notebook_set_show_border(notebook, false);
     gtk_window_set_child(window, GTK_WIDGET(notebook));
 
