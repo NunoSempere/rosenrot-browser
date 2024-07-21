@@ -6,7 +6,7 @@
 #include "plugins/plugins.h"
 #include <webkit/webkit.h>
 
-#define NOTNULL(x)                                       \
+#define NULLCHECK(x)                                       \
     do {                                                 \
         if (x == NULL) {                                 \
             printf("\nNull found");                      \
@@ -39,7 +39,7 @@ static int handle_signal_keypress(void *self, int keyval, int keycode,
 WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 {
     WebKitWebView* view = WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook)));
-    NOTNULL(view);
+    NULLCHECK(view);
     return view;
 }
 
@@ -48,7 +48,7 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 void load_uri(WebKitWebView* view, const char* uri)
 {
 
-    NOTNULL(view);
+    NULLCHECK(view);
     if (strlen(uri) == 0) {
         webkit_web_view_load_uri(view, "");
         toggle_bar(notebook, _SEARCH);
@@ -77,7 +77,7 @@ void load_uri(WebKitWebView* view, const char* uri)
 
 void set_custom_style(WebKitWebView* view)
 {
-    NOTNULL(view);
+    NULLCHECK(view);
     if (custom_style_enabled) {
         char* style_js = malloc(STYLE_N + 1);
         read_style_js(style_js);
@@ -110,48 +110,16 @@ WebKitWebView* create_new_webview()
 	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
 	gtk_widget_add_controller(GTK_WIDGET(view), event_controller);
 
-    NOTNULL(view);
+    NULLCHECK(view);
     return view;
-}
-
-WebKitWebView* create_new_webview_full()
-{
-    char* style;
-    WebKitSettings* settings;
-    WebKitCookieManager* cookiemanager;
-    WebKitNetworkSession* network_session;
-    WebKitUserContentManager* contentmanager;
-
-    settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
-    if (CUSTOM_USER_AGENT) {
-        webkit_settings_set_user_agent(
-            settings,
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/120.0.0.0 Safari/537.3");
-        // https://www.useragents.me
-    }
-    network_session = webkit_network_session_new(DATA_DIR, DATA_DIR);
-    contentmanager = webkit_user_content_manager_new();
-    cookiemanager = webkit_network_session_get_cookie_manager(network_session);
-
-    webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
-
-    webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
-
-    if (g_file_get_contents("/opt/rosenrot/style.css", &style, NULL, NULL)) {
-        webkit_user_content_manager_add_style_sheet(
-            contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
-    }
-
-    return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, NULL);
 }
 
 GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
 {
-    NOTNULL(self);
-    NOTNULL(notebook);
+    NULLCHECK(self);
+    NULLCHECK(notebook);
     if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
@@ -181,10 +149,10 @@ void notebook_create_new_tab_mini(GtkNotebook* notebook, const char* uri)
 
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
-    NOTNULL(notebook);
+    NULLCHECK(notebook);
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
         WebKitWebView* view = create_new_webview();
-        NOTNULL(view);
+        NULLCHECK(view);
 
         // g_signal_connect(view, "load_changed", G_CALLBACK(handle_signal_load_changed), notebook);
         // I suspect there is something wonky going on here
@@ -207,8 +175,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
-        NOTNULL(window);
-        NOTNULL(bar.widget);
+        NULLCHECK(window);
+        NULLCHECK(bar.widget);
         gtk_widget_set_visible(GTK_WIDGET(window), 1);
         gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
         load_uri(view, (uri) ? uri : HOME);
@@ -227,8 +195,8 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 /* Top bar */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 {
-    NOTNULL(notebook);
-    NOTNULL(window);
+    NULLCHECK(notebook);
+    NULLCHECK(window);
     bar.entry_mode = mode;
     switch (bar.entry_mode) {
         case _SEARCH: {
@@ -260,8 +228,8 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 void handle_signal_bar_press_enter(void* data)
 {
     WebKitWebView* view = notebook_get_webview(notebook);
-    NOTNULL(notebook);
-    NOTNULL(view);
+    NULLCHECK(notebook);
+    NULLCHECK(view);
     if (bar.entry_mode == _SEARCH)
         load_uri(view, gtk_entry_buffer_get_text(bar.line_text));
     else if (bar.entry_mode == _FIND)
@@ -281,8 +249,8 @@ int handle_shortcut_mini(func id)
 {
 
     WebKitWebView* view = notebook_get_webview(notebook);
-    NOTNULL(notebook);
-    NOTNULL(view);
+    NULLCHECK(notebook);
+    NULLCHECK(view);
 
     switch (id) {
         case show_searchbar:
@@ -302,8 +270,8 @@ int handle_shortcut(func id)
     static bool is_fullscreen = 0;
 
     WebKitWebView* view = notebook_get_webview(notebook);
-    NOTNULL(notebook);
-    NOTNULL(view);
+    NULLCHECK(notebook);
+    NULLCHECK(view);
 
     switch (id) {
         case goback:
@@ -446,6 +414,10 @@ int main(int argc, char** argv)
 {
     /* Initialize GTK in general */
     gtk_init();
+    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
+    GtkCssProvider* css = gtk_css_provider_new();
+    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     // Create the main window
     window = GTK_WINDOW(gtk_window_new());
@@ -467,16 +439,13 @@ int main(int argc, char** argv)
     gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
-    // g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
-
+    // Signals
 	GtkEventController *event_controller = gtk_event_controller_key_new();
 	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
 	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
-    // GtkEventController* event_controller_keypress = gtk_event_controller_key_new();
-    // g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), notebook, G_CONNECT_DEFAULT);
-    // gtk_widget_add_controller(GTK_WIDGET(notebook), event_controller_keypress);
 
     g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL);
+    g_signal_connect(GTK_WIDGET(window), "destroy", G_CALLBACK(exit), notebook);
 
     // Show the application window
     gtk_window_present(window);
