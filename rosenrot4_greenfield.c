@@ -146,6 +146,16 @@ event_key_pressed_cb(GtkWidget* drawing_area,
 {
 
     fprintf(stdout, "New keypress!\n");
+    if (1) {
+        printf("Keypress state: %d\n", state);
+        printf("Keypress value: %d\n", keyval);
+    }
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
+        if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
+            printf("New shortcut: %d\n", shortcut[i].id);
+            // return handle_shortcut(shortcut[i].id, notebook);
+        }
+    }
     return 0;
 }
 
@@ -174,9 +184,7 @@ int main(int argc, char** argv)
     GtkEventController* event_controller;
     event_controller = gtk_event_controller_key_new();
 
-    g_signal_connect_object(event_controller, "key-pressed",
-        G_CALLBACK(event_key_pressed_cb),
-        window);
+    g_signal_connect_object(event_controller, "key-pressed", G_CALLBACK(event_key_pressed_cb), window, G_CONNECT_DEFAULT);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
 
     // Show the application window
