@@ -22,7 +22,19 @@ static int custom_style_enabled = 1;
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
 
+/* Load content */ 
+void load_uri(WebKitWebView* view, const char* uri)
+{
+    if (strlen(uri) == 0) {
+        webkit_web_view_load_uri(view, "");
+        // toggle_bar(notebook, _SEARCH);
+    } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
+        webkit_web_view_load_uri(view, uri);
+    }
+}
 
+
+/* Create new tabs */
 WebKitWebView* create_new_webview()
 {
     char* style;
@@ -55,14 +67,27 @@ WebKitWebView* create_new_webview()
     return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, NULL);
 }
 
-void load_uri(WebKitWebView* view, const char* uri)
+GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
+    WebKitNavigationAction* navigation_action,
+    GtkNotebook* notebook)
 {
-    if (strlen(uri) == 0) {
-        webkit_web_view_load_uri(view, "");
-        // toggle_bar(notebook, _SEARCH);
-    } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
-        webkit_web_view_load_uri(view, uri);
+    if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
+        WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
+        const char* uri = webkit_uri_request_get_uri(uri_request);
+        printf("Creating new window: %s\n", uri);
+        notebook_create_new_tab(notebook, uri);
+        gtk_notebook_set_show_tabs(notebook, true);
+    } else {
+        webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
+    return NULL;
+    /*
+     WebKitGTK documentation recommends returning the new webview.
+     I imagine that this might allow e.g., to go back in a new tab
+     or generally to keep track of history.
+     However, this would require either modifying notebook_create_new_tab
+     or duplicating its contents, for unclear gain.
+   */
 }
 
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
