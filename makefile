@@ -13,7 +13,7 @@ INCS_3=`pkg-config --cflags ${DEPS_3}`
 LIBS_3=`pkg-config --libs ${DEPS_3}`
 
 # Dependencies for WebkitGTK6/GTK4
-SRC_4=rosenrot4_beta.c
+SRC_4=rosenrot4.c
 DEPS_4='webkitgtk-6.0'
 INCS_4=`pkg-config --cflags ${DEPS_4}` `pkg-config --cflags gtk4`
 LIBS_4=`pkg-config --libs ${DEPS_4}` `pkg-config --libs gtk4`

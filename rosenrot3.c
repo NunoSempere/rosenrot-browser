@@ -401,7 +401,7 @@ int main(int argc, char** argv)
 
     // Window
     window = GTK_WINDOW(gtk_window_new(0));
-    gtk_window_set_default_size(window, WIDTH, HEIGHT);
+    gtk_window_set_default_size(window, WIDTH, HEIGHT_GTK3);
     g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
     g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 

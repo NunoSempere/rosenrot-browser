@@ -5,9 +5,8 @@
 
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
-// #define HEIGHT 1080
-#define HEIGHT 990
-#define HEIGHT_4 1080
+#define HEIGHT_GTK3 990 // GTK4 and GTK3 interpret this differently. In GTK4, this includes the height of the top bar
+#define HEIGHT_GTK4 1080 // GTK4 and GTK3 interpret this differently. In GTK4, this includes the height of the top bar
 #define BAR_SIZE 960
 
 // More user config
@@ -83,7 +82,6 @@ typedef enum {
 
     prettify,
 } func;
-
 
 static struct {
 	unsigned mod;
