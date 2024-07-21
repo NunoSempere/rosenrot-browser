@@ -1,7 +1,7 @@
 #include <stdbool.h>
 // #include <gdk/gdk.h> // <gdk/gdkenums.h>, <gdk/gdkkeysyms.h>
-// #include <gtk/gtk.h>
-#include "/usr/include/gtk-4.0/gtk/gtk.h"
+#include <gtk/gtk.h>
+// #include "/usr/include/gtk-4.0/gtk/gtk.h"
 
 // GKG 3 or GKG 4
 # define GTK_NUM 4
@@ -10,6 +10,7 @@
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
 // #define HEIGHT 1080
 #define HEIGHT 990
+#define HEIGHT_4 1080
 #define BAR_SIZE 960
 
 // More user config

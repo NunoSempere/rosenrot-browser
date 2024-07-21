@@ -1,4 +1,4 @@
-#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -6,16 +6,21 @@
 #include "config.h"
 #include "plugins/plugins.h"
 
-#define WIDTH 1920 // 960 for half-width, 1920 for full width
-// #define HEIGHT 1080
-#define HEIGHT 1080
-
 static GtkNotebook* notebook;
+static GtkWidget *window;
+typedef enum { _SEARCH, _FIND, _HIDDEN } Bar_entry_mode;
+static struct {
+    GtkHeaderBar* widget;
+    GtkEntry* line;
+    GtkEntryBuffer* line_text;
+    Bar_entry_mode entry_mode;
+} bar;
+static int num_tabs = 0;
+static int custom_style_enabled = 1;
 
 int
 main (int argc, char **argv)
 {
- GtkWidget *window;
   // Initialize i18n support with bindtextdomain(), etc.
 
   // ...
@@ -25,7 +30,7 @@ main (int argc, char **argv)
 
   // Create the main window
   window = gtk_window_new ();
-  gtk_window_set_default_size(GTK_WINDOW(window), WIDTH, HEIGHT);
+  gtk_window_set_default_size(GTK_WINDOW(window), WIDTH, HEIGHT_4);
 
   // Set up our GUI elements
 
