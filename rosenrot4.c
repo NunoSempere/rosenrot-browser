@@ -166,13 +166,14 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     if (num_tabs < MAX_NUM_TABS || num_tabs == 0) {
         WebKitURIRequest* uri_request = webkit_navigation_action_get_request(navigation_action);
         const char* uri = webkit_uri_request_get_uri(uri_request);
+        webkit_web_view_stop_loading(self);
         printf("Creating new window: %s\n", uri);
         notebook_create_new_tab(notebook, uri);
         gtk_notebook_set_show_tabs(notebook, true);
     } else {
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
-    return GTK_WIDGET(self); // or NULL
+    return NULL; // Could also return GTK_WIDGET(self), in which case the new uri would also be loaded in the current webview.
 }
 
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
