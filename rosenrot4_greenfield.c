@@ -30,8 +30,6 @@ static int custom_style_enabled = 1;
     } while (0)
 
 
-/* Event controllers */
-
 /* Forward declarations */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
