@@ -203,7 +203,7 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
             gtk_entry_set_placeholder_text(bar.line, "Search");
             gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
             gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+            gtk_window_set_focus(GTK_WINDOW(window), GTK_WIDGET(bar.line));
             break;
         }
         case _FIND: {
@@ -315,7 +315,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             if (is_fullscreen)
                 gtk_window_unfullscreen(window);
             else
-                gtk_window_fullscreen(window);
+                gtk_window_fullscreen(GTK_WINDOW(window));
             is_fullscreen = !is_fullscreen;
             break;
         case show_searchbar:
@@ -407,7 +407,7 @@ int main(int argc, char** argv)
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
         gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
-    gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
+    gtk_window_set_titlebar(GTK_WINDOW(window), GTK_WIDGET(bar.widget));
 
     // Listen to signals
 
