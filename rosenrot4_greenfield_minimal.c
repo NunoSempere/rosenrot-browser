@@ -77,6 +77,24 @@ static gboolean handle_signal_keypress(GtkWidget* w,
     }
     return 0;
 }
+static int handle_signal_keypress2(void *self, int keyval, int keycode,
+							   GdkModifierType state, void *controller)
+{
+	(void) self, (void) keycode, (void) controller;
+
+    fprintf(stdout, "New keypress!\n");
+    if (1) {
+        printf("Keypress state: %d\n", state);
+        printf("Keypress value: %d\n", keyval);
+    }
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
+        if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
+            return handle_shortcut(shortcut[i].id);
+        }
+    }
+    return 0;
+
+}
 
 WebKitWebView* create_new_webview()
 {
@@ -125,20 +143,14 @@ int main(int argc, char** argv)
     gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
-    // Listen to signals
-
     // g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 
-    GtkEventController* event_controller_keypress = gtk_event_controller_key_new();
-    g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), notebook, G_CONNECT_DEFAULT);
-    gtk_widget_add_controller(GTK_WIDGET(notebook), event_controller_keypress);
-
-    // g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL);
-    // I suspect there is something wonky going on here
-    // GtkEventController* event_controller_bar_press_enter;
-    // event_controller_bar_press_enter = gtk_event_controller_key_new();
-    // g_signal_connect_object(event_controller_bar_press_enter, "key-pressed", G_CALLBACK(handle_signal_bar_press_enter), notebook, G_CONNECT_DEFAULT);
-    // gtk_widget_add_controller(GTK_WIDGET(bar.line), event_controller_bar_press_enter);
+	GtkEventController *event_controller = gtk_event_controller_key_new();
+	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress2), NULL);
+	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
+    // GtkEventController* event_controller_keypress = gtk_event_controller_key_new();
+    // g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), notebook, G_CONNECT_DEFAULT);
+    // gtk_widget_add_controller(GTK_WIDGET(notebook), event_controller_keypress);
 
     // Show the application window
     gtk_window_present(window);
@@ -148,15 +160,6 @@ int main(int argc, char** argv)
 
     /* Show to user */
     gtk_widget_set_visible(GTK_WIDGET(window), 1);
-    if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
-
-    /* Deal with more tabs */
-    if (argc > 2) {
-        gtk_notebook_set_show_tabs(notebook, true);
-        for (int i = 2; i < argc; i++) {
-            notebook_create_first_tab(notebook, argv[i]);
-        }
-    }
 
     // Enter the main event loop, and wait for user interaction
     printf("\nEntering main loop");
