@@ -7,7 +7,7 @@
 #include <webkit/webkit.h>
 
 static GtkNotebook* notebook;
-static GtkWidget* window;
+static GtkWindow* window;
 typedef enum { _SEARCH,
     _FIND,
     _HIDDEN } Bar_entry_mode;
