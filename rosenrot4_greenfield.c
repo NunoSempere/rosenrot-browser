@@ -114,6 +114,42 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
     }
 }
 
+/* Listen to keypresses */
+
+static int handle_signal_keypress(GtkEventControllerKey* event_controller, int keyval, int keycode,
+    GdkModifierType state, GtkNotebook* notebook)
+{
+
+    printf("New keypress!\n");
+    /*
+    if (1) {
+        printf("Keypress state: %d\n", state);
+        printf("Keypress value: %d\n", keyval);
+    }
+
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
+        if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
+            return handle_shortcut(shortcut[i].id, notebook);
+        }
+    }
+
+*/
+    return 0;
+}
+
+
+static gboolean
+event_key_pressed_cb (GtkWidget             *drawing_area,
+                      guint                  keyval,
+                      guint                  keycode,
+                      GdkModifierType        state,
+                      GtkEventControllerKey *event_controller)
+{
+    
+    fprintf(stdout, "New keypress!\n");
+  return 0;
+}
+
 int main(int argc, char** argv)
 {
     // Initialize i18n support with bindtextdomain(), etc.
@@ -134,12 +170,25 @@ int main(int argc, char** argv)
     gtk_notebook_set_show_border(notebook, false);
     // ...
 
+    // Listen to signals
+
+  GtkEventController *event_controller;
+      event_controller = gtk_event_controller_key_new ();
+
+      g_signal_connect_object (event_controller, "key-pressed",
+                               G_CALLBACK (event_key_pressed_cb),
+                               window, G_CONNECT_SWAPPED);
+      gtk_widget_add_controller (GTK_WIDGET (window), event_controller);
+
+
     // Show the application window
     gtk_window_present(GTK_WINDOW(window));
     gtk_window_set_child(GTK_WINDOW(window), GTK_WIDGET(notebook));
 
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
+
+fprintf(stdout, "Hello world!");
 
     // Enter the main event loop, and wait for user interaction
     while (!0)
