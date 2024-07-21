@@ -19,6 +19,13 @@ INCS_4=`pkg-config --cflags ${DEPS_4}` `pkg-config --cflags gtk4`
 LIBS_4=`pkg-config --libs ${DEPS_4}` `pkg-config --libs gtk4`
 # DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
+# Dependencies starting from scratchpad
+SRC_4_greenfield=rosenrot4_greenfield.c
+DEPS_4_greenfield='webkitgtk-6.0'
+INCS_4_greenfield=`pkg-config --cflags ${DEPS_4_greenfield}` `pkg-config --cflags gtk4`
+LIBS_4_greenfield=`pkg-config --libs ${DEPS_4_greenfield}` `pkg-config --libs gtk4`
+# DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+
 # User config
 CONFIG=config.h
 
@@ -47,6 +54,10 @@ build: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
 
 build4: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
 	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
+	@echo
+
+build4_greenfield: $(SRC_4_greenfield) $(PLUGINS) $(CONFIG) constants user_cache
+	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4_greenfield) $(PLUGINS) $(SRC_4_greenfield) -o rosenrot $(LIBS_4_greenfield) $(ADBLOCK)
 	@echo
 
 diagnose:
