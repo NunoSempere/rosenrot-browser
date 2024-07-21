@@ -6,13 +6,13 @@
 #include "plugins/plugins.h"
 #include <webkit/webkit.h>
 
-#define NULLCHECK(x)                                       \
-    do {                                                 \
-        if (x == NULL) {                                 \
-            printf("\nNull found");                      \
-            printf("@ %s (%d): ", __FILE__, __LINE__);   \
-            exit(0);                                     \
-        }                                                \
+#define NULLCHECK(x)                                   \
+    do {                                               \
+        if (x == NULL) {                               \
+            printf("\nNull found");                    \
+            printf("@ %s (%d): ", __FILE__, __LINE__); \
+            exit(0);                                   \
+        }                                              \
     } while (0)
 
 static GtkNotebook* notebook;
@@ -32,8 +32,8 @@ static int custom_style_enabled = 1;
 /* Forward declarations */
 void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
-static int handle_signal_keypress(void *self, int keyval, int keycode,
-							   GdkModifierType state, void *controller);
+static int handle_signal_keypress(void* self, int keyval, int keycode,
+    GdkModifierType state, void* controller);
 
 /* Utils */
 WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
@@ -130,8 +130,6 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     }
 }
 
-
-
 /* New tabs */
 WebKitWebView* create_new_webview()
 {
@@ -152,9 +150,9 @@ WebKitWebView* create_new_webview()
 
     WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, NULL);
 
-	GtkEventController *event_controller = gtk_event_controller_key_new();
-	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
-	gtk_widget_add_controller(GTK_WIDGET(view), event_controller);
+    GtkEventController* event_controller = gtk_event_controller_key_new();
+    g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
+    gtk_widget_add_controller(GTK_WIDGET(view), event_controller);
 
     NULLCHECK(view);
     return view;
@@ -177,7 +175,6 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     }
     return GTK_WIDGET(self); // NULL;
 }
-
 
 void notebook_create_new_tab_mini(GtkNotebook* notebook, const char* uri)
 {
@@ -287,8 +284,6 @@ void handle_signal_bar_press_enter(void* data)
 
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 }
-
-
 
 /* Handle shortcuts */
 int handle_shortcut_mini(func id)
@@ -430,30 +425,28 @@ int handle_shortcut(func id)
     return 1;
 }
 
-
 /* Listen to keypresses */
 
-static int handle_signal_keypress(void *self, int keyval, int keycode,
-							   GdkModifierType state, void *controller)
+static int handle_signal_keypress(void* self, int keyval, int keycode,
+    GdkModifierType state, void* controller)
 {
-	// (void) self, (void) keycode, (void) controller;
+    // (void) self, (void) keycode, (void) controller;
 
     // fprintf(stdout, "New keypress!\n");
     printf("New keypress\n");
-    
+
     if (1) {
         printf("Keypress state: %d\n", state);
         printf("Keypress value: %d\n", keyval);
     }
-    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++){
+    for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++) {
         if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
             printf("New shortcut, with id: %d\n", shortcut[i].id);
             return handle_shortcut(shortcut[i].id);
         }
     }
-    
-    return 0;
 
+    return 0;
 }
 
 int main(int argc, char** argv)
@@ -486,9 +479,9 @@ int main(int argc, char** argv)
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
     // Signals
-	GtkEventController *event_controller = gtk_event_controller_key_new();
-	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
-	gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
+    GtkEventController* event_controller = gtk_event_controller_key_new();
+    g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
+    gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
 
     g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL);
     g_signal_connect(GTK_WIDGET(window), "destroy", G_CALLBACK(exit), notebook);
@@ -512,7 +505,7 @@ int main(int argc, char** argv)
     }
 
     // Enter the main event loop, and wait for user interaction
-    printf("\nEntering main loop");
+    printf("Entering main loop\n");
     while (g_list_model_get_n_items(gtk_window_get_toplevels()) > 0 && num_tabs > 0)
         g_main_context_iteration(NULL, TRUE);
 
