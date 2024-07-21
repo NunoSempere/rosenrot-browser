@@ -420,7 +420,7 @@ int main(int argc, char** argv)
     g_signal_connect_object(event_controller_keypress, "key-pressed", G_CALLBACK(handle_signal_keypress), window, G_CONNECT_DEFAULT);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller_keypress);
 
-    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), NULL);
     // I suspect there is something wonky going on here
     // GtkEventController* event_controller_bar_press_enter;
     // event_controller_bar_press_enter = gtk_event_controller_key_new();

@@ -20,7 +20,7 @@ LIBS_4=`pkg-config --libs ${DEPS_4}` `pkg-config --libs gtk4`
 # DEPRECATION_FLAGS=-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
 
 # Dependencies starting from scratchpad
-SRC_4_greenfield=rosenrot4_greenfield.c
+SRC_4_greenfield=rosenrot4_greenfield_minimal.c
 DEPS_4_greenfield='webkitgtk-6.0'
 INCS_4_greenfield=`pkg-config --cflags ${DEPS_4_greenfield}` `pkg-config --cflags gtk4`
 LIBS_4_greenfield=`pkg-config --libs ${DEPS_4_greenfield}` `pkg-config --libs gtk4`
@@ -81,7 +81,7 @@ user_cache:
 runtime_files:
 	@echo
 	sudo mkdir -p /opt/rosenrot/
-	sudo cp style-gtk4.css /opt/rosenrot/style.css
+	sudo cp style-gtk3.css /opt/rosenrot/style.css
 	sudo cp -r images/flower-imgs /opt/rosenrot/
 	sudo cp plugins/style/style.js /opt/rosenrot/
 	sudo cp plugins/readability/readability.js /opt/rosenrot/
