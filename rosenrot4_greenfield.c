@@ -203,7 +203,7 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
             gtk_entry_set_placeholder_text(bar.line, "Search");
             gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
             gtk_widget_show(GTK_WIDGET(bar.widget));
-            gtk_window_set_focus(GTK_WINDOW(window), GTK_WIDGET(bar.line));
+            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
         }
         case _FIND: {
@@ -315,7 +315,7 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             if (is_fullscreen)
                 gtk_window_unfullscreen(window);
             else
-                gtk_window_fullscreen(GTK_WINDOW(window));
+                gtk_window_fullscreen(window);
             is_fullscreen = !is_fullscreen;
             break;
         case show_searchbar:
@@ -389,14 +389,14 @@ int main(int argc, char** argv)
     gtk_init();
 
     // Create the main window
-    window = gtk_window_new();
-    gtk_window_set_default_size(GTK_WINDOW(window), WIDTH, HEIGHT_4);
+    window = GTK_WINDOW(gtk_window_new());
+    gtk_window_set_default_size(window, WIDTH, HEIGHT_4);
 
     // Set up notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_show_tabs(notebook, true);
     gtk_notebook_set_show_border(notebook, false);
-    gtk_window_set_child(GTK_WINDOW(window), GTK_WIDGET(notebook));
+    gtk_window_set_child(window, GTK_WIDGET(notebook));
 
     // Bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
@@ -407,7 +407,7 @@ int main(int argc, char** argv)
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
         gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
-    gtk_window_set_titlebar(GTK_WINDOW(window), GTK_WIDGET(bar.widget));
+    gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
     // Listen to signals
 
@@ -418,7 +418,7 @@ int main(int argc, char** argv)
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
 
     // Show the application window
-    gtk_window_present(GTK_WINDOW(window));
+    gtk_window_present(window);
 
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
