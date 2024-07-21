@@ -95,10 +95,10 @@ int handle_shortcut(func id)
 
     switch (id) {
         case show_searchbar:
-            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 1);
+            toggle_bar(notebook, _SEARCH);
             break;
         case hide_bar:
-            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+            toggle_bar(notebook, _HIDDEN);
             break;
     }
 
