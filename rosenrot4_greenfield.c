@@ -184,7 +184,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         // gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
         load_uri(view, (uri) ? uri : HOME);
 
-        // set_custom_style(view);
+        set_custom_style(view);
 
         gtk_notebook_set_current_page(notebook, n);
         gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
@@ -381,12 +381,12 @@ static gboolean handle_signal_keypress(GtkWidget* drawing_area,
 
 int main(int argc, char** argv)
 {
-    // Initialize i18n support with bindtextdomain(), etc.
-
-    // ...
-
-    // Initialize the widget set
+    /* Initialize GTK in general */
     gtk_init();
+    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
+    GtkCssProvider* css = gtk_css_provider_new();
+    gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
 
     // Create the main window
     window = GTK_WINDOW(gtk_window_new());
@@ -423,12 +423,22 @@ int main(int argc, char** argv)
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
-    fprintf(stdout, "Hello world!");
+
+    /* Show to user */
+    gtk_widget_set_visible(GTK_WIDGET(window), 1);
+    if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+
+    /* Deal with more tabs */
+    if (argc > 2) {
+        gtk_notebook_set_show_tabs(notebook, true);
+        for (int i = 2; i < argc; i++) {
+            notebook_create_new_tab(notebook, argv[i]);
+        }
+    }
 
     // Enter the main event loop, and wait for user interaction
     while (!0)
         g_main_context_iteration(NULL, TRUE);
 
-    // The user lost interest
     return 0;
 }
