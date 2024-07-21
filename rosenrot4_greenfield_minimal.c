@@ -80,9 +80,11 @@ static gboolean handle_signal_keypress(GtkWidget* w,
 static int handle_signal_keypress2(void *self, int keyval, int keycode,
 							   GdkModifierType state, void *controller)
 {
-	(void) self, (void) keycode, (void) controller;
+	// (void) self, (void) keycode, (void) controller;
 
-    fprintf(stdout, "New keypress!\n");
+    // fprintf(stdout, "New keypress!\n");
+    printf("New keypress\n");
+    
     if (1) {
         printf("Keypress state: %d\n", state);
         printf("Keypress value: %d\n", keyval);
@@ -92,6 +94,7 @@ static int handle_signal_keypress2(void *self, int keyval, int keycode,
             return handle_shortcut(shortcut[i].id);
         }
     }
+    
     return 0;
 
 }
@@ -100,6 +103,9 @@ WebKitWebView* create_new_webview()
 {
 
     WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, NULL);
+	GtkEventController *event_controller = gtk_event_controller_key_new();
+	g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress2), NULL);
+	gtk_widget_add_controller(GTK_WIDGET(view), event_controller);
     NOTNULL(view);
     return view;
 }
