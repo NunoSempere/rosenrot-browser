@@ -139,7 +139,7 @@ WebKitWebView* create_new_webview()
 
     webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 
-    if (g_file_get_contents("~/opt/rosenrot/style.css", &style, NULL, NULL)) {
+    if (g_file_get_contents("/opt/rosenrot/style.css", &style, NULL, NULL)) {
         webkit_user_content_manager_add_style_sheet(
             contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
     }
@@ -181,13 +181,14 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         int n = gtk_notebook_append_page(notebook, GTK_WIDGET(view), NULL);
         gtk_notebook_set_tab_reorderable(notebook, GTK_WIDGET(view), true);
         gtk_widget_set_visible(GTK_WIDGET(window), 1);
-        // gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+        gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
         load_uri(view, (uri) ? uri : HOME);
 
         set_custom_style(view);
 
         gtk_notebook_set_current_page(notebook, n);
         gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
+        webkit_web_view_set_zoom_level(view, ZOOM_START_LEVEL);
         num_tabs += 1;
     } else {
     }
@@ -202,7 +203,7 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
             const char* url = webkit_web_view_get_uri(notebook_get_webview(notebook));
             gtk_entry_set_placeholder_text(bar.line, "Search");
             gtk_entry_buffer_set_text(bar.line_text, url, strlen(url));
-            gtk_widget_show(GTK_WIDGET(bar.widget));
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 1);
             gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
         }
@@ -214,12 +215,12 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
                 gtk_entry_buffer_set_text(bar.line_text, search_text, strlen(search_text));
 
             gtk_entry_set_placeholder_text(bar.line, "Find");
-            gtk_widget_show(GTK_WIDGET(bar.widget));
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 1);
             gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
         }
         case _HIDDEN:
-            gtk_widget_hide(GTK_WIDGET(bar.widget));
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
     }
 }
 
@@ -386,7 +387,9 @@ int main(int argc, char** argv)
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style.css");
-    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), 0); /* might change with GTK4/webkitgtk6.0 */
+    printf("%d", GTK_STYLE_PROVIDER_PRIORITY_USER);
+    printf("%d", GTK_STYLE_PROVIDER_PRIORITY_FALLBACK);
 
     // Create the main window
     window = GTK_WINDOW(gtk_window_new());
@@ -416,13 +419,13 @@ int main(int argc, char** argv)
 
     g_signal_connect_object(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), window, G_CONNECT_DEFAULT);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
+    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
 
     // Show the application window
     gtk_window_present(window);
 
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
-
 
     /* Show to user */
     gtk_widget_set_visible(GTK_WIDGET(window), 1);

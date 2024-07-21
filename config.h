@@ -3,9 +3,6 @@
 #include <gtk/gtk.h>
 // #include "/usr/include/gtk-4.0/gtk/gtk.h"
 
-// GKG 3 or GKG 4
-# define GTK_NUM 4
-
 // Key user config
 #define WIDTH 1920 // 960 for half-width, 1920 for full width
 // #define HEIGHT 1080
@@ -14,7 +11,7 @@
 #define BAR_SIZE 960
 
 // More user config
-#define ZOOM_START_LEVEL 1.6 
+#define ZOOM_START_LEVEL 2
 #define ZOOM_STEPSIZE .1 
 #define MAX_NUM_TABS 8 // 0/false for unlimited tabs
 #define SEARCH "https://search.brave.com/search?q=%s" // "https://search.nunosempere.com/search?q=%s", "https://lite.duckduckgo.com/html/?q=%s" 
@@ -116,7 +113,7 @@ static struct {
     { CTRL,        KEY(w),             close_tab            },
 
     { CTRL,        KEY(l),             show_searchbar       },
-    { CTRL,        KEY(semicolon),     hide_bar             },
+    { CTRL,        KEY(u),             hide_bar             }, // previously: KEY(semicolon)
     { CTRL,        KEY(f),             show_finder          },
     { CTRL,        KEY(n),             finder_next          },
     { CTRL,        KEY(N),             finder_prev          },
