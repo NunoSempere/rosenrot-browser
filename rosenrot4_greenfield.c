@@ -18,13 +18,17 @@ static struct {
 static int num_tabs = 0;
 static int custom_style_enabled = 1;
 
+/* Forward declarations */
+void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode);
+void notebook_create_new_tab(GtkNotebook* notebook, const char* uri);
+
+
 WebKitWebView* create_new_webview()
 {
     char* style;
     WebKitSettings* settings;
-    // WebKitWebContext* web_context;
     WebKitCookieManager* cookiemanager;
-    WebKitNetworkSession* network_session; // new
+    WebKitNetworkSession* network_session; 
     WebKitUserContentManager* contentmanager;
 
     settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
@@ -36,7 +40,6 @@ WebKitWebView* create_new_webview()
         // https://www.useragents.me
     }
     network_session = webkit_network_session_new(DATA_DIR, DATA_DIR);
-    // web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
     contentmanager = webkit_user_content_manager_new();
     cookiemanager = webkit_network_session_get_cookie_manager(network_session);
 
@@ -79,7 +82,7 @@ void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
         // set_custom_style(view);
 
         gtk_notebook_set_current_page(notebook, n);
-        // gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
+        gtk_notebook_set_tab_label_text(notebook, GTK_WIDGET(view), "-");
         num_tabs += 1;
     } else {
     }
