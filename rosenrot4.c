@@ -6,21 +6,10 @@
 #include "plugins/plugins.h"
 #include <webkit/webkit.h>
 
-#define NULLCHECK(x)                                   \
-    do {                                               \
-        if (x == NULL) {                               \
-            printf("\nNULL check not passed");         \
-            printf("@ %s (%d): ", __FILE__, __LINE__); \
-            exit(0);                                   \
-        }                                              \
-    } while (0)
-
 /* Global variables */
 static GtkNotebook* notebook;
 static GtkWindow* window;
-typedef enum { _SEARCH,
-    _FIND,
-    _HIDDEN } Bar_entry_mode;
+typedef enum { _SEARCH, _FIND, _HIDDEN } Bar_entry_mode;
 static struct {
     GtkHeaderBar* widget;
     GtkEntry* line;
@@ -173,7 +162,8 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     } else {
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
-    return NULL; // Could also return GTK_WIDGET(self), in which case the new uri would also be loaded in the current webview.
+    return ABORT_REQUEST_ON_CURRENT_TAB;
+    // Could also return GTK_WIDGET(self), in which case the new uri would also be loaded in the current webview. This could be interesting if I wanted to e.g., open an alternative frontend in a new tab
 }
 
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
@@ -359,6 +349,14 @@ int handle_shortcut(func id)
             toggle_bar(notebook, _HIDDEN);
             break;
 
+        case halve_window:
+            gtk_window_set_default_size(window, FULL_WIDTH/2, HEIGHT_GTK4);
+            break;
+
+        case rebig_window:
+            gtk_window_set_default_size(window, FULL_WIDTH, HEIGHT_GTK4);
+            break;
+
         case prettify: {
             if (READABILITY_ENABLED) {
                 char* readability_js = malloc(READABILITY_N + 1);
@@ -417,7 +415,7 @@ int main(int argc, char** argv)
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
-    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
+    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_WIDTH, -1);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));

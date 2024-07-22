@@ -1,26 +1,30 @@
 #include <stdbool.h>
-// #include <gdk/gdk.h> // <gdk/gdkenums.h>, <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-// #include "/usr/include/gtk-4.0/gtk/gtk.h"
 
-// Key user config
-#define WIDTH 1920 // 960 for half-width, 1920 for full width
-#define HEIGHT_GTK3 990 // GTK4 and GTK3 interpret this differently. In GTK4, this includes the height of the top bar
-#define HEIGHT_GTK4 1080 // GTK4 and GTK3 interpret this differently. In GTK4, this includes the height of the top bar
-#define BAR_SIZE 960
+/* Key user config */
+#define FULL_WIDTH  1920
+#define WIDTH       FULL_WIDTH
+#define BAR_WIDTH   FULL_WIDTH/2
+#define HEIGHT_GTK3 990 
+#define HEIGHT_GTK4 1080 
+// GTK4 and GTK3 interpret height differently. 
+// In GTK4, it includes the height of the top bar
 
-// More user config
-#define ZOOM_START_LEVEL 2
+/* More user config */
+#define ZOOM_START_LEVEL 1.8
 #define ZOOM_STEPSIZE .1 
-#define MAX_NUM_TABS 8 // 0/false for unlimited tabs
-#define SEARCH "https://search.brave.com/search?q=%s" // "https://search.nunosempere.com/search?q=%s", "https://lite.duckduckgo.com/html/?q=%s" 
-#define HOME "https://search.brave.com/search"  // "file:///opt/rose/homepage.png", ""
+#define MAX_NUM_TABS 8 // 0 or false for unlimited tabs
+#define SEARCH "https://search.brave.com/search?q=%s" 
+#define HOME "https://search.brave.com/search" 
+// #define SEARCH "https://search.nunosempere.com/search?q=%s"
+// #define SEARCH "https://lite.duckduckgo.com/html/?q=%s" 
+// #define HOME "file:///opt/rosenrot/flower-imgs/rose-homepage.png" 
 
-// Plugins
+/* Plugins */
 #define LIBRE_REDIRECT_ENABLED true
 #define READABILITY_ENABLED true
 #define CUSTOM_USER_AGENT false
-/*
+/* 
 To disable plugins:
 1. set their corresponding variable to false
 2. recompile 
@@ -33,26 +37,38 @@ To remove plugins completely;
 You could also look into commit afe93518a for an approach using stand-in code.
 */
 
-// Webkit settings
+/* Webkit */
 // https://webkitgtk.org/reference/webkit2gtk/stable/class.Settings.html 
 #define WEBKIT_DEFAULT_SETTINGS \
-	"enable-back-forward-navigation-gestures", true, "enable-developer-extras", true, \
+	"enable-back-forward-navigation-gestures", true, \
+	"enable-developer-extras", true, \
 	"enable-smooth-scrolling", false, \
     "default-charset", "utf-8"
 #define DATA_DIR "/home/nuno/.cache/rosenrot"
 #define DATA_MANAGER_OPTS "base-cache-directory", DATA_DIR, "base-data-directory", DATA_DIR
 #define NETWORK_SESSION_OPTS DATA_DIR, DATA_DIR
 
-// GTK 
-#define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+/* GTK  */
 // https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkkeysyms.h
-#define KEY(x) GDK_KEY_##x
 // https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gdk/gdkenums.h
+#define GTK_SETTINGS_CONFIG_H "gtk-application-prefer-dark-theme", false, "gtk-enable-animations", false
+#define KEY(x) GDK_KEY_##x
 #define SFT  1 << 0 
 #define CTRL 1 << 2
 #define ALT  1 << 3
 
-// Shortcuts
+/* Misc helpers */
+#define ABORT_REQUEST_ON_CURRENT_TAB NULL
+#define NULLCHECK(x)                                   \
+    do {                                               \
+        if (x == NULL) {                               \
+            printf("\nNULL check not passed");         \
+            printf("@ %s (%d): ", __FILE__, __LINE__); \
+            exit(0);                                   \
+        }                                              \
+    } while (0)
+
+/* Shortcuts */
 typedef enum {
     goback,
     goforward,
@@ -80,6 +96,9 @@ typedef enum {
     finder_next,
     finder_prev,
 
+    halve_window,
+    rebig_window,
+
     prettify,
 } func;
 
@@ -103,10 +122,11 @@ static struct {
     { CTRL,        KEY(minus),         zoomout              },
     { CTRL,        KEY(0),             zoom_reset           },
 
-    { CTRL,        KEY(KP_Page_Up),    prev_tab             }, 
-    { CTRL,        KEY(KP_Page_Down),  next_tab             }, 
-    { CTRL,        KEY(Page_Up),       prev_tab             }, // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
-    { CTRL,        KEY(Page_Down),     next_tab             }, 
+    { CTRL | SFT,  KEY(KP_Page_Up),    prev_tab             },  // use SFT just to show one can
+    { CTRL | SFT,  KEY(KP_Page_Down),  next_tab             }, 
+    { CTRL | SFT,  KEY(Page_Up),       prev_tab             }, 
+    // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
+    { CTRL | SFT,  KEY(Page_Down),     next_tab             }, 
     { CTRL,        KEY(t),             new_tab              },
     { CTRL,        KEY(w),             close_tab            },
 
@@ -115,28 +135,7 @@ static struct {
     { CTRL,        KEY(f),             show_finder          },
     { CTRL,        KEY(n),             finder_next          },
     { CTRL,        KEY(N),             finder_prev          },
-
+    { CTRL,        KEY(Left),          halve_window         },
+    { CTRL,        KEY(Right),         rebig_window         },
     { CTRL,        KEY(p),             prettify             }
 };
-
-/* Old controls: {
-    { CTRL,	       KEY(h),     goback            },
-    { CTRL,	       KEY(l),     goforward         },
-    { CTRL,	       KEY(r),     refresh	         },
-    { CTRL | SFT,  KEY(R),     refresh_force     },
-    { CTRL | SFT,  KEY(H),     back_to_home      },
-    { CTRL,	       KEY(equal), zoomin	           },
-    { CTRL,	       KEY(minus), zoomout	         },
-    { CTRL,	       KEY(0),     zoom_reset	       },
-    { ALT,	       KEY(h),     prev_tab	         },
-    { CTRL,        KEY(k),     hide_searchbar    },
-    { ALT,	       KEY(l),     next_tab	         },
-    { CTRL,	       KEY(w),     close_tab	       },
-    { 0x0,	       KEY(F11),   toggle_fullscreen },
-    { CTRL,	       KEY(e),     show_searchbar	   },
-    { CTRL,	       KEY(f),     show_finder       },
-    { CTRL,	       KEY(n),     finder_next       },
-    { CTRL | SFT,  KEY(N),     finder_prev	     },
-    { CTRL,        KEY(p),     prettify          }
-};
-*/

@@ -10,6 +10,7 @@
   - See whether it even exists at all
 - [ ] Finish cleaning up GTK4 version
 - [ ] Think about best way of having GTK4 version alongside
+- [ ] Shortcut to resize window
 
 # Previously done
 
