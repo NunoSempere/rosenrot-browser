@@ -37,7 +37,7 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook) /* TODO: Think throug
 void load_uri(WebKitWebView* view, const char* uri)
 {
     bool is_empty_uri = (strlen(uri) == 0);
-    bool has_direct_uri_prefix = (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:"));
+    bool has_direct_uri_prefix = g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:");
     bool has_common_domain_extension = (strstr(uri, ".com") || strstr(uri, ".org"));
     bool has_shortcut;
 
@@ -260,12 +260,9 @@ int handle_shortcut(func id)
             webkit_web_view_go_forward(view);
             break;
 
-        case toggle_custom_style: /* Ctrl s + Ctrl Shift R to reload */
-            if (custom_style_enabled)
-                custom_style_enabled = 0;
-            else
-                custom_style_enabled = 1;
-            // break; passthrough
+        case toggle_custom_style: 
+            custom_style_enabled ^= 1; 
+            // fallthrough
         case refresh:
             webkit_web_view_reload(view);
             break;
@@ -294,28 +291,23 @@ int handle_shortcut(func id)
             // https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
             int n = gtk_notebook_get_n_pages(notebook);
             int k = gtk_notebook_get_current_page(notebook);
-            int l = (n + k - 1) % n;
-            gtk_notebook_set_current_page(notebook, l);
+            int o = (n + k - 1) % n;
+            gtk_notebook_set_current_page(notebook, o);
             break;
         case next_tab:;
             int m = gtk_notebook_get_n_pages(notebook);
-            int i = gtk_notebook_get_current_page(notebook);
-            int j = (i + 1) % m;
-            gtk_notebook_set_current_page(notebook, j);
+            int l = gtk_notebook_get_current_page(notebook);
+            int p = (l + 1) % m;
+            gtk_notebook_set_current_page(notebook, p);
             break;
         case close_tab:
             gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             num_tabs -= 1;
-
-            switch (gtk_notebook_get_n_pages(notebook)) {
-                case 0:
-                    exit(0);
-                    break;
-                case 1:
-                    gtk_notebook_set_show_tabs(notebook, false);
-                    break;
+            if (!gtk_notebook_get_n_pages(notebook)) {
+                exit(0);
+            } else {
+                gtk_notebook_set_show_tabs(notebook, false);
             }
-
             break;
         case toggle_fullscreen:
             if (is_fullscreen)
@@ -352,7 +344,6 @@ int handle_shortcut(func id)
         case halve_window:
             gtk_window_set_default_size(window, FULL_WIDTH/2, HEIGHT_GTK4);
             break;
-
         case rebig_window:
             gtk_window_set_default_size(window, FULL_WIDTH, HEIGHT_GTK4);
             break;
@@ -394,9 +385,10 @@ static int handle_signal_keypress(void* self, int keyval, int keycode,
 
 int main(int argc, char** argv)
 {
-    /* Initialize GTK in general */
+    // Initialize GTK in general
     gtk_init();
-    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
+    g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); 
+    // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style-gtk4.css");
     gtk_style_context_add_provider_for_display(gdk_display_get_default(), GTK_STYLE_PROVIDER(css), GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -411,17 +403,17 @@ int main(int argc, char** argv)
     gtk_notebook_set_show_border(notebook, false);
     gtk_window_set_child(window, GTK_WIDGET(notebook));
 
-    // Bar
+    // Set up top bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
-    gtk_entry_set_alignment(bar.line, 0.48);
+    gtk_entry_set_alignment(bar.line, 0.5);
     gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_WIDTH, -1);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_header_bar_set_title_widget(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
 
-    // Signals
+    // Setup signals
     GtkEventController* event_controller = gtk_event_controller_key_new();
     g_signal_connect(event_controller, "key-pressed", G_CALLBACK(handle_signal_keypress), NULL);
     gtk_widget_add_controller(GTK_WIDGET(window), event_controller);
@@ -429,17 +421,17 @@ int main(int argc, char** argv)
     g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook); 
     g_signal_connect(GTK_WIDGET(window), "destroy", G_CALLBACK(exit), notebook);
 
-    // Show the application window
-    gtk_window_present(window);
-
+    // Parse first tab
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
-    /* Show to user */
+    // Show to user 
+    // The first two commands are redundant with notebook_create_new_tab
+    gtk_window_present(window); 
     gtk_widget_set_visible(GTK_WIDGET(window), 1);
     if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
-    /* Deal with more tabs */
+    // Deal with more tabs, if any 
     if (argc > 2) {
         gtk_notebook_set_show_tabs(notebook, true);
         for (int i = 2; i < argc; i++) {
