@@ -6,8 +6,8 @@
 var styles = null;
 // console.log(document.domain);
 switch (document.domain) {
-	case "forum.effectivealtruism.org":
-		styles = `
+  case "forum.effectivealtruism.org":
+    styles = `
     /*
 	    .Layout-main {
         margin-left: 100px;
@@ -25,16 +25,16 @@ switch (document.domain) {
       }
     */
     `;
-		break;
-	case "nationstates.net":
-		styles = `
+    break;
+  case "nationstates.net":
+    styles = `
       .adidentifier {
         display: none;
       }
     `;
-		break;
-	case "mail.proton.me":
-		styles = `
+    break;
+  case "mail.proton.me":
+    styles = `
 	  /*
       .item-container-row.read, .item-container.read {
 		      background-color: white;
@@ -48,24 +48,24 @@ switch (document.domain) {
       zoom: 0.625 !important;
 	  */
 	  `;
-		break;
-	case "forum.nunosempere.com":
-		styles = `
+    break;
+  case "forum.nunosempere.com":
+    styles = `
       body {
        zoom: 0.625 !important;
       }
     `;
-		break;
-	case "search.brave.com":
-		styles = `
+    break;
+  case "search.brave.com":
+    styles = `
       .download-button,
       a[href^="https://brave.com/download/"] {
         display: none !important; 
       }
     `;
-		break;
-	case "search.nunosempere.com":
-		styles = `
+    break;
+  case "search.nunosempere.com":
+    styles = `
     /* 
       body {
         zoom: 1.8;
@@ -76,11 +76,11 @@ switch (document.domain) {
         display: none;
       }
     `;
-		break;
-	case "reddit.com":
-	// fallthrough
-	case "old.reddit.com":
-		styles = `
+    break;
+  case "reddit.com":
+  // fallthrough
+  case "old.reddit.com":
+    styles = `
 	    /* kill sidebar ads */
 	    .ad-container,
 	    a[href^="https://alb.reddit.com"]
@@ -98,10 +98,10 @@ switch (document.domain) {
 		    display: none !important;
 	    }
 	  `;
-		break;
-	case "twitter.com":
-	case "x.com":
-		styles = `
+    break;
+  case "twitter.com":
+  case "x.com":
+    styles = `
 	    /* hide promoted tweets */
 	    :has(meta[property="og:site_name"][content="Twitter"])
 		    [data-testid="cellInnerDiv"]:has(svg + [dir="auto"]) {
@@ -182,25 +182,25 @@ switch (document.domain) {
         background: white !important;
       }
     `;
-		break;
-	default:
-		console.log(`Domain: ${document.domain}`);
-		console.log("No custom style");
+    break;
+  default:
+    console.log(`Domain: ${document.domain}`);
+    console.log("No custom style");
 }
 
 if (styles != null) {
-	var styleSheet = document.createElement("style");
-	styleSheet.innerText = styles;
-	document.head.appendChild(styleSheet);
-	console.log("Style changed");
+  var styleSheet = document.createElement("style");
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+  console.log("Style changed");
 }
 
 // Extra: Replace default alert with new function
 // whose style can be changed!
 window.alert = (message) => {
-	let alertDiv = document.getElementById("customAlert");
-	if (!alertDiv) {
-		const html = `
+  let alertDiv = document.getElementById("customAlert");
+  if (!alertDiv) {
+    const html = `
       <div id="customAlert" class="custom-alert">
           <div class="custom-alert-content">
               <p id="alertMessage"></p>
@@ -232,68 +232,68 @@ window.alert = (message) => {
           }
       </style>
     `;
-		document.body.insertAdjacentHTML("beforeend", html);
-		alertDiv = document.getElementById("customAlert");
-		document.getElementById("alertOkButton").onclick = () => {
-			alertDiv.classList.remove("visible");
-			document.removeEventListener("keydown", dismissAlert);
-		};
-	}
+    document.body.insertAdjacentHTML("beforeend", html);
+    alertDiv = document.getElementById("customAlert");
+    document.getElementById("alertOkButton").onclick = () => {
+      alertDiv.classList.remove("visible");
+      document.removeEventListener("keydown", dismissAlert);
+    };
+  }
 
-	const dismissAlert = (event) => {
-		if (
-			event.key === "Enter" /*&& event.ctrlKey*/ &&
-			alertDiv.classList.contains("visible")
-		) {
-			alertDiv.classList.remove("visible");
-			document.removeEventListener("keydown", dismissAlert);
-		}
-	};
+  const dismissAlert = (event) => {
+    if (
+      event.key === "Enter" /*&& event.ctrlKey*/ &&
+      alertDiv.classList.contains("visible")
+    ) {
+      alertDiv.classList.remove("visible");
+      document.removeEventListener("keydown", dismissAlert);
+    }
+  };
 
-	document.addEventListener("keydown", dismissAlert);
-	document.getElementById("alertMessage").textContent = message;
-	alertDiv.classList.add("visible");
+  document.addEventListener("keydown", dismissAlert);
+  document.getElementById("alertMessage").textContent = message;
+  alertDiv.classList.add("visible");
 };
 
 // Extra: hide video players on twitter
 if (document.domain == "twitter.com" || document.domain == "x.com") {
-	// Function to hide the grandparent of video players
-	// takes 0.014ms to run, so performance is not the concern here.
-	// timed with console.time, console.timeEnd
+  // Function to hide the grandparent of video players
+  // takes 0.014ms to run, so performance is not the concern here.
+  // timed with console.time, console.timeEnd
 
-	function hideVideoPlayerGrandparent() {
-		document
-			.querySelectorAll('[data-testid="videoPlayer"]')
-			.forEach(function (videoPlayer) {
-				var grandparentElement =
-					videoPlayer.parentElement.parentElement.parentElement.parentElement
-						.parentElement.parentElement;
-				var newTextElement = document.createElement("div");
-				newTextElement.textContent = " [ twitter video ] ";
-				newTextElement.style["margin-top"] = "10px";
-				newTextElement.style["margin-left"] = "10px";
-				newTextElement.style["margin-bottom"] = "10px";
-				grandparentElement.replaceWith(newTextElement);
-			});
-	}
+  function hideVideoPlayerGrandparent() {
+    document
+      .querySelectorAll('[data-testid="videoPlayer"]')
+      .forEach(function (videoPlayer) {
+        var grandparentElement =
+          videoPlayer.parentElement.parentElement.parentElement.parentElement
+            .parentElement.parentElement;
+        var newTextElement = document.createElement("div");
+        newTextElement.textContent = " [ twitter video ] ";
+        newTextElement.style["margin-top"] = "10px";
+        newTextElement.style["margin-left"] = "10px";
+        newTextElement.style["margin-bottom"] = "10px";
+        grandparentElement.replaceWith(newTextElement);
+      });
+  }
 
-	// Create a new MutationObserver instance
-	var observer = new MutationObserver(function (mutations) {
-		mutations.forEach(function (mutation) {
-			if (mutation.addedNodes.length) {
-				hideVideoPlayerGrandparent(); // Call the function to hide video players
-			}
-		});
-	});
+  // Create a new MutationObserver instance
+  var observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.addedNodes.length) {
+        hideVideoPlayerGrandparent(); // Call the function to hide video players
+      }
+    });
+  });
 
-	// Options for the observer (which mutations to observe)
-	var config = { childList: true, subtree: true };
+  // Options for the observer (which mutations to observe)
+  var config = { childList: true, subtree: true };
 
-	// Start observing the target node for configured mutations
-	observer.observe(document.body, config);
+  // Start observing the target node for configured mutations
+  observer.observe(document.body, config);
 
-	// Call the function initially to hide any video players on initial load
-	hideVideoPlayerGrandparent();
+  // Call the function initially to hide any video players on initial load
+  hideVideoPlayerGrandparent();
 }
 
 // document.body.style.visibility = "visible";

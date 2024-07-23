@@ -1,10 +1,10 @@
 #include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <webkit/webkit.h>
 
 #include "config.h"
 #include "plugins/plugins.h"
-#include <webkit/webkit.h>
 
 /* Global variables */
 static GtkNotebook* notebook;

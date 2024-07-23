@@ -1,12 +1,12 @@
 #include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <webkit2/webkit2.h>
 
 #include "config.h"
-#include <webkit2/webkit2.h>
 #include "plugins/plugins.h"
 
-/* Global declarations */
+/* Global variables */
 static GtkNotebook* notebook;
 static GtkWindow* window;
 typedef enum { _SEARCH, _FIND, _HIDDEN } Bar_entry_mode;
