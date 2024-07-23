@@ -1,7 +1,6 @@
 #include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
-#include <webkit/webkit.h>
 
 #include "config.h"
 #include "plugins/plugins.h"
@@ -37,32 +36,39 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook) /* TODO: Think throug
 void load_uri(WebKitWebView* view, const char* uri)
 {
     bool is_empty_uri = (strlen(uri) == 0);
+    if (is_empty_uri) {
+        webkit_web_view_load_uri(view, "");
+        toggle_bar(notebook, _SEARCH);
+        return 
+    } 
+
     bool has_direct_uri_prefix = g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:");
+    if (has_direct_uri_prefix){
+        webkit_web_view_load_uri(view, uri);
+        return;
+    } 
+
     bool has_common_domain_extension = (strstr(uri, ".com") || strstr(uri, ".org"));
-    bool has_shortcut;
+    if (has_common_domain_extension){
+        char tmp[strlen("https://") + strlen(uri) + 1];
+        snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
+        webkit_web_view_load_uri(view, tmp);
+        return 
+    } 
 
     int l = SHORTCUT_N + strlen(uri) + 1;
     char uri_expanded[l];
     str_init(uri_expanded, l);
     int check = shortcut_expand(uri, uri_expanded);
-    has_shortcut = (check == 2);
-
-    if (is_empty_uri) {
-        webkit_web_view_load_uri(view, "");
-        toggle_bar(notebook, _SEARCH);
-    } else if (has_direct_uri_prefix){
-        webkit_web_view_load_uri(view, uri);
-    } else if (has_common_domain_extension){
-        char tmp[strlen("https://") + strlen(uri) + 1];
-        snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
-        webkit_web_view_load_uri(view, tmp);
-    } else if (has_shortcut){
+    bool has_shortcut = (check == 2);
+    if (has_shortcut){
         webkit_web_view_load_uri(view, uri_expanded);
-    } else {
-        char tmp[strlen(uri) + strlen(SEARCH)];
-        snprintf(tmp, sizeof(tmp), SEARCH, uri);
-        webkit_web_view_load_uri(view, tmp);
-    }
+        return
+    } 
+
+    char tmp[strlen(uri) + strlen(SEARCH)];
+    snprintf(tmp, sizeof(tmp), SEARCH, uri);
+    webkit_web_view_load_uri(view, tmp);
 }
 
 /* Deal with new load or changed load */
@@ -241,8 +247,7 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook) /* con
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 }
 
-/* Handle shortcuts */
-
+/* Shortcuts */
 int handle_shortcut(func id)
 {
     static double zoom = ZOOM_START_LEVEL;
@@ -301,12 +306,16 @@ int handle_shortcut(func id)
             gtk_notebook_set_current_page(notebook, p);
             break;
         case close_tab:
-            gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             num_tabs -= 1;
-            if (!gtk_notebook_get_n_pages(notebook)) {
-                exit(0);
-            } else {
-                gtk_notebook_set_show_tabs(notebook, false);
+            switch(num_tabs){
+                case 0:
+                    exit(0);
+                    break;
+                case 1:
+                    gtk_notebook_set_show_tabs(notebook, false);
+                    // fallthrough
+                default:
+                    gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             }
             break;
         case toggle_fullscreen:
@@ -342,10 +351,10 @@ int handle_shortcut(func id)
             break;
 
         case halve_window:
-            gtk_window_set_default_size(window, FULL_WIDTH/2, HEIGHT_GTK4);
+            gtk_window_set_default_size(window, FULL_WIDTH/2, HEIGHT);
             break;
         case rebig_window:
-            gtk_window_set_default_size(window, FULL_WIDTH, HEIGHT_GTK4);
+            gtk_window_set_default_size(window, FULL_WIDTH, HEIGHT);
             break;
 
         case prettify: {
@@ -395,7 +404,7 @@ int main(int argc, char** argv)
 
     // Create the main window
     window = GTK_WINDOW(gtk_window_new());
-    gtk_window_set_default_size(window, WIDTH, HEIGHT_GTK4);
+    gtk_window_set_default_size(window, WIDTH, HEIGHT);
 
     // Set up notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
@@ -421,7 +430,7 @@ int main(int argc, char** argv)
     g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook); 
     g_signal_connect(GTK_WIDGET(window), "destroy", G_CALLBACK(exit), notebook);
 
-    // Parse first tab
+    // Load first tab
     char* first_uri = argc > 1 ? argv[1] : HOME;
     notebook_create_new_tab(notebook, first_uri);
 
@@ -440,7 +449,6 @@ int main(int argc, char** argv)
     }
 
     // Enter the main event loop, and wait for user interaction
-    printf("Entering main loop\n");
     while (g_list_model_get_n_items(gtk_window_get_toplevels()) > 0 && num_tabs > 0)
         g_main_context_iteration(NULL, TRUE);
 

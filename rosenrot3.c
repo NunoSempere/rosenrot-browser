@@ -32,30 +32,40 @@ WebKitWebView* notebook_get_webview(GtkNotebook* notebook)
 /* Load content*/
 void load_uri(WebKitWebView* view, const char* uri)
 {
-    if (strlen(uri) == 0) {
+    bool is_empty_uri = (strlen(uri) == 0);
+    if (is_empty_uri) {
         webkit_web_view_load_uri(view, "");
         toggle_bar(notebook, _SEARCH);
-    } else if (g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:")) {
+        return; 
+    } 
+
+    bool has_direct_uri_prefix = g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:");
+    if (has_direct_uri_prefix){
         webkit_web_view_load_uri(view, uri);
-    } else if (strstr(uri, ".com") || strstr(uri, ".org")) {
+        return;
+    } 
+
+    bool has_common_domain_extension = (strstr(uri, ".com") || strstr(uri, ".org"));
+    if (has_common_domain_extension){
         char tmp[strlen("https://") + strlen(uri) + 1];
         snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
-    } else {
-        // Check for shortcuts
-        int l = SHORTCUT_N + strlen(uri) + 1;
-        char uri_expanded[l];
-        str_init(uri_expanded, l);
-        int check = shortcut_expand(uri, uri_expanded);
-        if (check == 2) {
-            webkit_web_view_load_uri(view, uri_expanded);
-        } else {
-            // Feed into search engine.
-            char tmp[strlen(uri) + strlen(SEARCH)];
-            snprintf(tmp, sizeof(tmp), SEARCH, uri);
-            webkit_web_view_load_uri(view, tmp);
-        }
-    }
+        return; 
+    } 
+
+    int l = SHORTCUT_N + strlen(uri) + 1;
+    char uri_expanded[l];
+    str_init(uri_expanded, l);
+    int check = shortcut_expand(uri, uri_expanded);
+    bool has_shortcut = (check == 2);
+    if (has_shortcut){
+        webkit_web_view_load_uri(view, uri_expanded);
+        return;
+    } 
+
+    char tmp[strlen(uri) + strlen(SEARCH)];
+    snprintf(tmp, sizeof(tmp), SEARCH, uri);
+    webkit_web_view_load_uri(view, tmp);
 }
 
 /* Deal with new load or changed load */
@@ -111,7 +121,35 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
     }
 }
 
-/* Create new tabs */
+/* New tabs */
+WebKitWebView* create_new_webview()
+{
+    char* style;
+
+    WebKitSettings* settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
+    if (CUSTOM_USER_AGENT) {
+        webkit_settings_set_user_agent(
+            settings,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+            "like Gecko) Chrome/120.0.0.0 Safari/537.3");
+            // https://www.useragents.me
+    }
+    WebKitWebContext* web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
+    WebKitUserContentManager* contentmanager = webkit_user_content_manager_new();
+
+    WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(web_context);
+    webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
+    webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
+
+    if (g_file_get_contents("~/opt/rosenrot/style.css", &style, NULL, NULL)) {
+        webkit_user_content_manager_add_style_sheet(
+            contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
+    }
+
+    WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context", web_context, "user-content-manager", contentmanager, NULL);
+
+    return view;
+}
 GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     WebKitNavigationAction* navigation_action,
     GtkNotebook* notebook)
@@ -125,46 +163,9 @@ GtkWidget* handle_signal_create_new_tab(WebKitWebView* self,
     } else {
         webkit_web_view_evaluate_javascript(self, "alert('Too many tabs, not opening a new one')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
     }
-    return NULL;
-    /*
-     WebKitGTK documentation recommends returning the new webview.
-     I imagine that this might allow e.g., to go back in a new tab
-     or generally to keep track of history.
-     However, this would require either modifying notebook_create_new_tab
-     or duplicating its contents, for unclear gain.
-   */
+    return ABORT_REQUEST_ON_CURRENT_TAB;
 }
-WebKitWebView* create_new_webview()
-{
-    char* style;
-    WebKitSettings* settings;
-    WebKitWebContext* web_context;
-    WebKitCookieManager* cookiemanager;
-    WebKitUserContentManager* contentmanager;
 
-    settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
-    if (CUSTOM_USER_AGENT) {
-        webkit_settings_set_user_agent(
-            settings,
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/120.0.0.0 Safari/537.3");
-        // https://www.useragents.me
-    }
-    web_context = webkit_web_context_new_with_website_data_manager(webkit_website_data_manager_new(DATA_MANAGER_OPTS, NULL));
-    contentmanager = webkit_user_content_manager_new();
-    cookiemanager = webkit_web_context_get_cookie_manager(web_context);
-
-    webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
-
-    webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
-
-    if (g_file_get_contents("~/opt/rosenrot/style.css", &style, NULL, NULL)) {
-        webkit_user_content_manager_add_style_sheet(
-            contentmanager, webkit_user_style_sheet_new(style, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL));
-    }
-
-    return g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "web-context", web_context, "user-content-manager", contentmanager, NULL);
-}
 void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
 {
     if (num_tabs < MAX_NUM_TABS || MAX_NUM_TABS == 0) {
@@ -236,8 +237,7 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook)
     gtk_widget_hide(GTK_WIDGET(bar.widget));
 }
 
-/* Handle shortcuts */
-// Act when a particular shortcut is detected
+/* Shortcuts */
 int handle_shortcut(func id, GtkNotebook* notebook)
 {
     static double zoom = ZOOM_START_LEVEL;
@@ -254,11 +254,8 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             break;
 
         case toggle_custom_style: /* Ctrl s + Ctrl Shift R to reload */
-            if (custom_style_enabled)
-                custom_style_enabled = 0;
-            else
-                custom_style_enabled = 1;
-            // break; passthrough
+            custom_style_enabled ^= 1; 
+            // fallthrough
         case refresh:
             webkit_web_view_reload(view);
             break;
@@ -297,18 +294,17 @@ int handle_shortcut(func id, GtkNotebook* notebook)
             gtk_notebook_set_current_page(notebook, j);
             break;
         case close_tab:
-            gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             num_tabs -= 1;
-
-            switch (gtk_notebook_get_n_pages(notebook)) {
+            switch(num_tabs){
                 case 0:
                     exit(0);
                     break;
                 case 1:
                     gtk_notebook_set_show_tabs(notebook, false);
-                    break;
+                    // fallthrough
+                default:
+                    gtk_notebook_remove_page(notebook, gtk_notebook_get_current_page(notebook));
             }
-
             break;
         case toggle_fullscreen:
             if (is_fullscreen)
@@ -339,6 +335,13 @@ int handle_shortcut(func id, GtkNotebook* notebook)
 
         case hide_bar:
             toggle_bar(notebook, _HIDDEN);
+            break;
+
+        case halve_window:
+            gtk_window_resize(window, FULL_WIDTH/2, HEIGHT);
+            break;
+        case rebig_window:
+            gtk_window_resize(window, FULL_WIDTH, HEIGHT);
             break;
 
         case prettify: {
@@ -380,7 +383,6 @@ int handle_signal_keypress(void* self, GdkEvent* event, GtkNotebook* notebook)
     - https://docs.gtk.org/gdk3/union.Event.html
     - https://docs.gtk.org/gdk3/struct.EventButton.html
     */
-    // This API is deprecated in GTK4 :(.
     return 0;
 }
 
@@ -391,32 +393,34 @@ int main(int argc, char** argv)
     g_object_set(gtk_settings_get_default(), GTK_SETTINGS_CONFIG_H, NULL); // https://docs.gtk.org/gobject/method.Object.set.html
     GtkCssProvider* css = gtk_css_provider_new();
     gtk_css_provider_load_from_path(css, "/opt/rosenrot/style-gtk3.css", NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); /* might change with GTK4/webkitgtk6.0 */
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css), 800); 
 
     /* Initialize GTK objects. These are declared as static globals at the top of this file */
-    // Notebook
-    notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_set_show_tabs(notebook, false);
-    gtk_notebook_set_show_border(notebook, false);
 
     // Window
     window = GTK_WINDOW(gtk_window_new(0));
     gtk_window_set_default_size(window, WIDTH, HEIGHT_GTK3);
-    g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
-    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
-
-    gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook)); /* deprecated in GTK */
+    // Notebook
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_set_show_tabs(notebook, false);
+    gtk_notebook_set_show_border(notebook, false);
+    gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(notebook));
 
     // Bar
     bar.line_text = GTK_ENTRY_BUFFER(gtk_entry_buffer_new("", 0));
     bar.line = GTK_ENTRY(gtk_entry_new_with_buffer(bar.line_text));
     gtk_entry_set_alignment(bar.line, 0.48);
-    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_SIZE, -1);
-    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
+    gtk_widget_set_size_request(GTK_WIDGET(bar.line), BAR_WIDTH, -1);
 
     bar.widget = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_header_bar_set_custom_title(bar.widget, GTK_WIDGET(bar.line));
     gtk_window_set_titlebar(window, GTK_WIDGET(bar.widget));
+
+    // Signals
+    g_signal_connect(window, "key-press-event", G_CALLBACK(handle_signal_keypress), notebook);
+    g_signal_connect(window, "destroy", G_CALLBACK(exit), notebook);
+    g_signal_connect(bar.line, "activate", G_CALLBACK(handle_signal_bar_press_enter), notebook);
+
 
     /* Load first tab */
     char* first_uri = argc > 1 ? argv[1] : HOME;
@@ -434,5 +438,5 @@ int main(int argc, char** argv)
         }
     }
 
-    gtk_main(); /* deprecated in GKT4: https://docs.gtk.org/gtk4/migrating-3to4.html#stop-using-gtk_main-and-related-apis */
+    gtk_main(); 
 }
