@@ -399,7 +399,7 @@ int main(int argc, char** argv)
 
     // Window
     window = GTK_WINDOW(gtk_window_new(0));
-    gtk_window_set_default_size(window, WIDTH, HEIGHT_GTK3);
+    gtk_window_set_default_size(window, WIDTH, HEIGHT);
     // Notebook
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_show_tabs(notebook, false);

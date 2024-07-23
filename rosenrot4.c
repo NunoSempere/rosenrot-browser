@@ -1,6 +1,7 @@
 #include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <webkit/webkit.h>
 
 #include "config.h"
 #include "plugins/plugins.h"
@@ -39,7 +40,7 @@ void load_uri(WebKitWebView* view, const char* uri)
     if (is_empty_uri) {
         webkit_web_view_load_uri(view, "");
         toggle_bar(notebook, _SEARCH);
-        return 
+        return;
     } 
 
     bool has_direct_uri_prefix = g_str_has_prefix(uri, "http://") || g_str_has_prefix(uri, "https://") || g_str_has_prefix(uri, "file://") || g_str_has_prefix(uri, "about:");
@@ -53,7 +54,7 @@ void load_uri(WebKitWebView* view, const char* uri)
         char tmp[strlen("https://") + strlen(uri) + 1];
         snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
-        return 
+        return;
     } 
 
     int l = SHORTCUT_N + strlen(uri) + 1;
@@ -63,7 +64,7 @@ void load_uri(WebKitWebView* view, const char* uri)
     bool has_shortcut = (check == 2);
     if (has_shortcut){
         webkit_web_view_load_uri(view, uri_expanded);
-        return
+        return;
     } 
 
     char tmp[strlen(uri) + strlen(SEARCH)];

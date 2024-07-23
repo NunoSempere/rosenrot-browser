@@ -2,13 +2,10 @@
 #include <gtk/gtk.h>
 
 /* Key user config */
+#define HEIGHT      1080 
 #define FULL_WIDTH  1920
 #define WIDTH       FULL_WIDTH
 #define BAR_WIDTH   FULL_WIDTH/2
-#define HEIGHT_GTK3 990 
-#define HEIGHT_GTK4 1080 
-// GTK4 and GTK3 interpret height differently. 
-// In GTK4, it includes the height of the top bar
 
 /* More user config */
 #define ZOOM_START_LEVEL 1.8
