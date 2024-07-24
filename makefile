@@ -88,6 +88,8 @@ runtime_files:
 	sudo mkdir -p /opt/rosenrot/
 	sudo cp styles-gtk/style-gtk3.css /opt/rosenrot/
 	sudo cp styles-gtk/style-gtk4.css /opt/rosenrot/
+	sudo touch /opt/rosenrot/uris.txt
+	sudo chmod a+rw /opt/rosenrot/uris.txt
 	sudo cp -r images/flower-imgs /opt/rosenrot/
 	sudo cp plugins/style/style.js /opt/rosenrot/
 	sudo cp plugins/readability/readability.js /opt/rosenrot/

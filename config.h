@@ -97,6 +97,7 @@ typedef enum {
     rebig_window,
 
     prettify,
+    save_uri_to_txt,
 } func;
 
 static struct {
@@ -134,5 +135,6 @@ static struct {
     { CTRL,        KEY(N),             finder_prev          },
     { CTRL,        KEY(Left),          halve_window         },
     { CTRL,        KEY(Right),         rebig_window         },
-    { CTRL,        KEY(p),             prettify             }
+    { CTRL,        KEY(p),             prettify             },
+    { CTRL,        KEY(s),             save_uri_to_txt      }
 };

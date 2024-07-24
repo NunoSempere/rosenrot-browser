@@ -367,6 +367,18 @@ int handle_shortcut(func id)
             }
             break;
         }
+
+        case save_uri_to_txt: {
+            const char* uri = webkit_web_view_get_uri(view);
+            FILE *f = fopen("/opt/rosenrot/uris.txt", "a");
+            if (f == NULL) {
+                printf("Error opening /opt/rosenrot/uris.txt");
+            } else {
+                fprintf(f, "%s", uri);
+                fclose(f);
+                webkit_web_view_evaluate_javascript(view, "alert('Saved current uri to /opt/rosenrot/uris.txt')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
+            }
+        }
     }
 
     return 1;
