@@ -378,6 +378,14 @@ int handle_shortcut(func id)
                 fclose(f);
                 webkit_web_view_evaluate_javascript(view, "alert('Saved current uri to /opt/rosenrot/uris.txt')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
             }
+            break;
+        }
+        case open_uri_in_brave: {
+            const char* uri = webkit_web_view_get_uri(view);
+            char cmd[strlen("brave-browser --new-window ") + strlen(uri) + 1];
+            snprintf(cmd, sizeof(cmd) + 1, "brave-browser --new-window %s", uri);
+            system(cmd);
+            break;
         }
     }
 

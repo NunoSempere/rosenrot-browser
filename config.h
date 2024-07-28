@@ -98,6 +98,7 @@ typedef enum {
 
     prettify,
     save_uri_to_txt,
+    open_uri_in_brave,
 } func;
 
 static struct {
@@ -136,5 +137,6 @@ static struct {
     { CTRL,        KEY(Up),            halve_window         },
     { CTRL,        KEY(Down),          rebig_window         },
     { CTRL,        KEY(p),             prettify             },
-    { CTRL,        KEY(s),             save_uri_to_txt      }
+    { CTRL,        KEY(s),             save_uri_to_txt      },
+    { CTRL,        KEY(b),             open_uri_in_brave    }
 };
