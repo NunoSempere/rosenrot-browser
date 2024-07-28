@@ -19,7 +19,7 @@ int libre_redirect(const char* uri, char* output)
             "https://www.reddit.com",
             "https://vitalik.ca",
             "https://www.youtube.com",
-            "https://google.com",
+            // "https://google.com",
             "https://medium.com",
             "https://translate.google.com",
             "https://www.bloomberg.com",
@@ -36,7 +36,7 @@ int libre_redirect(const char* uri, char* output)
             // https://github.com/redlib-org/redlib-instances/blob/main/instances.md
             "https://vitalik.eth.limo",
             "https://invidious.private.coffee",
-            "https://search.nunosempere.com",
+            // "https://search.nunosempere.com",
             "https://scribe.rip",
             "https://translate.riverside.rocks",
             "https://archive.ph/https://www.bloomberg.com",
