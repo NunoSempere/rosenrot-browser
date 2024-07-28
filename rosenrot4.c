@@ -245,7 +245,7 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook) /* con
             WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
             G_MAXUINT);
 
-    gtk_widget_hide(GTK_WIDGET(bar.widget));
+    gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 }
 
 /* Shortcuts */
@@ -374,7 +374,7 @@ int handle_shortcut(func id)
             if (f == NULL) {
                 printf("Error opening /opt/rosenrot/uris.txt");
             } else {
-                fprintf(f, "%s", uri);
+                fprintf(f, "%s\n", uri);
                 fclose(f);
                 webkit_web_view_evaluate_javascript(view, "alert('Saved current uri to /opt/rosenrot/uris.txt')", -1, NULL, "rosenrot-alert-numtabs", NULL, NULL, NULL);
             }

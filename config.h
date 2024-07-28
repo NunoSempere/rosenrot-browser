@@ -133,8 +133,8 @@ static struct {
     { CTRL,        KEY(f),             show_finder          },
     { CTRL,        KEY(n),             finder_next          },
     { CTRL,        KEY(N),             finder_prev          },
-    { CTRL,        KEY(Left),          halve_window         },
-    { CTRL,        KEY(Right),         rebig_window         },
+    { CTRL,        KEY(Up),            halve_window         },
+    { CTRL,        KEY(Down),          rebig_window         },
     { CTRL,        KEY(p),             prettify             },
     { CTRL,        KEY(s),             save_uri_to_txt      }
 };
