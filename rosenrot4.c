@@ -382,8 +382,9 @@ int handle_shortcut(func id)
         }
         case open_uri_in_brave: {
             const char* uri = webkit_web_view_get_uri(view);
-            char cmd[strlen("brave-browser --new-window ") + strlen(uri) + 1];
-            snprintf(cmd, sizeof(cmd) + 1, "brave-browser --new-window %s", uri);
+            const char* brave_command = "brave-browser --app=%s --new-window --start-fullscreen &";
+            char cmd[strlen(brave_command) + strlen(uri) + 2];
+            snprintf(cmd, sizeof(cmd) + 1, brave_command, uri);
             system(cmd);
             break;
         }
