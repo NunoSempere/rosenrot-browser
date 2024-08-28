@@ -31,7 +31,7 @@ int libre_redirect(const char* uri, char* output)
         };
 
         char* alternatives[] = {
-            "https://redlib.ducks.party",
+            "https://redlib.tux.pizza",
             // previously: "https://old.reddit.com", "https://teddit.nunosempere.com",
             // https://github.com/redlib-org/redlib-instances/blob/main/instances.md
             "https://vitalik.eth.limo",
