@@ -9,7 +9,7 @@
 /* Global variables */
 static GtkNotebook* notebook;
 static GtkWindow* window;
-typedef enum { _SEARCH, _FIND, _HIDDEN } Bar_entry_mode;
+typedef enum { _SEARCH, _FIND, _FILTER, _HIDDEN } Bar_entry_mode;
 static struct {
     GtkHeaderBar* widget;
     GtkEntry* line;
@@ -227,6 +227,13 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
             gtk_window_set_focus(window, GTK_WIDGET(bar.line));
             break;
         }
+        case _FILTER: {
+            gtk_entry_set_placeholder_text(bar.line, "Filter");
+            gtk_entry_buffer_set_text(bar.line_text, "", strlen(""));
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 1);
+            gtk_window_set_focus(window, GTK_WIDGET(bar.line));
+            break;
+        }
         case _HIDDEN:
             gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
     }
@@ -236,16 +243,35 @@ void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
 void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook) /* consider passing notebook as the data here? */
 {
     WebKitWebView* view = notebook_get_webview(notebook);
-    if (bar.entry_mode == _SEARCH)
-        load_uri(view, gtk_entry_buffer_get_text(bar.line_text));
-    else if (bar.entry_mode == _FIND)
-        webkit_find_controller_search(
-            webkit_web_view_get_find_controller(view),
-            gtk_entry_buffer_get_text(bar.line_text),
-            WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
-            G_MAXUINT);
+    const char* bar_line_text = gtk_entry_buffer_get_text(bar.line_text);
+    switch (bar.entry_mode) {
+        case _SEARCH: {
+            load_uri(view, bar_line_text);
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+            break;
+        }
+        case _FIND: {
+            webkit_find_controller_search(
+                webkit_web_view_get_find_controller(view),
+                bar_line_text,
+                WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND,
+                G_MAXUINT);
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+            break;
+        }
+        case _FILTER: {
+            const char* js_template = "filterDetailsByKeywordHide(\"%s\")";
+            char js_command[strlen(js_template) + strlen(bar_line_text) + 2];
+            snprintf(js_command, sizeof(js_command) + 1, js_template, bar_line_text);
+            webkit_web_view_evaluate_javascript(view, js_command, -1, NULL, "rosenrot-filter-plugin", NULL, NULL, NULL);
+            gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
-    gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
+            break;
+        }
+        case _HIDDEN:
+        // no op
+    }
+
 }
 
 /* Shortcuts */
@@ -331,6 +357,9 @@ int handle_shortcut(func id)
             break;
         case show_finder:
             toggle_bar(notebook, _FIND);
+            break;
+        case filter:
+            toggle_bar(notebook, _FILTER);
             break;
 
         case finder_next:

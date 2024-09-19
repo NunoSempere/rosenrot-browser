@@ -299,3 +299,25 @@ if (document.domain == "twitter.com" || document.domain == "x.com") {
 }
 
 // document.body.style.visibility = "visible";
+
+// Add some code to filter out articles for Sentinel
+function filterDetailsByKeywordHide(keyword) {
+	// Get all the <details> elements on the page
+	const detailsElements = document.querySelectorAll("details");
+
+	// Loop through each <details> element
+	detailsElements.forEach((element) => {
+		// Find the <p> element inside the <details> that follows the first <h3> (assumed to be the summary here)
+		const summaryElement = element.querySelector("h3 + p");
+
+		// Check if the summary text includes the keyword (case-insensitive match)
+		if (
+			summaryElement &&
+			summaryElement.textContent.toLowerCase().includes(keyword.toLowerCase())
+		) {
+			// If the keyword is found, hide this <details> element
+			element.style.display = "none";
+		}
+	});
+}
+console.log("Hello world");
