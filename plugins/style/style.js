@@ -59,7 +59,8 @@ switch (document.domain) {
 	case "search.brave.com":
 		styles = `
       .download-button,
-      a[href^="https://brave.com/download/"] {
+      a[href^="https://brave.com/download/"], .download-cta
+			{
         display: none !important; 
       }
     `;
