@@ -135,7 +135,7 @@ static struct {
     { CTRL,        KEY(f),             show_finder          },
     { CTRL,        KEY(n),             finder_next          },
     { CTRL,        KEY(N),             finder_prev          },
-    { CTRL | SFT,  KEY(F),             filter               },
+    { CTRL,        KEY(F),             filter               },
     { CTRL,        KEY(Up),            halve_window         },
     { CTRL,        KEY(Down),          rebig_window         },
     { CTRL,        KEY(p),             prettify             },
