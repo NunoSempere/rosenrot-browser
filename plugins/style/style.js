@@ -302,23 +302,45 @@ if (document.domain == "twitter.com" || document.domain == "x.com") {
 // document.body.style.visibility = "visible";
 
 // Add some code to filter out articles for Sentinel
-function filterDetailsByKeywordHide(keyword) {
-	// Get all the <details> elements on the page
-	const detailsElements = document.querySelectorAll("details");
 
-	// Loop through each <details> element
-	detailsElements.forEach((element) => {
-		// Find the <p> element inside the <details> that follows the first <h3> (assumed to be the summary here)
-		const summaryElement = element.querySelector("h3 + p");
+function filterByKeyword(str) {
+	// e.g., "keyword" (equivalent to "keyword, p, 1")
+	// e.g., "keyword, div, 3"
+	// might not work with level=0, but not sure why
+	const args = str.split(", ");
+	let keword = null;
+	let selector = "p"; /* or "*" for all */
+	let level = 1;
+	if (args.length > 0) {
+		keyword = args[0].trim();
+	}
+	if (args.length > 1) {
+		selector = args[1].trim();
+	}
+	if (args.length > 2) {
+		level = Number(args[2].trim());
+	}
+	console.log(keyword, selector, level);
+	// Get all elements matching the selector
+	const elements = document.querySelectorAll(selector);
 
-		// Check if the summary text includes the keyword (case-insensitive match)
-		if (
-			summaryElement &&
-			summaryElement.textContent.toLowerCase().includes(keyword.toLowerCase())
-		) {
-			// If the keyword is found, hide this <details> element
-			element.style.display = "none";
+	// Convert NodeList to Array to use array methods
+	const elementsArray = Array.from(elements);
+
+	// Filter elements containing the keyword
+	const matchingElements = elementsArray.filter((element) =>
+		element.textContent.toLowerCase().includes(keyword.toLowerCase()),
+	);
+
+	// Remove parent of each matching element
+	matchingElements.forEach((element) => {
+		let ancestor = element; // Start with the current element
+		// Loop to climb up the DOM tree according to the level required
+		for (let i = 0; i < level && ancestor !== null; i++) {
+			ancestor = ancestor.parentNode; // Move up in the DOM tree
+		}
+		if (ancestor) {
+			ancestor.style.display = "none";
 		}
 	});
 }
-console.log("Hello world");

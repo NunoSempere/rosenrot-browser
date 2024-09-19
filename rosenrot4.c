@@ -260,7 +260,7 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook) /* con
             break;
         }
         case _FILTER: {
-            const char* js_template = "filterDetailsByKeywordHide(\"%s\")";
+            const char* js_template = "filterByKeyword(\"%s\")";
             char js_command[strlen(js_template) + strlen(bar_line_text) + 2];
             snprintf(js_command, sizeof(js_command) + 1, js_template, bar_line_text);
             webkit_web_view_evaluate_javascript(view, js_command, -1, NULL, "rosenrot-filter-plugin", NULL, NULL, NULL);
