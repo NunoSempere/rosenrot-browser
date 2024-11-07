@@ -344,3 +344,15 @@ function filterByKeyword(str) {
 		}
 	});
 }
+
+var keywords = [
+	"Sinwar",
+	"fentanyl",
+	"tanker",
+	"Hasina",
+	"blame",
+	"victory plan",
+];
+for (let keyword of keywords) {
+	filterByKeyword(keyword);
+}
