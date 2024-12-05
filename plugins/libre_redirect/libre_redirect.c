@@ -68,5 +68,7 @@ int libre_redirect(const char* uri, char* output)
         }
         strcpy(output, uri);
     }
-    return 0;
+
+    int utm_check = str_destructively_omit_from(output, "?utm");
+    return utm_check * 2;
 }

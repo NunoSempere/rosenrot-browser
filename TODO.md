@@ -1,5 +1,9 @@
 # To do
 
+- [ ] Look into improving speed and performance:
+  - [ ] Creating objects only once, e.g., for js strings that I execte
+  - [ ] Look into using global controllers, rather than one for each webview
+  - [ ] etc.
 - [ ] Move to a later C standard (C11?) and use safer string handling functions provided by it.
   - The thing is, I kinda feel attached to C89-C99
 - [ ] Consider
