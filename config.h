@@ -125,8 +125,10 @@ static struct {
     { CTRL | SFT,  KEY(KP_Page_Up),    prev_tab             },  // use SFT just to show one can
     { CTRL | SFT,  KEY(KP_Page_Down),  next_tab             }, 
     { CTRL | SFT,  KEY(Page_Up),       prev_tab             }, 
-    // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
     { CTRL | SFT,  KEY(Page_Down),     next_tab             }, 
+    // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
+    { CTRL,        KEY(Tab),           next_tab             }, 
+    { CTRL,        KEY(b),             prev_tab             }, 
     { CTRL,        KEY(t),             new_tab              },
     { CTRL,        KEY(w),             close_tab            },
 
