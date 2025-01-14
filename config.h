@@ -2,13 +2,13 @@
 #include <gtk/gtk.h>
 
 /* Key user config */
-#define HEIGHT      1080 
-#define FULL_WIDTH  1920
+#define HEIGHT      1504 
+#define FULL_WIDTH  2256
 #define WIDTH       FULL_WIDTH
 #define BAR_WIDTH   FULL_WIDTH/2
 
 /* More user config */
-#define ZOOM_START_LEVEL 1.8
+#define ZOOM_START_LEVEL 1.5
 #define ZOOM_STEPSIZE .1 
 #define MAX_NUM_TABS 8 // 0 or false for unlimited tabs
 #define SEARCH "https://search.brave.com/search?q=%s" 
