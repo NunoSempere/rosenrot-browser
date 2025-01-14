@@ -487,8 +487,8 @@ int main(int argc, char** argv)
 
     // Show to user 
     // The first two commands are redundant with notebook_create_new_tab
-    gtk_window_present(window); 
-    gtk_widget_set_visible(GTK_WIDGET(window), 1);
+    // gtk_window_present(window); 
+    // gtk_widget_set_visible(GTK_WIDGET(window), 1);
     if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
     // Deal with more tabs, if any 
