@@ -2613,11 +2613,13 @@ if (typeof module === "object") {
 
 var style_sheet_simple = `
 <style type="text/css">
+/* @import url("https://fonts.googleapis.com/css2?family=Inconsolata"); */
 
 body {
-      padding: 40px 200px 40px 200px !important;
+      padding: 30px 150px 30px 150px !important;
       font-size: 18px;
-      font: 18px/1.5 Roboto;
+      // font: 18px/1.5 Roboto;
+      // font-family: "Inconsolata";
       line-height: 1.6;
       background-color: #FEFEFE !important;
       color: #444 !important;
