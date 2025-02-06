@@ -428,7 +428,7 @@ static int handle_signal_keypress(void* self, int keyval, int keycode,
     GdkModifierType state, void* controller)
 {
 
-    if (0) {
+    if (1) {
         printf("New keypress\n");
         printf("Keypress state: %d\n", state);
         printf("Keypress value: %d\n", keyval);
@@ -486,9 +486,9 @@ int main(int argc, char** argv)
     notebook_create_new_tab(notebook, first_uri);
 
     // Show to user 
-    // The first two commands are redundant with notebook_create_new_tab
-    // gtk_window_present(window); 
-    // gtk_widget_set_visible(GTK_WIDGET(window), 1);
+    // The first two commands might be redundant with notebook_create_new_tab
+    gtk_window_present(window); 
+    gtk_widget_set_visible(GTK_WIDGET(window), 1);
     if (argc != 0) gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
     // Deal with more tabs, if any 

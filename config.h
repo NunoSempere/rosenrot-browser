@@ -53,6 +53,7 @@ You could also look into commit afe93518a for an approach using stand-in code.
 #define SFT  1 << 0 
 #define CTRL 1 << 2
 #define ALT  1 << 3
+#define BACKTICK 96
 
 /* Misc helpers */
 #define ABORT_REQUEST_ON_CURRENT_TAB NULL
@@ -128,7 +129,7 @@ static struct {
     { CTRL | SFT,  KEY(Page_Down),     next_tab             }, 
     // working hypothesis: Page_UP vs KP_Page_Up might depend on whether the user has a numpad
     { CTRL,        KEY(Tab),           next_tab             }, 
-    { CTRL,        KEY(b),             prev_tab             }, 
+    { CTRL,        BACKTICK,       prev_tab             }, 
     { CTRL,        KEY(t),             new_tab              },
     { CTRL,        KEY(w),             close_tab            },
 
