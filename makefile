@@ -3,7 +3,7 @@ CC=gcc # alternatives: tcc, clang, zig cc
 WARNINGS=-Wall
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
-DEBUG=#-g
+DEBUG=-g
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
 
 # Dependencies for WebkitGTK4/GTK3

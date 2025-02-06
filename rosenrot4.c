@@ -414,7 +414,7 @@ int handle_shortcut(func id)
             const char* brave_command = "brave-browser --app=%s --new-window --start-fullscreen &";
             char cmd[strlen(brave_command) + strlen(uri) + 2];
             snprintf(cmd, sizeof(cmd) + 1, brave_command, uri);
-            system(cmd);
+            if(system(cmd) == -1) printf("Error opening in brave browser");
             break;
         }
     }
