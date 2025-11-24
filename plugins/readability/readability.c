@@ -1,3 +1,4 @@
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,27 +6,29 @@
 
 void read_readability_js(char* string)
 {
-    FILE* fp = fopen("/opt/rosenrot/readability.js", "r");
-    if (!fp) { // fp is NULL, fopen failed
-        fprintf(stderr, "Failed to open file\n");
+    gchar* file_contents = NULL;
+    gsize length = 0;
+    GError* error = NULL;
+
+    if (!g_file_get_contents("/opt/rosenrot/readability.js", &file_contents, &length, &error)) {
+        fprintf(stderr, "Failed to open file: %s\n", error ? error->message : "unknown error");
         fprintf(stderr, "Consider running $ sudo make runtime_files\n");
-        string = NULL;
+        if (error) g_error_free(error);
+        string[0] = '\0';
         return;
     }
-    int i = 0;
-    int c;
-    while ((c = fgetc(fp)) != EOF) {
-        if (i >= READABILITY_N) {
-            fprintf(stderr, "readability.js file is too large (exceeds %d bytes)\n", READABILITY_N);
-            fprintf(stderr, "Consider increasing READABILITY_N or running recompute_READABILITY_N.sh\n");
-            fclose(fp);
-            string[0] = '\0';
-            return;
-        }
-        string[i++] = c;
+
+    if (length > READABILITY_N) {
+        fprintf(stderr, "readability.js file is too large (%zu bytes, max %d)\n", length, READABILITY_N);
+        fprintf(stderr, "Consider increasing READABILITY_N or running recompute_READABILITY_N.sh\n");
+        g_free(file_contents);
+        string[0] = '\0';
+        return;
     }
-    string[i] = '\0';
-    fclose(fp);
+
+    memcpy(string, file_contents, length);
+    string[length] = '\0';
+    g_free(file_contents);
 }
 
 /*

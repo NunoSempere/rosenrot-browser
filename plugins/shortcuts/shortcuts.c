@@ -62,8 +62,9 @@ int shortcut_expand(const char* uri, char* output)
                     fprintf(stderr, "Unreachable state\n");
             }
         }
-        // Use snprintf instead of strcpy for safety
-        snprintf(output, len_output, "%s", uri);
+        // Use strncpy with explicit null termination for safety
+        strncpy(output, uri, len_output - 1);
+        output[len_output - 1] = '\0';
     }
     if (DEBUG) printf("No match found\n\n");
     return 0;

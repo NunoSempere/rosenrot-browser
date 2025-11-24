@@ -1,3 +1,4 @@
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,24 +6,26 @@
 
 void read_style_js(char* string)
 {
-    FILE* fp = fopen("/opt/rosenrot/style.js", "r");
-    if (!fp) { // fp is NULL, fopen failed
-        fprintf(stderr, "Failed to open file\n");
-        string = NULL;
+    gchar* file_contents = NULL;
+    gsize length = 0;
+    GError* error = NULL;
+
+    if (!g_file_get_contents("/opt/rosenrot/style.js", &file_contents, &length, &error)) {
+        fprintf(stderr, "Failed to open file: %s\n", error ? error->message : "unknown error");
+        if (error) g_error_free(error);
+        string[0] = '\0';
         return;
     }
-    int i = 0;
-    int c;
-    while ((c = fgetc(fp)) != EOF) {
-        if (i >= STYLE_N) {
-            fprintf(stderr, "style.js file is too large (exceeds %d bytes)\n", STYLE_N);
-            fprintf(stderr, "Consider increasing STYLE_N or running recompute_STYLE_N.sh\n");
-            fclose(fp);
-            string[0] = '\0';
-            return;
-        }
-        string[i++] = c;
+
+    if (length > STYLE_N) {
+        fprintf(stderr, "style.js file is too large (%zu bytes, max %d)\n", length, STYLE_N);
+        fprintf(stderr, "Consider increasing STYLE_N or running recompute_STYLE_N.sh\n");
+        g_free(file_contents);
+        string[0] = '\0';
+        return;
     }
-    string[i] = '\0';
-    fclose(fp);
+
+    memcpy(string, file_contents, length);
+    string[length] = '\0';
+    g_free(file_contents);
 }
