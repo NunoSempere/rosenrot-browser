@@ -20,7 +20,6 @@ sudo apt install libgtk-4-dev
 
 cd ../..
 make build
-make runtime-files
 sudo make install 
 
 cd  - 

@@ -8,7 +8,7 @@
 #define BAR_WIDTH   FULL_WIDTH/2
 
 /* More user config */
-#define ZOOM_START_LEVEL 1.5
+#define ZOOM_START_LEVEL 2.0
 #define ZOOM_STEPSIZE .1 
 #define MAX_NUM_TABS 8 // 0 or false for unlimited tabs
 #define SEARCH "https://search.brave.com/search?q=%s" 

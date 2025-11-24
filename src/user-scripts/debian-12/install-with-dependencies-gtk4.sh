@@ -16,7 +16,7 @@ wget https://easylist.to/easylist/easylist.txt
 cd -
 
 cd ../..
-make build4 
+make build
 sudo make install 
 
 cd  - 

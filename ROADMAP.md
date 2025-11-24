@@ -1,7 +1,7 @@
 # To do
 
 - [ ] Look into improving speed and performance:
-  - [ ] Creating objects only once, e.g., for js strings that I execte
+  - [x] Creating objects only once, e.g., for js strings that I execte
   - [ ] Look into using global controllers, rather than one for each webview
   - [ ] etc.
 - [ ] Move to a later C standard (C11?) and use safer string handling functions provided by it.
@@ -12,8 +12,8 @@
   - [ ] This time, use something other than Whatsapp as an example syslink.
 - [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
   - See whether it even exists at all
-- [ ] Finish cleaning up GTK4 version
-- [ ] Think about best way of having GTK4 version alongside
+- [x] Finish cleaning up GTK4 version
+- [-] Think about best way of having GTK4 version alongside
 - [ ] Shortcut to resize window
 
 # Previously done
