@@ -10,8 +10,8 @@
   - See make lint for purported insecurities
 - [ ] Document creating new applications, e.g., as in [Asana for Linux](https://git.nunosempere.com/NunoSempere/asana-for-linux)
   - [ ] This time, use something other than Whatsapp as an example syslink.
-- [ ] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
-  - See whether it even exists at all
+- [x] Fix bug about distorted audio. Maybe related to [this pipewire issue](<https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1547>)?
+  - => This went away with time.
 - [x] Finish cleaning up GTK4 version
 - [-] Think about best way of having GTK4 version alongside
 - [ ] Shortcut to resize window
