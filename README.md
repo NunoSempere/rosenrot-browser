@@ -10,7 +10,7 @@ Rosenrot is a small browser based on webkitgtk6/gtk4. Because of the ease of hac
 
 ### Installation and usage
 
-You can see detailed instructions [here](./user-scripts/debian-12/), for Debian 12 in particular—though they should generalize easily to other distributions. 
+You can see detailed instructions [here](./user-scripts/debian-12/), for Debian 12/Ubuntu 24 and 25.
 
 The general steps are to install dependencies, and then
 
