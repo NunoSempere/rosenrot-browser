@@ -48,7 +48,7 @@ void load_uri(WebKitWebView* view, const char* uri)
     bool has_common_domain_extension = (strstr(uri, ".com") || strstr(uri, ".org"));
     if (has_common_domain_extension){
         char tmp[strlen("https://") + strlen(uri) + 1];
-        snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
+        snprintf(tmp, sizeof(tmp), "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
         return; 
     } 
@@ -84,8 +84,14 @@ void set_custom_style(WebKitWebView* view)
 {
     if (custom_style_enabled) {
         char* style_js = malloc(STYLE_N + 1);
+        if (style_js == NULL) {
+            fprintf(stderr, "Failed to allocate memory for style_js\n");
+            return;
+        }
         read_style_js(style_js);
-        webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
+        if (style_js != NULL) {
+            webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
+        }
         free(style_js);
     }
 }
@@ -347,8 +353,14 @@ int handle_shortcut(func id, GtkNotebook* notebook)
         case prettify: {
             if (READABILITY_ENABLED) {
                 char* readability_js = malloc(READABILITY_N + 1);
+                if (readability_js == NULL) {
+                    fprintf(stderr, "Failed to allocate memory for readability_js\n");
+                    break;
+                }
                 read_readability_js(readability_js);
-                webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
+                if (readability_js != NULL) {
+                    webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
+                }
                 free(readability_js);
             }
             break;

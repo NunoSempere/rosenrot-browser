@@ -5,6 +5,7 @@ OPTIMIZED_SOME=-O3
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
 DEBUG=-g
 STD=-std=c99 # maybe consider moving to c11 and using safer string handling
+SECURITY=-fstack-protector-strong # detect stack buffer overflows at runtime
 
 # Dependencies for WebkitGTK4/GTK3
 SRC_3=rosenrot3.c
@@ -38,11 +39,11 @@ USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 RUNTIME_FILES_DIR=/opt/rosenrot/
 
 build: $(SRC_4) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(STD) $(WARNINGS) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
+	$(CC) $(STD) $(WARNINGS) $(SECURITY) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	@echo
 
 build3: $(SRC_3) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(STD) $(WARNINGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)
+	$(CC) $(STD) $(WARNINGS) $(SECURITY) $(OPTIMIZED_MORE) $(DEBUG) $(INCS_3) $(PLUGINS) $(SRC_3) -o rosenrot $(LIBS_3) $(ADBLOCK)
 	@echo
 
 format: $(SRC_3) $(SRC_4) $(PLUGINS)
@@ -65,8 +66,8 @@ uninstall:
 	rm $(USER_CACHE_DIR)
 
 clean:
-	rm rosenrot
-	rm $(USER_CACHE_DIR)
+	rm -f rosenrot
+	rm -rf $(USER_CACHE_DIR)
 
 constants:
 	@echo
@@ -102,11 +103,11 @@ lint:
 fast: $(SRC) $(PLUGINS) $(CONFIG)
 	rm -f *.gcda
 	GIO_MODULE_DIR=/usr/lib/x86_64-linux-gnu/gio/modules/
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-generate $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(SECURITY) $(OPTIMIZED_MORE) -fprofile-generate $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	@echo "Now use the browser for a while to gather some profiling data"
 	sleep 2
 	./rosenrot
-	$(CC) $(WARNINGS) $(OPTIMIZED_MORE) -fprofile-use $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
+	$(CC) $(WARNINGS) $(SECURITY) $(OPTIMIZED_MORE) -fprofile-use $(INCS_4) $(PLUGINS) $(SRC_4) -o rosenrot $(LIBS_4) $(ADBLOCK)
 	rm -f *.gcda
 
 inspect: rosenrot 

@@ -49,7 +49,8 @@ int str_replace_start(const char* string, const char* target, const char* replac
         return 2; // success
     } else {
         if (DEBUG) printf("Did not find match.\n");
-        strcpy(output, string);
+        // Use snprintf instead of strcpy for safety
+        snprintf(output, l4, "%s", string);
     }
 
     return 0;

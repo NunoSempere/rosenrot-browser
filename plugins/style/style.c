@@ -14,6 +14,13 @@ void read_style_js(char* string)
     int i = 0;
     int c;
     while ((c = fgetc(fp)) != EOF) {
+        if (i >= STYLE_N) {
+            fprintf(stderr, "style.js file is too large (exceeds %d bytes)\n", STYLE_N);
+            fprintf(stderr, "Consider increasing STYLE_N or running recompute_STYLE_N.sh\n");
+            fclose(fp);
+            string[0] = '\0';
+            return;
+        }
         string[i++] = c;
     }
     string[i] = '\0';

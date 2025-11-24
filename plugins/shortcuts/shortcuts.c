@@ -62,7 +62,8 @@ int shortcut_expand(const char* uri, char* output)
                     fprintf(stderr, "Unreachable state\n");
             }
         }
-        strcpy(output, uri);
+        // Use snprintf instead of strcpy for safety
+        snprintf(output, len_output, "%s", uri);
     }
     if (DEBUG) printf("No match found\n\n");
     return 0;

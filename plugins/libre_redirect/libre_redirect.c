@@ -66,7 +66,8 @@ int libre_redirect(const char* uri, char* output)
                     fprintf(stderr, "Unreachable state\n");
             }
         }
-        strcpy(output, uri);
+        // Use snprintf instead of strcpy for safety
+        snprintf(output, len_output, "%s", uri);
     }
 
     int utm_check = str_destructively_omit_from(output, "?utm");

@@ -52,7 +52,7 @@ void load_uri(WebKitWebView* view, const char* uri)
     bool has_common_domain_extension = (strstr(uri, ".com") || strstr(uri, ".org"));
     if (has_common_domain_extension){
         char tmp[strlen("https://") + strlen(uri) + 1];
-        snprintf(tmp, sizeof(tmp) + 1, "https://%s", uri);
+        snprintf(tmp, sizeof(tmp), "https://%s", uri);
         webkit_web_view_load_uri(view, tmp);
         return;
     } 
@@ -88,8 +88,14 @@ void set_custom_style(WebKitWebView* view)
 {
     if (custom_style_enabled) {
         char* style_js = malloc(STYLE_N + 1);
+        if (style_js == NULL) {
+            fprintf(stderr, "Failed to allocate memory for style_js\n");
+            return;
+        }
         read_style_js(style_js);
-        webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
+        if (style_js != NULL) {
+            webkit_web_view_evaluate_javascript(view, style_js, -1, NULL, "rosenrot-style-plugin", NULL, NULL, NULL);
+        }
         free(style_js);
     }
 }
@@ -262,7 +268,7 @@ void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook) /* con
         case _FILTER: {
             const char* js_template = "filterByKeyword(\"%s\")";
             char js_command[strlen(js_template) + strlen(bar_line_text) + 2];
-            snprintf(js_command, sizeof(js_command) + 1, js_template, bar_line_text);
+            snprintf(js_command, sizeof(js_command), js_template, bar_line_text);
             webkit_web_view_evaluate_javascript(view, js_command, -1, NULL, "rosenrot-filter-plugin", NULL, NULL, NULL);
             gtk_widget_set_visible(GTK_WIDGET(bar.widget), 0);
 
@@ -390,8 +396,14 @@ int handle_shortcut(func id)
         case prettify: {
             if (READABILITY_ENABLED) {
                 char* readability_js = malloc(READABILITY_N + 1);
+                if (readability_js == NULL) {
+                    fprintf(stderr, "Failed to allocate memory for readability_js\n");
+                    break;
+                }
                 read_readability_js(readability_js);
-                webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
+                if (readability_js != NULL) {
+                    webkit_web_view_evaluate_javascript(view, readability_js, -1, NULL, "rosenrot-readability-plugin", NULL, NULL, NULL);
+                }
                 free(readability_js);
             }
             break;
@@ -413,7 +425,7 @@ int handle_shortcut(func id)
             const char* uri = webkit_web_view_get_uri(view);
             const char* brave_command = "brave-browser --app=%s --new-window --start-fullscreen &";
             char cmd[strlen(brave_command) + strlen(uri) + 2];
-            snprintf(cmd, sizeof(cmd) + 1, brave_command, uri);
+            snprintf(cmd, sizeof(cmd), brave_command, uri);
             if(system(cmd) == -1) printf("Error opening in brave browser");
             break;
         }
@@ -428,14 +440,14 @@ static int handle_signal_keypress(void* self, int keyval, int keycode,
     GdkModifierType state, void* controller)
 {
 
-    if (1) {
+    if (0) {
         printf("New keypress\n");
         printf("Keypress state: %d\n", state);
         printf("Keypress value: %d\n", keyval);
     }
     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++) {
         if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
-            printf("New shortcut, with id: %d\n", shortcut[i].id);
+
             return handle_shortcut(shortcut[i].id);
         }
     }
