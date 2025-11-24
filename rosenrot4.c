@@ -107,7 +107,7 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
         // https://webkitgtk.org/reference/webkit2gtk/2.5.1/WebKitWebView.html
         case WEBKIT_LOAD_STARTED:
         case WEBKIT_LOAD_COMMITTED:
-            set_custom_style(self);
+            set_custom_style(self); /*fallthrough */
         case WEBKIT_LOAD_REDIRECTED:
             redirect_if_annoying(self, webkit_web_view_get_uri(self));
             break;

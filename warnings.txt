@@ -1,0 +1,64 @@
+rosenrot4.c:29:50: warning: declaration of ‘notebook’ shadows a global declaration [-Wshadow]
+   29 | WebKitWebView* notebook_get_webview(GtkNotebook* notebook) /* TODO: Think through whether to pass global variables or not */
+      |                                     ~~~~~~~~~~~~~^~~~~~~~
+rosenrot4.c:10:21: note: shadowed declaration is here
+   10 | static GtkNotebook* notebook;
+      |                     ^~~~~~~~
+rosenrot4.c: In function ‘handle_signal_load_changed’:
+rosenrot4.c:104:18: warning: declaration of ‘notebook’ shadows a global declaration [-Wshadow]
+  104 |     GtkNotebook* notebook)
+      |     ~~~~~~~~~~~~~^~~~~~~~
+rosenrot4.c:10:21: note: shadowed declaration is here
+   10 | static GtkNotebook* notebook;
+      |                     ^~~~~~~~
+rosenrot4.c: In function ‘handle_signal_create_new_tab’:
+rosenrot4.c:164:18: warning: declaration of ‘notebook’ shadows a global declaration [-Wshadow]
+  164 |     GtkNotebook* notebook)
+      |     ~~~~~~~~~~~~~^~~~~~~~
+rosenrot4.c:10:21: note: shadowed declaration is here
+   10 | static GtkNotebook* notebook;
+      |                     ^~~~~~~~
+rosenrot4.c: In function ‘notebook_create_new_tab’:
+rosenrot4.c:182:43: warning: declaration of ‘notebook’ shadows a global declaration [-Wshadow]
+  182 | void notebook_create_new_tab(GtkNotebook* notebook, const char* uri)
+      |                              ~~~~~~~~~~~~~^~~~~~~~
+rosenrot4.c:10:21: note: shadowed declaration is here
+   10 | static GtkNotebook* notebook;
+      |                     ^~~~~~~~
+rosenrot4.c: In function ‘toggle_bar’:
+rosenrot4.c:212:30: warning: declaration of ‘notebook’ shadows a global declaration [-Wshadow]
+  212 | void toggle_bar(GtkNotebook* notebook, Bar_entry_mode mode)
+      |                 ~~~~~~~~~~~~~^~~~~~~~
+rosenrot4.c:10:21: note: shadowed declaration is here
+   10 | static GtkNotebook* notebook;
+      |                     ^~~~~~~~
+rosenrot4.c: In function ‘handle_signal_bar_press_enter’:
+rosenrot4.c:249:65: warning: declaration of ‘notebook’ shadows a global declaration [-Wshadow]
+  249 | void handle_signal_bar_press_enter(GtkEntry* self, GtkNotebook* notebook) /* consider passing notebook as the data here? */
+      |                                                    ~~~~~~~~~~~~~^~~~~~~~
+rosenrot4.c:10:21: note: shadowed declaration is here
+   10 | static GtkNotebook* notebook;
+      |                     ^~~~~~~~
+rosenrot4.c:271:13: warning: format not a string literal, argument types not checked [-Wformat-nonliteral]
+  271 |             snprintf(js_command, sizeof(js_command), js_template, bar_line_text);
+      |             ^~~~~~~~
+rosenrot4.c: In function ‘handle_shortcut’:
+rosenrot4.c:428:13: warning: format not a string literal, argument types not checked [-Wformat-nonliteral]
+  428 |             snprintf(cmd, sizeof(cmd), brave_command, uri);
+      |             ^~~~~~~~
+rosenrot4.c: In function ‘handle_signal_keypress’:
+rosenrot4.c:448:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  448 |     for (int i = 0; i < sizeof(shortcut) / sizeof(shortcut[0]); i++) {
+      |                       ^
+rosenrot4.c:449:75: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+  449 |         if ((state & shortcut[i].mod || shortcut[i].mod == 0x0) && keyval == shortcut[i].key) {
+      |                                                                           ^~
+rosenrot4.c: In function ‘handle_signal_load_changed’:
+rosenrot4.c:110:13: warning: this statement may fall through [-Wimplicit-fallthrough=]
+  110 |             set_custom_style(self);
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+rosenrot4.c:111:9: note: here
+  111 |         case WEBKIT_LOAD_REDIRECTED:
+      |         ^~~~
+
+

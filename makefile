@@ -1,6 +1,7 @@
 # C compiler
 CC=gcc # alternatives: tcc, clang, zig cc 
-WARNINGS=-Wall -Wextra -Wpedantic -Wshadow -Wformat=2 -Wno-unused-parameter
+WARNINGS=-Wall -Wextra -Wshadow -Wformat=2 -Wno-unused-parameter
+WARNINGS_PEDANTIC=-Wpedantic 
 OPTIMIZED_SOME=-O3 
 OPTIMIZED_MORE=-Ofast -march=native -funit-at-a-time -flto # binary will not be compatible with other computers, but may be much faster
 DEBUG=-g
