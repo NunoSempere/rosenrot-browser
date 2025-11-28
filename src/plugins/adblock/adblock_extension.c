@@ -9,14 +9,14 @@
  */
 
 #include <webkit/webkit-web-process-extension.h>
-#include "ephy-uri-tester.h"
+#include "uri_tester.h"
 
 /* Configuration - must match ADBLOCK_FILTERLIST_PATH in config.h */
 #ifndef ADBLOCK_FILTERLIST_PATH
 #define ADBLOCK_FILTERLIST_PATH "/opt/rosenrot/easylist.txt"
 #endif
 
-static EphyUriTester* tester = NULL;
+static AdblockUriTester* tester = NULL;
 static gboolean adblock_enabled = TRUE;
 
 /*
@@ -45,7 +45,7 @@ on_send_request(WebKitWebPage* page,
         return FALSE;
 
     /* Check if this URI should be blocked */
-    if (ephy_uri_tester_test_uri(tester, request_uri, page_uri)) {
+    if (adblock_uri_tester_test_uri(tester, request_uri, page_uri)) {
         g_debug("[rosenrot-adblock] Blocked: %s", request_uri);
         return TRUE; /* Block the request */
     }
@@ -99,8 +99,8 @@ webkit_web_process_extension_initialize_with_user_data(WebKitWebProcessExtension
     }
 
     /* Initialize the URI tester and load filters */
-    tester = ephy_uri_tester_new(ADBLOCK_FILTERLIST_PATH);
-    ephy_uri_tester_load(tester);
+    tester = adblock_uri_tester_new(ADBLOCK_FILTERLIST_PATH);
+    adblock_uri_tester_load(tester);
 
     g_debug("[rosenrot-adblock] Loaded filters from %s", ADBLOCK_FILTERLIST_PATH);
 

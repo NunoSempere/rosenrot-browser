@@ -18,7 +18,7 @@ ADBLOCK_FILTERLIST_PATH ?= /opt/rosenrot/easylist.txt
 EXTENSION_DIR ?= /opt/rosenrot/extensions
 
 # Source files
-SRCS = adblock_extension.c ephy-uri-tester.c
+SRCS = adblock_extension.c uri_tester.c
 OBJS = $(SRCS:.c=.o)
 TARGET = librosenrot-adblock.so
 

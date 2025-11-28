@@ -26,13 +26,13 @@
 
 G_BEGIN_DECLS
 
-#define EPHY_TYPE_URI_TESTER (ephy_uri_tester_get_type())
+#define ADBLOCK_TYPE_URI_TESTER (adblock_uri_tester_get_type())
 
-G_DECLARE_FINAL_TYPE(EphyUriTester, ephy_uri_tester, EPHY, URI_TESTER, GObject)
+G_DECLARE_FINAL_TYPE(AdblockUriTester, adblock_uri_tester, ADBLOCK, URI_TESTER, GObject)
 
-EphyUriTester* ephy_uri_tester_new(const char* filter_file_path);
-void ephy_uri_tester_load(EphyUriTester* tester);
-gboolean ephy_uri_tester_test_uri(EphyUriTester* tester,
+AdblockUriTester* adblock_uri_tester_new(const char* filter_file_path);
+void adblock_uri_tester_load(AdblockUriTester* tester);
+gboolean adblock_uri_tester_test_uri(AdblockUriTester* tester,
     const char* request_uri,
     const char* page_uri);
 

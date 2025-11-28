@@ -20,12 +20,12 @@
  *  Adapted for rosenrot browser.
  */
 
-#include "ephy-uri-tester.h"
+#include "uri_tester.h"
 #include <string.h>
 
 #define SIGNATURE_SIZE 8
 
-struct _EphyUriTester {
+struct _AdblockUriTester {
     GObject parent_instance;
 
     char* filter_file_path;
@@ -55,12 +55,12 @@ enum {
 
 static GParamSpec* obj_properties[LAST_PROP];
 
-G_DEFINE_TYPE(EphyUriTester, ephy_uri_tester, G_TYPE_OBJECT)
+G_DEFINE_TYPE(AdblockUriTester, adblock_uri_tester, G_TYPE_OBJECT)
 
-static GString* ephy_uri_tester_fixup_regexp(const char* prefix, char* src);
+static GString* fixup_regexp(const char* prefix, char* src);
 
 static inline gboolean
-ephy_uri_tester_check_rule(EphyUriTester* tester,
+check_rule(AdblockUriTester* tester,
     GRegex* regex,
     const char* patt,
     const char* req_uri,
@@ -82,7 +82,7 @@ ephy_uri_tester_check_rule(EphyUriTester* tester,
 }
 
 static inline gboolean
-ephy_uri_tester_is_matched_by_pattern(EphyUriTester* tester,
+is_matched_by_pattern(AdblockUriTester* tester,
     const char* req_uri,
     const char* page_uri,
     gboolean whitelist)
@@ -93,14 +93,14 @@ ephy_uri_tester_is_matched_by_pattern(EphyUriTester* tester,
 
     g_hash_table_iter_init(&iter, pattern);
     while (g_hash_table_iter_next(&iter, &patt, &regex)) {
-        if (ephy_uri_tester_check_rule(tester, regex, patt, req_uri, page_uri, whitelist))
+        if (check_rule(tester, regex, patt, req_uri, page_uri, whitelist))
             return TRUE;
     }
     return FALSE;
 }
 
 static inline gboolean
-ephy_uri_tester_is_matched_by_key(EphyUriTester* tester,
+is_matched_by_key(AdblockUriTester* tester,
     const char* req_uri,
     const char* page_uri,
     gboolean whitelist)
@@ -114,7 +114,7 @@ ephy_uri_tester_is_matched_by_key(EphyUriTester* tester,
     GHashTable* keys = whitelist ? tester->whitelisted_keys : tester->keys;
 
     memset(&sig[0], 0, sizeof(sig));
-    guri = ephy_uri_tester_fixup_regexp("", (char*)req_uri);
+    guri = fixup_regexp("", (char*)req_uri);
     if (!guri)
         return FALSE;
     len = guri->len;
@@ -126,7 +126,7 @@ ephy_uri_tester_is_matched_by_key(EphyUriTester* tester,
 
         if (!regex || g_list_find(regex_bl, regex))
             continue;
-        ret = ephy_uri_tester_check_rule(tester, regex, sig, req_uri, page_uri, whitelist);
+        ret = check_rule(tester, regex, sig, req_uri, page_uri, whitelist);
         if (ret)
             break;
         regex_bl = g_list_prepend(regex_bl, regex);
@@ -137,23 +137,23 @@ ephy_uri_tester_is_matched_by_key(EphyUriTester* tester,
 }
 
 static gboolean
-ephy_uri_tester_is_matched(EphyUriTester* tester,
+is_matched(AdblockUriTester* tester,
     const char* req_uri,
     const char* page_uri,
     gboolean whitelist)
 {
-    gpointer is_matched;
+    gpointer is_matched_val;
     GHashTable* urlcache = whitelist ? tester->whitelisted_urlcache : tester->urlcache;
 
-    if (g_hash_table_lookup_extended(urlcache, req_uri, NULL, &is_matched))
-        return GPOINTER_TO_INT(is_matched);
+    if (g_hash_table_lookup_extended(urlcache, req_uri, NULL, &is_matched_val))
+        return GPOINTER_TO_INT(is_matched_val);
 
-    if (ephy_uri_tester_is_matched_by_key(tester, req_uri, page_uri, whitelist)) {
+    if (is_matched_by_key(tester, req_uri, page_uri, whitelist)) {
         g_hash_table_insert(urlcache, g_strdup(req_uri), GINT_TO_POINTER(TRUE));
         return TRUE;
     }
 
-    if (ephy_uri_tester_is_matched_by_pattern(tester, req_uri, page_uri, whitelist)) {
+    if (is_matched_by_pattern(tester, req_uri, page_uri, whitelist)) {
         g_hash_table_insert(urlcache, g_strdup(req_uri), GINT_TO_POINTER(TRUE));
         return TRUE;
     }
@@ -163,7 +163,7 @@ ephy_uri_tester_is_matched(EphyUriTester* tester,
 }
 
 static GString*
-ephy_uri_tester_fixup_regexp(const char* prefix, char* src)
+fixup_regexp(const char* prefix, char* src)
 {
     GString* str;
 
@@ -173,7 +173,7 @@ ephy_uri_tester_fixup_regexp(const char* prefix, char* src)
     str = g_string_new(prefix);
 
     if (src[0] == '*') {
-        (void)*src++;
+        src++;
     }
 
     do {
@@ -213,7 +213,7 @@ ephy_uri_tester_fixup_regexp(const char* prefix, char* src)
 }
 
 static void
-ephy_uri_tester_compile_regexp(EphyUriTester* tester,
+compile_regexp(AdblockUriTester* tester,
     GString* gpatt,
     const char* opts,
     gboolean whitelist)
@@ -272,7 +272,7 @@ ephy_uri_tester_compile_regexp(EphyUriTester* tester,
 }
 
 static void
-ephy_uri_tester_add_url_pattern(EphyUriTester* tester,
+add_url_pattern(AdblockUriTester* tester,
     const char* prefix,
     const char* type,
     char* line,
@@ -309,9 +309,9 @@ ephy_uri_tester_add_url_pattern(EphyUriTester* tester,
         return;
     }
 
-    format_patt = ephy_uri_tester_fixup_regexp(prefix, patt);
+    format_patt = fixup_regexp(prefix, patt);
 
-    ephy_uri_tester_compile_regexp(tester, format_patt, opts, whitelist);
+    compile_regexp(tester, format_patt, opts, whitelist);
 
     if (data[1] && data[2])
         g_free(patt);
@@ -324,7 +324,7 @@ ephy_uri_tester_add_url_pattern(EphyUriTester* tester,
 }
 
 static void
-ephy_uri_tester_parse_line(EphyUriTester* tester,
+parse_line(AdblockUriTester* tester,
     char* line,
     gboolean whitelist)
 {
@@ -339,7 +339,7 @@ ephy_uri_tester_parse_line(EphyUriTester* tester,
         return;
 
     if (g_str_has_prefix(line, "@@")) {
-        ephy_uri_tester_parse_line(tester, line + 2, TRUE);
+        parse_line(tester, line + 2, TRUE);
         return;
     }
 
@@ -359,21 +359,20 @@ ephy_uri_tester_parse_line(EphyUriTester* tester,
         return;
 
     if (line[0] == '|' && line[1] == '|') {
-        (void)*line++;
-        (void)*line++;
-        ephy_uri_tester_add_url_pattern(tester, "^[\\w\\-]+:\\/+(?!\\/)(?:[^\\/]+\\.)?", "fulluri", line, whitelist);
+        line += 2;
+        add_url_pattern(tester, "^[\\w\\-]+:\\/+(?!\\/)(?:[^\\/]+\\.)?", "fulluri", line, whitelist);
         return;
     }
     if (line[0] == '|') {
-        (void)*line++;
-        ephy_uri_tester_add_url_pattern(tester, "^", "fulluri", line, whitelist);
+        line++;
+        add_url_pattern(tester, "^", "fulluri", line, whitelist);
         return;
     }
-    ephy_uri_tester_add_url_pattern(tester, "", "uri", line, whitelist);
+    add_url_pattern(tester, "", "uri", line, whitelist);
 }
 
 static void
-ephy_uri_tester_load_filters_sync(EphyUriTester* tester)
+load_filters_sync(AdblockUriTester* tester)
 {
     GFile* file;
     GFileInputStream* stream;
@@ -405,7 +404,7 @@ ephy_uri_tester_load_filters_sync(EphyUriTester* tester)
     g_object_unref(stream);
 
     while ((line = g_data_input_stream_read_line(data_stream, NULL, NULL, NULL)) != NULL) {
-        ephy_uri_tester_parse_line(tester, line, FALSE);
+        parse_line(tester, line, FALSE);
         g_free(line);
     }
 
@@ -414,7 +413,7 @@ ephy_uri_tester_load_filters_sync(EphyUriTester* tester)
 }
 
 static void
-ephy_uri_tester_init(EphyUriTester* tester)
+adblock_uri_tester_init(AdblockUriTester* tester)
 {
     tester->pattern = g_hash_table_new_full(g_str_hash, g_str_equal,
         (GDestroyNotify)g_free, (GDestroyNotify)g_regex_unref);
@@ -445,12 +444,12 @@ ephy_uri_tester_init(EphyUriTester* tester)
 }
 
 static void
-ephy_uri_tester_set_property(GObject* object,
+adblock_uri_tester_set_property(GObject* object,
     guint prop_id,
     const GValue* value,
     GParamSpec* pspec)
 {
-    EphyUriTester* tester = EPHY_URI_TESTER(object);
+    AdblockUriTester* tester = ADBLOCK_URI_TESTER(object);
 
     switch (prop_id) {
     case PROP_FILTER_FILE_PATH:
@@ -463,9 +462,9 @@ ephy_uri_tester_set_property(GObject* object,
 }
 
 static void
-ephy_uri_tester_finalize(GObject* object)
+adblock_uri_tester_finalize(GObject* object)
 {
-    EphyUriTester* tester = EPHY_URI_TESTER(object);
+    AdblockUriTester* tester = ADBLOCK_URI_TESTER(object);
 
     g_free(tester->filter_file_path);
 
@@ -483,16 +482,16 @@ ephy_uri_tester_finalize(GObject* object)
     g_regex_unref(tester->regex_pattern);
     g_regex_unref(tester->regex_subdocument);
 
-    G_OBJECT_CLASS(ephy_uri_tester_parent_class)->finalize(object);
+    G_OBJECT_CLASS(adblock_uri_tester_parent_class)->finalize(object);
 }
 
 static void
-ephy_uri_tester_class_init(EphyUriTesterClass* klass)
+adblock_uri_tester_class_init(AdblockUriTesterClass* klass)
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->set_property = ephy_uri_tester_set_property;
-    object_class->finalize = ephy_uri_tester_finalize;
+    object_class->set_property = adblock_uri_tester_set_property;
+    object_class->finalize = adblock_uri_tester_finalize;
 
     obj_properties[PROP_FILTER_FILE_PATH] = g_param_spec_string("filter-file-path",
         "Filter file path",
@@ -503,30 +502,30 @@ ephy_uri_tester_class_init(EphyUriTesterClass* klass)
     g_object_class_install_properties(object_class, LAST_PROP, obj_properties);
 }
 
-EphyUriTester*
-ephy_uri_tester_new(const char* filter_file_path)
+AdblockUriTester*
+adblock_uri_tester_new(const char* filter_file_path)
 {
-    return EPHY_URI_TESTER(g_object_new(EPHY_TYPE_URI_TESTER,
+    return ADBLOCK_URI_TESTER(g_object_new(ADBLOCK_TYPE_URI_TESTER,
         "filter-file-path", filter_file_path, NULL));
 }
 
-void ephy_uri_tester_load(EphyUriTester* tester)
+void adblock_uri_tester_load(AdblockUriTester* tester)
 {
     if (tester->loaded)
         return;
-    ephy_uri_tester_load_filters_sync(tester);
+    load_filters_sync(tester);
 }
 
 gboolean
-ephy_uri_tester_test_uri(EphyUriTester* tester,
+adblock_uri_tester_test_uri(AdblockUriTester* tester,
     const char* request_uri,
     const char* page_uri)
 {
     if (!tester->loaded)
         return FALSE;
 
-    if (ephy_uri_tester_is_matched(tester, request_uri, page_uri, TRUE))
+    if (is_matched(tester, request_uri, page_uri, TRUE))
         return FALSE;
 
-    return ephy_uri_tester_is_matched(tester, request_uri, page_uri, FALSE);
+    return is_matched(tester, request_uri, page_uri, FALSE);
 }
