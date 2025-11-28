@@ -10,7 +10,7 @@ void str_init(char* str, int n)
     // could also use <https://manpages.ubuntu.com/manpages/impish/man3/strinit.3pub.html>
     for (int i = 0; i < n; i++)
         str[i] = ' ';
-    str[n] = '\0';
+    str[n-1] = '\0';
 }
 int str_replace_start(const char* string, const char* target, const char* replacement, char* output)
 {
