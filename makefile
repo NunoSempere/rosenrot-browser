@@ -21,7 +21,10 @@ CONFIG=src/config.h
 # Plugins
 include src/plugins/plugins.mk
 # PLUGINS=./src/plugins/stand_in/stand_in.c
-ADBLOCK='-L/usr/lib/wyebrowser/adblock.so' # optional adblocking; depends on https://github.com/jun7/wyebadblock
+
+# Adblock extension (built separately as a shared library)
+ADBLOCK_EXT_DIR=src/plugins/adblock
+ADBLOCK_EXT=$(ADBLOCK_EXT_DIR)/librosenrot-adblock.so
 
 ## Formatter
 STYLE_BLUEPRINT="{BasedOnStyle: webkit, AllowShortIfStatementsOnASingleLine: true, IndentCaseLabels: true, AllowShortEnumsOnASingleLine: true}" 
@@ -34,7 +37,13 @@ USER_CACHE_DIR=/home/`whoami`/.cache/rosenrot
 RUNTIME_FILES_DIR=/opt/rosenrot/
 
 build: $(SRC) $(PLUGINS) $(CONFIG) constants user_cache
-	$(CC) $(STD) $(WARNINGS) $(SECURITY) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o out/rosenrot $(LIBS) $(ADBLOCK)
+	$(CC) $(STD) $(WARNINGS) $(SECURITY) $(DEPRECATION_FLAGS) $(OPTIMIZED_MORE) $(DEBUG) $(INCS) $(PLUGINS) $(SRC) -o out/rosenrot $(LIBS)
+
+build_adblock:
+	@echo "# Building adblock extension"
+	cd $(ADBLOCK_EXT_DIR) && $(MAKE)
+
+build_all: build build_adblock
 	@echo
 
 format: $(SRC) $(PLUGINS)
@@ -75,12 +84,20 @@ user_cache:
 runtime_files:
 	@echo
 	sudo mkdir -p /opt/rosenrot/
+	sudo mkdir -p /opt/rosenrot/extensions/
 	sudo cp src/styles-gtk/style-gtk4.css /opt/rosenrot/
 	sudo touch /opt/rosenrot/uris.txt
 	sudo chmod a+rw /opt/rosenrot/uris.txt
 	sudo cp -r src/images/flower-imgs /opt/rosenrot/
 	sudo cp src/plugins/style/style.js /opt/rosenrot/
 	sudo cp src/plugins/readability/readability.js /opt/rosenrot/
+
+install_adblock: build_adblock
+	@echo "# Installing adblock extension"
+	cd $(ADBLOCK_EXT_DIR) && sudo $(MAKE) install
+	@echo "# Don't forget to download easylist.txt:"
+	@echo "#   curl -o /tmp/easylist.txt https://easylist.to/easylist/easylist.txt"
+	@echo "#   sudo mv /tmp/easylist.txt /opt/rosenrot/easylist.txt"
 
 # More misc recipes
 

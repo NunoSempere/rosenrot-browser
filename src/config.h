@@ -21,6 +21,9 @@
 #define LIBRE_REDIRECT_ENABLED true
 #define READABILITY_ENABLED true
 #define CUSTOM_USER_AGENT false
+#define ADBLOCK_ENABLED false
+#define ADBLOCK_EXTENSIONS_DIR "/opt/rosenrot/extensions"
+#define ADBLOCK_FILTERLIST_PATH "/opt/rosenrot/easylist.txt"
 /* 
 To disable plugins:
 1. set their corresponding variable to false

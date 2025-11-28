@@ -133,6 +133,29 @@ void handle_signal_load_changed(WebKitWebView* self, WebKitLoadEvent load_event,
 }
 
 /* New tabs */
+/* Shared web context for all views (needed for web extensions) */
+static WebKitWebContext* shared_web_context = NULL;
+
+static WebKitWebContext* get_shared_web_context()
+{
+    if (shared_web_context == NULL) {
+        shared_web_context = webkit_web_context_new();
+        
+        /* Configure web extensions for adblock if enabled */
+        if (ADBLOCK_ENABLED) {
+            webkit_web_context_set_web_process_extensions_directory(shared_web_context, ADBLOCK_EXTENSIONS_DIR);
+            
+            /* Pass configuration to the extension */
+            GVariantBuilder builder;
+            g_variant_builder_init(&builder, G_VARIANT_TYPE_VARDICT);
+            g_variant_builder_add(&builder, "{sv}", "enabled", g_variant_new_boolean(TRUE));
+            webkit_web_context_set_web_process_extensions_initialization_user_data(
+                shared_web_context, g_variant_builder_end(&builder));
+        }
+    }
+    return shared_web_context;
+}
+
 WebKitWebView* create_new_webview()
 {
     WebKitSettings* settings = webkit_settings_new_with_settings(WEBKIT_DEFAULT_SETTINGS, NULL);
@@ -149,7 +172,10 @@ WebKitWebView* create_new_webview()
     webkit_cookie_manager_set_persistent_storage(cookiemanager, DATA_DIR "/cookies.sqlite", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
     webkit_cookie_manager_set_accept_policy(cookiemanager, WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS);
 
-    WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, NULL);
+    /* Get shared web context (configured with web extensions if adblock enabled) */
+    WebKitWebContext* context = get_shared_web_context();
+
+    WebKitWebView* view = g_object_new(WEBKIT_TYPE_WEB_VIEW, "settings", settings, "network-session", network_session, "user-content-manager", contentmanager, "web-context", context, NULL);
     NULLCHECK(view);
 
     GtkEventController* event_controller = gtk_event_controller_key_new();
