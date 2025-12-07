@@ -2,15 +2,15 @@
 
 Rosenrot is a small browser based on webkitgtk6/gtk4. Because of the ease of hackability, the minimalism, the unobstrusiveness, it gives me a more comfortable way of navigating the web than normal browsers.
 
-![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/3-init.png)
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/src/images/3-init.png)
 
 ---
 
-![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/7-hello-world-search.png)
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/src/images/7-hello-world-search.png)
 
 ---
 
-![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/images/6-multiple-tabs.png)
+![](https://raw.githubusercontent.com/NunoSempere/rosenrot-browser/master/src/images/6-multiple-tabs.png)
 
 ### Installation and usage
 
