@@ -14,7 +14,7 @@ Rosenrot is a small browser based on webkitgtk6/gtk4. Because of the ease of hac
 
 ### Installation and usage
 
-You can see detailed instructions [here](./user-scripts/debian-12/), for Debian 12/Ubuntu 24 and 25.
+You can see detailed instructions [here](https://github.com/NunoSempere/rosenrot-browser/blob/master/src/user-scripts/debian-12/install-with-dependencies-gtk4.sh), for Debian 12/Ubuntu 24 and 25.
 
 The general steps are to install dependencies, and then
 
@@ -24,16 +24,6 @@ make install # or sudo make install
 rose
 ```
 
-You can also collect some profiling info, and then use that to get a perhaps faster version:
-
-```
-make fast ## will ask you to use the browser for a bit
-make install
-rose
-```
-
-You can also create a rose.desktop file so that it will show up in your desktop environment. You can see this documented [here](./user-scripts/debian-12/install-with-dependencies.sh).
-
 ## Features
 
 - Tabs, cookies, caching
@@ -41,20 +31,20 @@ You can also create a rose.desktop file so that it will show up in your desktop 
 - ~454L core code (the rose.c file)
 - Customize appearance of the browser through css
 - Built-in rose-mklink script for in-shell static links
-- Optional adblocking through [wyebadblock](https://github.com/jun7/wyebadblock)
 - Plugin system, seeded with:
   - Libre redirect: Redirect annoying websites to open source frontends
   - Readability: Strip webpages of unnecessary elements for ease of reading with a custom shortcut
   - Custom style: Override the css of predetermined websites
   - Max number of tabs (by default 8), configurable.
   - Stand in plugin: Mimick function definitions which do nothing for the above plugins so that they can be quickly removed
+  - Adblocking using Easylist
 - Fully GTK4 based, but see the git history for the GTK3 version as well.
 
 You can see some screenshots in the [images](./images) folder.
 
 ## Similar projects
 
-Here are some similar projects that I could find (minimalist, mostly based on webkit):
+Here are some other minimalist webkit projects I could find:
 
 - [Surf](https://git.suckless.org/surf/). Suckless community. Similar goals, higher coding standards, less actively maintained.
 - [Rose](https://github.com/mini-rose/rose-browser). Lua integrations, supports compilation with GTK4. Every now and then, the developer nukes the git history and tries some different approach.
@@ -63,9 +53,6 @@ Here are some similar projects that I could find (minimalist, mostly based on we
 - [Nyxt](https://github.com/atlas-engineer/nyxt). Emphasis on sophisticated key bindings. 
 - [Wyeb](https://github.com/jun7/wyeb)
 - [Luakit](https://github.com/luakit/luakit)
-- ~~[Qutebrowser](https://github.com/qutebrowser/qutebrowser). More actively maintained. I don't understand the tech stack.~~ [Based](https://github.com/qutebrowser/qutebrowser/blob/main/doc/faq.asciidoc) on [Chromium](https://wiki.qt.io/QtWebEngine)
-
-Here are other projects I haven't checked out as much: [netsurf](https://www.netsurf-browser.org/), [uzbl](https://www.uzbl.org/), [edbrowse](https://github.com/CMB/edbrowse), 
 
 Here are projects with their own rendering engines which could appeal to users of rosenrot:
 
@@ -73,6 +60,8 @@ Here are projects with their own rendering engines which could appeal to users o
 - [dillo](https://github.com/dillo-browser/dillo/). Has its own rendering engine, and no javascript.
 - [Ladybird](https://github.com/LadybirdBrowser/ladybird). Initially from the SerenityOS, it later became its own project. Uses its own html and javascript engine. Compiling it on a mainstream linux distribution is now doable.
 - [servo](https://github.com/servo/servo). Firefox/Mozilla. An in-development browser engine written in Rust, meant to replace Gecko. Could be extremely cool once it is ready, but it has been many years in development.
+
+And other projects I haven't checked out as much: [netsurf](https://www.netsurf-browser.org/), [uzbl](https://www.uzbl.org/), [edbrowse](https://github.com/CMB/edbrowse), 
 
 ### Relationship with [rose](https://github.com/mini-rose/rose)
 

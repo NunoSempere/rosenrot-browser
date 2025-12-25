@@ -8,7 +8,7 @@ This plugin consists of two parts:
 
 1. **Web Extension** (`librosenrot-adblock.so`) - A shared library loaded by WebKit into the web process. It intercepts all HTTP requests and checks them against the filter rules.
 
-2. **URI Tester** (`ephy-uri-tester.c`) - The filter matching engine, adapted from Epiphany/GNOME Web browser. It parses EasyList-format filter rules and matches URLs against them.
+2. **URI Tester** (`uri-tester.c`) - The filter matching engine, adapted from Epiphany/GNOME Web browser. It parses EasyList-format filter rules and matches URLs against them.
 
 ## Installation
 
